@@ -1,12 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
-import { Product } from "../../../core/data/supabase/products/products.repository";
+import { Product } from "@core/data/supabase/products/products.repository";
 import { Label } from "@core/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@core/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@core/components/ui/select";
 import { Button } from "@core/components/ui/button";
 import { formatPrice } from "@core/utils";
-import Link from "next/link";
 
 interface ProductDetailsProps {
   product: Product & { colors?: string[]; sizes?: string[]; quantity?: number };
