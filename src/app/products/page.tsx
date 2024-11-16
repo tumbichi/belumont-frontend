@@ -1,5 +1,6 @@
 import Container from "@core/components/layouts/Container";
-import ProductsRepository from "../../modules/products/data/products.repository";
+import { ProductsRepository } from "@core/data/supabase/products";
+
 import ProductCard from "../../modules/products/components/ProductCard";
 
 export default async function ProductsPage() {

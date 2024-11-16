@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@core/components/ui/button";
 import Image from "next/image";
-import { Product } from "../data/products.repository";
+import { Product } from "../../../core/data/supabase/products/products.repository";
 import { formatPrice } from "@core/utils";
 import Link from "next/link";
 

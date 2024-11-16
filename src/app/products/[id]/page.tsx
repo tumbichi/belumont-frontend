@@ -1,6 +1,6 @@
 import Container from "@core/components/layouts/Container";
+import { ProductsRepository } from "@core/data/supabase/products";
 import ProductDetails from "../../../modules/products/components/ProductDetails";
-import getProductById from "../../../modules/products/data/services/getProductById";
 
 interface ProductDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -8,7 +8,7 @@ interface ProductDetailsPageProps {
 
 export default async function ProductDetailsPage({ params }: ProductDetailsPageProps) {
   const productId = (await params).id;
-  const product = await getProductById(productId);
+  const product = await ProductsRepository().getById(productId);
 
   return <Container>{product ? <ProductDetails product={product} /> : <div>Product not found</div>}</Container>;
 }

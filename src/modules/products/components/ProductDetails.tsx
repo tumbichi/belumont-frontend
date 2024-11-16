@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { Product } from "../data/products.repository";
+import { Product } from "../../../core/data/supabase/products/products.repository";
 import { Label } from "@core/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@core/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@core/components/ui/select";

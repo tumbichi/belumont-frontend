@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 import { Button } from "@core/components/ui/button";
@@ -5,14 +6,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@core/components/ui/input";
 import { Label } from "@core/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@core/components/ui/radio-group";
+import { PaymentProvider } from "@core/data/supabase/payments/payments.repository";
 
-import Image from "next/image";
-
-type PaymentMethod = "mercadopago";
 
 interface RadioItem {
   label: string;
-  value: PaymentMethod;
+  value: PaymentProvider;
   icon: React.JSX.Element;
 }
 

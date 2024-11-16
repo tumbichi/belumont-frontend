@@ -1,5 +1,5 @@
-import { supabase } from "../client";
-import { productMap } from "../mappers/product.map";
+import sanatizeCreatedAtFromObject from "@core/utils/helpers/sanatizeCreatedAtFromObject";
+import { supabase } from "../../../client";
 import { Product } from "../products.repository";
 
 export default async function getAllProducts(): Promise<Product[]> {
@@ -9,5 +9,5 @@ export default async function getAllProducts(): Promise<Product[]> {
     return [];
   }
 
-  return data.map((product) => productMap(product));
+  return data.map((product) => sanatizeCreatedAtFromObject(product));
 }

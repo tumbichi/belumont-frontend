@@ -15,9 +15,7 @@ interface ProductsRepositoryReturn {
   getById: (id: string) => Promise<Product | null>;
 }
 
-const ProductsRepository = (): ProductsRepositoryReturn => ({
+export const ProductsRepository = (): ProductsRepositoryReturn => ({
   getAll: getAllProducts,
   getById: getProductById,
 });
-
-export default ProductsRepository;

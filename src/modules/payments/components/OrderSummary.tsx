@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@core/components/ui/card";
 import React from "react";
-import { Product } from "../../products/data/products.repository";
+import { Product } from "../../../core/data/supabase/products/products.repository";
 import Image from "next/image";
 import { formatPrice } from "@core/utils";
 import { Separator } from "@core/components/ui/separator";
