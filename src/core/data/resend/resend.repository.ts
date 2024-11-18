@@ -6,7 +6,7 @@ interface AttachmentContent {
 }
 
 interface AttachmentPath {
-  fileaneme: string;
+  filename: string;
   path: string;
 }
 
