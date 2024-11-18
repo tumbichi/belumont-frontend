@@ -10,7 +10,7 @@ export interface Product {
   created_at: Date;
 }
 
-interface ProductsRepositoryReturn {
+export interface ProductsRepositoryReturn {
   getAll: () => Promise<Product[]>;
   getById: (id: string) => Promise<Product | null>;
 }

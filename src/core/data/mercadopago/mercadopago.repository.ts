@@ -1,11 +1,16 @@
+import { Product } from "../supabase/products";
+import { User } from "../supabase/users";
 import { generatePaymentUrl } from "./services/generatePaymentUrl";
+import getPaymentById from "./services/getPaymentById";
+import { MercadoPagoPayment } from "./types/MercadoPagoPayment";
 
 export interface PaymentMetadata {
-  email: string;
+  orderId: string;
 }
 
 interface MercadoPagoRepositoryReturn {
-  generatePaymentUrl: (metadata: PaymentMetadata) => Promise<string>;
+  generatePaymentUrl: (product: Product, user: User, metadata: PaymentMetadata) => Promise<string>;
+  getPaymentById: (id: string) => Promise<MercadoPagoPayment>;
 }
 
-export const MercadoPagoRepository = (): MercadoPagoRepositoryReturn => ({ generatePaymentUrl });
+export const MercadoPagoRepository = (): MercadoPagoRepositoryReturn => ({ generatePaymentUrl, getPaymentById });

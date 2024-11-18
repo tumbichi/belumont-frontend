@@ -164,9 +164,18 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      order_status: "pending" | "completed" | "cancelled";
+      order_status: "pending" | "completed" | "cancelled" | "paid";
       payment_provider: "mercadopago";
-      payment_status: "pending" | "completed" | "failed";
+      payment_status:
+        | "pending"
+        | "approved"
+        | "authorized"
+        | "in_process"
+        | "in_mediation"
+        | "rejected"
+        | "cancelled"
+        | "refunded"
+        | "charged_back";
     };
     CompositeTypes: {
       [_ in never]: never;

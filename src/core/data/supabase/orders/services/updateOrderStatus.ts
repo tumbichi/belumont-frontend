@@ -1,9 +1,9 @@
 import { supabase } from "@core/data/client";
+import { OrderStatus } from "../orders.repository";
 import sanatizeDatesFromObject from "@core/utils/helpers/sanatizeDatesFromObject";
-import { Order } from "../orders.repository";
 
-export async function createOrder(productId: string, userId: string): Promise<Order> {
-  const { data, error } = await supabase.from("orders").insert({ product_id: productId, user_id: userId }).select();
+export default async function updateOrderStatus(id: string, status: OrderStatus) {
+  const { data, error } = await supabase.from("orders").update({ status }).eq("id", id).select();
 
   if (error) {
     throw error;

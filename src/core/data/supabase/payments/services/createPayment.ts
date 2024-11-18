@@ -12,7 +12,7 @@ export async function createPayment(orderId: string, providerId: string): Promis
     throw error;
   }
 
-  if (!data || data.length > 0) {
+  if (!data || data.length <= 0) {
     throw new Error("Failed to create payment");
   }
 

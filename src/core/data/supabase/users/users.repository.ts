@@ -1,5 +1,6 @@
 import createUser from "./services/createUser";
 import getUserByEmail from "./services/getUserByEmail";
+import getUserById from "./services/getUserById";
 
 export interface User {
   id: string;
@@ -8,9 +9,14 @@ export interface User {
   created_at: string;
 }
 
-interface UsersRepositoryReturn {
+export interface UsersRepositoryReturn {
+  create: (email: string, name: string) => Promise<User>;
   getByEmail: (email: string) => Promise<User | null>;
-  create: (email: string, name: string) => Promise<void>;
+  getById: (id: string) => Promise<User | null>;
 }
 
-export const UsersRepository = (): UsersRepositoryReturn => ({ create: createUser, getByEmail: getUserByEmail });
+export const UsersRepository = (): UsersRepositoryReturn => ({
+  create: createUser,
+  getByEmail: getUserByEmail,
+  getById: getUserById,
+});

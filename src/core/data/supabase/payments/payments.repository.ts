@@ -1,8 +1,9 @@
-import { Database } from "@core/types/supabase";
+import { Database } from "@core/data/supabase/types/supabase";
 import { createPayment } from "./services/createPayment";
+import updatePaymentStatus from "./services/updatePaymentStatus";
 
 export type PaymentStatus = Database["public"]["Enums"]["payment_status"];
-export type PaymentProvider = Database["public"]["Enums"]["payment_provider"]
+export type PaymentProvider = Database["public"]["Enums"]["payment_provider"];
 
 export interface Payment {
   created_at: Date;
@@ -14,10 +15,12 @@ export interface Payment {
   updated_at: Date;
 }
 
-interface PaymentsRepositoryReturn {
-  create: (productId: string, userId: string) => Promise<Payment>;
+export interface PaymentsRepositoryReturn {
+  create: (orderId: string, providerId: string) => Promise<Payment>;
+  updateStatus: (id: string, status: PaymentStatus) => Promise<Payment>;
 }
 
 export const PaymentsRepository = (): PaymentsRepositoryReturn => ({
   create: createPayment,
+  updateStatus: updatePaymentStatus
 });
