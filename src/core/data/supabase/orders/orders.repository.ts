@@ -1,5 +1,6 @@
-import { Database } from "@core/types/supabase";
+import { Database } from "@core/data/supabase/types/supabase";
 import { createOrder } from "./services/createOrder";
+import updateOrderStatus from "./services/updateOrderStatus";
 
 export type OrderStatus = Database["public"]["Enums"]["order_status"];
 
@@ -12,10 +13,12 @@ export interface Order {
   user_id: string;
 }
 
-interface OrdersRepositoryReturn {
+export interface OrdersRepositoryReturn {
   create: (productId: string, userId: string) => Promise<Order>;
+  updateStatus: (id: string, status: OrderStatus) => Promise<Order>;
 }
 
 export const OrdersRepository = (): OrdersRepositoryReturn => ({
   create: createOrder,
+  updateStatus: updateOrderStatus,
 });
