@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { SVGProps } from "react";
+import Link from 'next/link';
+import { SVGProps } from 'react';
 
 export default function PaymentSuccessPage() {
   return (
@@ -10,7 +10,8 @@ export default function PaymentSuccessPage() {
           ¡Gracias por tu compra! 🎉
         </h1>
         <p className="mt-4 text-muted-foreground text-pretty">
-          Tu compra se ha completado con éxito. Hemos enviado tu recetario digital a tu correo electrónico.
+          Tu compra se ha completado con éxito. Hemos enviado tu recetario
+          digital a tu correo electrónico.
           <br />
           ¡Esperamos que lo disfrutes tanto como nosotros al crearlo! 🍳✨
         </p>

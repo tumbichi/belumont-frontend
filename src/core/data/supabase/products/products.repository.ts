@@ -1,6 +1,6 @@
-import getAllProducts from "./services/getAllProducts";
-import getProductById from "./services/getProductById";
-import getProductByPathname from "./services/getProductByPathname";
+import getAllProducts from './services/getAllProducts';
+import getProductById from './services/getProductById';
+import getProductByPathname from './services/getProductByPathname';
 
 export interface Product {
   id: string;

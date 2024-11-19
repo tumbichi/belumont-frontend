@@ -1,9 +1,9 @@
-import sanatizeCreatedAtFromObject from "@core/utils/helpers/sanatizeCreatedAtFromObject";
-import { supabase } from "../../../client";
-import { Product } from "../products.repository";
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import { supabase } from '../../../client';
+import { Product } from '../products.repository';
 
 export default async function getAllProducts(): Promise<Product[]> {
-  const { data } = await supabase.from("products").select();
+  const { data } = await supabase.from('products').select();
 
   if (!data) {
     return [];

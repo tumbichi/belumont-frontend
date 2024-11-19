@@ -1,12 +1,18 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import { Product } from "@core/data/supabase/products/products.repository";
-import { Label } from "@core/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@core/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@core/components/ui/select";
-import { Button } from "@core/components/ui/button";
-import { formatPrice } from "@core/utils";
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { Product } from '@core/data/supabase/products/products.repository';
+import { Label } from '@core/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@core/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@core/components/ui/select';
+import { Button } from '@core/components/ui/button';
+import { formatPrice } from '@core/utils';
 
 interface ProductDetailsProps {
   product: Product & { colors?: string[]; sizes?: string[]; quantity?: number };
@@ -24,7 +30,7 @@ function ProductDetails({ product }: ProductDetailsProps) {
               width={600}
               height={600}
               className="object-cover w-full rounded-lg"
-              style={{ aspectRatio: "600/600", objectFit: "cover" }}
+              style={{ aspectRatio: '600/600', objectFit: 'cover' }}
             />
             <div className="grid grid-cols-3 gap-4">
               <Image
@@ -33,7 +39,7 @@ function ProductDetails({ product }: ProductDetailsProps) {
                 width={100}
                 height={100}
                 className="object-cover w-full rounded-lg"
-                style={{ aspectRatio: "100/100", objectFit: "cover" }}
+                style={{ aspectRatio: '100/100', objectFit: 'cover' }}
               />
               <Image
                 src={product.image_url}
@@ -41,7 +47,7 @@ function ProductDetails({ product }: ProductDetailsProps) {
                 width={100}
                 height={100}
                 className="object-cover w-full rounded-lg"
-                style={{ aspectRatio: "100/100", objectFit: "cover" }}
+                style={{ aspectRatio: '100/100', objectFit: 'cover' }}
               />
               <Image
                 src={product.image_url}
@@ -49,17 +55,21 @@ function ProductDetails({ product }: ProductDetailsProps) {
                 width={100}
                 height={100}
                 className="object-cover w-full rounded-lg"
-                style={{ aspectRatio: "100/100", objectFit: "cover" }}
+                style={{ aspectRatio: '100/100', objectFit: 'cover' }}
               />
             </div>
           </div>
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold md:text-4xl">{product.name}</h1>
-              <p className="text-lg text-gray-500 dark:text-gray-400">{product.description}</p>
+              <p className="text-lg text-gray-500 dark:text-gray-400">
+                {product.description}
+              </p>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold">{formatPrice(product.price)}</span>
+              <span className="text-3xl font-bold">
+                {formatPrice(product.price)}
+              </span>
             </div>
             <form className="space-y-4">
               {product.colors && (
@@ -67,7 +77,11 @@ function ProductDetails({ product }: ProductDetailsProps) {
                   <Label htmlFor="color" className="text-base font-medium">
                     Color
                   </Label>
-                  <RadioGroup id="color" defaultValue="black" className="flex items-center gap-2">
+                  <RadioGroup
+                    id="color"
+                    defaultValue="black"
+                    className="flex items-center gap-2"
+                  >
                     {product.colors.map((color) => (
                       <Label
                         key={color}
@@ -86,7 +100,11 @@ function ProductDetails({ product }: ProductDetailsProps) {
                   <Label htmlFor="size" className="text-base font-medium">
                     Size
                   </Label>
-                  <RadioGroup id="size" defaultValue="m" className="flex items-center gap-2">
+                  <RadioGroup
+                    id="size"
+                    defaultValue="m"
+                    className="flex items-center gap-2"
+                  >
                     {product.sizes.map((size) => (
                       <Label
                         key={size}
@@ -110,7 +128,10 @@ function ProductDetails({ product }: ProductDetailsProps) {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Array.from({ length: product.quantity }, (_, i) => i + 1).map((quantity) => (
+                      {Array.from(
+                        { length: product.quantity },
+                        (_, i) => i + 1
+                      ).map((quantity) => (
                         <SelectItem key={quantity} value={quantity.toString()}>
                           {quantity}
                         </SelectItem>

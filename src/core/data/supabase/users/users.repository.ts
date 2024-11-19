@@ -1,6 +1,6 @@
-import createUser from "./services/createUser";
-import getUserByEmail from "./services/getUserByEmail";
-import getUserById from "./services/getUserById";
+import createUser from './services/createUser';
+import getUserByEmail from './services/getUserByEmail';
+import getUserById from './services/getUserById';
 
 export interface User {
   id: string;

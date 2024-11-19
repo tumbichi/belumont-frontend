@@ -1,19 +1,33 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@core/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@core/components/ui/card";
-import { Input } from "@core/components/ui/input";
-import { Label } from "@core/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@core/components/ui/radio-group";
-import { PaymentProvider } from "@core/data/supabase/payments/payments.repository";
-import paymentSchema, { PaymentSchema } from "../schemas/payment.schema";
-import axios from "axios";
-import { Product } from "@core/data/supabase/products";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@core/components/ui/form";
+import Image from 'next/image';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@core/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@core/components/ui/card';
+import { Input } from '@core/components/ui/input';
+import { Label } from '@core/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@core/components/ui/radio-group';
+import { PaymentProvider } from '@core/data/supabase/payments/payments.repository';
+import paymentSchema, { PaymentSchema } from '../schemas/payment.schema';
+import axios from 'axios';
+import { Product } from '@core/data/supabase/products';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@core/components/ui/form';
 
 interface RadioItem {
   label: string;
@@ -23,9 +37,17 @@ interface RadioItem {
 
 const paymentMethods: RadioItem[] = [
   {
-    label: "Mercado Pago",
-    value: "mercadopago",
-    icon: <Image className="w-12 h-12 mb-3" src="/mercado_pago_logo.svg" alt="Mercado Pago" height={48} width={48} />,
+    label: 'Mercado Pago',
+    value: 'mercadopago',
+    icon: (
+      <Image
+        className="w-12 h-12 mb-3"
+        src="/mercado_pago_logo.svg"
+        alt="Mercado Pago"
+        height={48}
+        width={48}
+      />
+    ),
   },
 ];
 
@@ -34,7 +56,9 @@ interface PaymentProps {
   handlePayAction?: (data: PaymentSchema) => void;
 }
 
-export default function Payment({ product }: /* handlePayAction */ PaymentProps) {
+export default function Payment({
+  product,
+}: /* handlePayAction */ PaymentProps) {
   const form = useForm<PaymentSchema>({
     resolver: zodResolver(paymentSchema),
   });
@@ -46,7 +70,7 @@ export default function Payment({ product }: /* handlePayAction */ PaymentProps)
       productId: product.id,
     });
 
-    window.open(response.data.paymentUrl, "_blank");
+    window.open(response.data.paymentUrl, '_blank');
   };
 
   return (
@@ -58,7 +82,10 @@ export default function Payment({ product }: /* handlePayAction */ PaymentProps)
             <CardDescription>Ingresá tus datos de pago</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6">
-            <RadioGroup defaultValue={paymentMethods[0].value} className="md:flex md:justify-center ">
+            <RadioGroup
+              defaultValue={paymentMethods[0].value}
+              className="md:flex md:justify-center "
+            >
               {paymentMethods.map((paymentMethod) => (
                 <div key={paymentMethod.label}>
                   <RadioGroupItem
@@ -85,7 +112,11 @@ export default function Payment({ product }: /* handlePayAction */ PaymentProps)
                   <FormItem>
                     <FormLabel htmlFor="email">Email</FormLabel>
                     <FormControl>
-                      <Input {...field} id="email" placeholder="Ingresa el email donde queres recibir el producto" />
+                      <Input
+                        {...field}
+                        id="email"
+                        placeholder="Ingresa el email donde queres recibir el producto"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -100,7 +131,11 @@ export default function Payment({ product }: /* handlePayAction */ PaymentProps)
                   <FormItem>
                     <FormLabel htmlFor="name">Nombre</FormLabel>
                     <FormControl>
-                      <Input {...field} id="name" placeholder="Ej: Francis Mallmann" />
+                      <Input
+                        {...field}
+                        id="name"
+                        placeholder="Ej: Francis Mallmann"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

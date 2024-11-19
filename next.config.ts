@@ -1,11 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  i18n: { locales: ["es"], defaultLocale: "es" },
+  i18n: { locales: ['es'], defaultLocale: 'es' },
   images: {
     remotePatterns: [
       {
-        protocol: "https",
+        protocol: 'https',
         hostname: String(process.env.SUPABASE_DOMAIN),
       },
     ],

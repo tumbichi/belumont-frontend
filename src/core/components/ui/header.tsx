@@ -1,5 +1,5 @@
-import Container from "@core/components/layouts/Container";
-import Link from "next/link";
+import Container from '@core/components/layouts/Container';
+import Link from 'next/link';
 
 /**
  * A simple header component with a logo and navigation links.
