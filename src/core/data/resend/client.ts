@@ -1,10 +1,5 @@
-import axios from "axios";
+import { Resend } from "resend";
 
-const resendClient = axios.create({
-  baseURL: process.env.RESEND_API_URL,
-  headers: {
-    Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-  },
-});
+const resendClient = new Resend(process.env.RESEND_API_KEY);
 
 export default resendClient;

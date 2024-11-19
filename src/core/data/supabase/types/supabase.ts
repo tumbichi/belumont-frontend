@@ -112,6 +112,7 @@ export type Database = {
         Row: {
           created_at: string;
           description: string | null;
+          download_url: string;
           id: string;
           image_url: string;
           name: string;
@@ -120,6 +121,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           description?: string | null;
+          download_url: string;
           id?: string;
           image_url: string;
           name: string;
@@ -128,10 +130,40 @@ export type Database = {
         Update: {
           created_at?: string;
           description?: string | null;
+          download_url?: string;
           id?: string;
           image_url?: string;
           name?: string;
           price?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "products_download_url_fkey";
+            columns: ["download_url"];
+            isOneToOne: false;
+            referencedRelation: "resources";
+            referencedColumns: ["url"];
+          }
+        ];
+      };
+      resources: {
+        Row: {
+          created_at: string;
+          folder: string;
+          id: string;
+          url: string;
+        };
+        Insert: {
+          created_at?: string;
+          folder?: string;
+          id?: string;
+          url: string;
+        };
+        Update: {
+          created_at?: string;
+          folder?: string;
+          id?: string;
+          url?: string;
         };
         Relationships: [];
       };

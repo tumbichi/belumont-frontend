@@ -6,6 +6,7 @@ export interface Product {
   name: string;
   price: number;
   image_url: string;
+  download_url: string;
   description: string | null;
   created_at: Date;
 }

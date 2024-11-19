@@ -1,25 +1,10 @@
+import { CreateEmailOptions, CreateEmailResponse } from "resend";
 import sendEmail from "./services/sendEmail";
 
-interface AttachmentContent {
-  filename: string;
-  content: Buffer;
-}
-
-interface AttachmentPath {
-  filename: string;
-  path: string;
-}
-
-export interface SendEmailBody {
-  from: string;
-  to: string;
-  subject: string;
-  html: string;
-  attachments?: (AttachmentContent | AttachmentPath)[];
-}
+export type SendEmailBody = CreateEmailOptions;
 
 interface ResendRepository {
-  sendEmail: (body: SendEmailBody) => Promise<void>;
+  sendEmail: (body: SendEmailBody) => Promise<CreateEmailResponse>;
 }
 
 const ResendRepository = () => ({
