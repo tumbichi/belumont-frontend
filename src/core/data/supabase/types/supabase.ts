@@ -116,6 +116,7 @@ export type Database = {
           id: string;
           image_url: string;
           name: string;
+          pathname: string;
           price: number;
         };
         Insert: {
@@ -125,6 +126,7 @@ export type Database = {
           id?: string;
           image_url: string;
           name: string;
+          pathname: string;
           price: number;
         };
         Update: {
@@ -134,6 +136,7 @@ export type Database = {
           id?: string;
           image_url?: string;
           name?: string;
+          pathname?: string;
           price?: number;
         };
         Relationships: [

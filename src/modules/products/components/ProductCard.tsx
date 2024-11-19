@@ -25,7 +25,7 @@ function ProductCard({ product }: ProductCardProps) {
         <p className="text-gray-500 dark:text-gray-400">{product.description}</p>
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold">{formatPrice(product.price)}</span>
-          <Link key={product.id} href={`/products/${product.id}`} className="block mb-2">
+          <Link key={product.id} href={`/products/${product.pathname}`} className="block mb-2">
             <Button size="sm">Comprar</Button>
           </Link>
         </div>

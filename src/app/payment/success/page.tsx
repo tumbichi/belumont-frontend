@@ -17,14 +17,14 @@ export default function PaymentSuccessPage() {
         <div className="mt-6 space-y-4">
           <Link
             href="/products"
-            className="inline-flex w-full justify-center items-center px-4 py-2 text-sm font-medium transition-colors rounded-md shadow-sm bg-primary text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium transition-colors rounded-md shadow-sm bg-primary text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             prefetch={false}
           >
             Ver más productos
           </Link>
           <Link
             href="/"
-            className="inline-flex w-full justify-center items-center px-4 py-2 text-sm font-semibold transition-colors rounded-md shadow-sm text-primary  hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-semibold transition-colors rounded-md shadow-sm text-primary hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             prefetch={false}
           >
             Ir a inicio

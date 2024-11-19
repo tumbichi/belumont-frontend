@@ -8,7 +8,7 @@ interface ProductDetailsPageProps {
 
 export default async function ProductDetailsPage({ params }: ProductDetailsPageProps) {
   const productId = (await params).id;
-  const product = await ProductsRepository().getById(productId);
+  const product = await ProductsRepository().getByPathname(productId);
 
   return <Container>{product ? <ProductDetails product={product} /> : <div>Product not found</div>}</Container>;
 }
