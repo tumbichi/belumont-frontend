@@ -1,5 +1,6 @@
 import ResendRepository from "@core/data/resend/resend.repository";
 import SupabaseRepository from "@core/data/supabase/supabase.repository";
+import ProductDelivery from "@core/emails/ProductDelivery";
 import { isAxiosError } from "axios";
 import { z } from "zod";
 
@@ -53,18 +54,10 @@ export async function POST(request: Request) {
         to: user.email,
         from: String(process.env.RESEND_FROM_EMAIL),
         subject: `${product.name} | @soybelumont`,
-        html: `<div>
-                <h1>Gracias por tu compra de: ${product?.name}</h1>
-                <p>El producto se encuentra adjunto a este email</p>
-              </div>`,
-        attachments: [
-          {
-            filename: "recetario-para-fiestas-saludables.png",
-            path: product.image_url,
-          },
-        ],
+        react: ProductDelivery({ productName: product.name, username: user.name, downloadLink: product.download_url }),
       })
-      .then(() => {
+      .then((data) => {
+        console.log("email reponse:", data);
         supabaseRepository.orders.updateStatus(order.id, "completed");
       })
       .catch((error) => {

@@ -40,6 +40,11 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        orange: {
+          light: "#FFF7ED", // Warm peachy orange
+          DEFAULT: "#FB923C", // Vibrant soft orange
+          dark: "#EA580C", // Deep rustic orange
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -58,5 +63,6 @@ export default {
       },
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
