@@ -21,7 +21,8 @@ export default function ProductDelivery({ productName, username, downloadLink }:
               Haz clic en el botón de abajo para descargar tu recetario. Estoy segura de que estas recetas te inspirarán
               tanto como a mí al crearlas. 🥐✨
             </p>
-            <div className="mt-4 text-center">              <Button
+            <div className="mt-4 text-center">
+              <Button
                 className="bg-[#FB923C] hover:bg-[#EA580C] text-white font-medium py-2 px-4 rounded"
                 href={downloadLink}
               >
