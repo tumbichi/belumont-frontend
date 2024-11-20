@@ -2,6 +2,7 @@ import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.reposi
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 
 export async function POST(request: Request) {
+  console.log('request.headers', request.headers);
   const body = await request.json();
   console.log('mpBody', body);
   const supabaseRepository = SupabaseRepository();
