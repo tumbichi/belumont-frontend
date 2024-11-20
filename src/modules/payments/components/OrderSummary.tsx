@@ -1,9 +1,16 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@core/components/ui/card";
-import React from "react";
-import { Product } from "../../../core/data/supabase/products/products.repository";
-import Image from "next/image";
-import { formatPrice } from "@core/utils";
-import { Separator } from "@core/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@core/components/ui/card';
+import React from 'react';
+import { Product } from '../../../core/data/supabase/products/products.repository';
+import Image from 'next/image';
+import { formatPrice } from '@core/utils';
+import { Separator } from '@core/components/ui/separator';
 
 interface ProductItemListProps {
   product: Product;
@@ -17,7 +24,7 @@ const ProductItemList = ({ product }: ProductItemListProps) => (
       height={64}
       alt="Product Image"
       className="rounded-md"
-      style={{ aspectRatio: "64/64", objectFit: "cover" }}
+      style={{ aspectRatio: '64/64', objectFit: 'cover' }}
     />
     <div>
       <div className="font-medium">{product.name}</div>
@@ -46,7 +53,9 @@ export default function OrderSummary({ product }: ProductItemListProps) {
         <Separator />
         <div className="flex items-center justify-between w-full mt-4">
           <div className="text-lg font-semibold">Total</div>
-          <div className="text-xl font-semibold">{formatPrice(product.price)}</div>
+          <div className="text-xl font-semibold">
+            {formatPrice(product.price)}
+          </div>
         </div>
       </CardFooter>
     </Card>

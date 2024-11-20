@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const paymentSchema = z.object({
   email: z.string().email(),

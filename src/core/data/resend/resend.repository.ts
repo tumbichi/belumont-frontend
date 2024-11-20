@@ -1,5 +1,5 @@
-import { CreateEmailOptions, CreateEmailResponse } from "resend";
-import sendEmail from "./services/sendEmail";
+import { CreateEmailOptions, CreateEmailResponse } from 'resend';
+import sendEmail from './services/sendEmail';
 
 export type SendEmailBody = CreateEmailOptions;
 

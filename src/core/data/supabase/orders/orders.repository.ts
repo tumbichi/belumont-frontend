@@ -1,9 +1,9 @@
-import { Database } from "@core/data/supabase/types/supabase";
-import { createOrder } from "./services/createOrder";
-import updateOrderStatus from "./services/updateOrderStatus";
-import getOrderById from "./services/getOrderById";
+import { Database } from '@core/data/supabase/types/supabase';
+import { createOrder } from './services/createOrder';
+import updateOrderStatus from './services/updateOrderStatus';
+import getOrderById from './services/getOrderById';
 
-export type OrderStatus = Database["public"]["Enums"]["order_status"];
+export type OrderStatus = Database['public']['Enums']['order_status'];
 
 export interface Order {
   created_at: Date;

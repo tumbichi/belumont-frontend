@@ -1,13 +1,15 @@
-import React from "react";
-import Payment from "../../modules/payments/components/Payment";
-import OrderSummary from "../../modules/payments/components/OrderSummary";
-import { ProductsRepository } from "@core/data/supabase/products";
+import React from 'react';
+import Payment from '../../modules/payments/components/Payment';
+import OrderSummary from '../../modules/payments/components/OrderSummary';
+import { ProductsRepository } from '@core/data/supabase/products';
 
 interface CheckoutPageProps {
   searchParams: Promise<{ productId: string }>;
 }
 
-export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
+export default async function CheckoutPage({
+  searchParams,
+}: CheckoutPageProps) {
   const productId = (await searchParams).productId;
   const product = await ProductsRepository().getById(productId);
 

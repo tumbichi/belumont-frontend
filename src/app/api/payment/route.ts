@@ -1,6 +1,6 @@
-import { z } from "zod";
-import SupabaseRepository from "@core/data/supabase/supabase.repository";
-import { MercadoPagoRepository } from "@core/data/mercadopago/mercadopago.repository";
+import { z } from 'zod';
+import SupabaseRepository from '@core/data/supabase/supabase.repository';
+import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 
 const supabaseRepository = SupabaseRepository();
 
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const product = await supabaseRepository.products.getById(body.productId);
 
   if (!product) {
-    throw new Error("El producto no existe");
+    throw new Error('El producto no existe');
   }
 
   let user = await supabaseRepository.users.getByEmail(body.email);
@@ -29,10 +29,14 @@ export async function POST(request: Request) {
   const order = await supabaseRepository.orders.create(body.productId, user.id);
 
   try {
-    const paymentUrl = await MercadoPagoRepository().generatePaymentUrl(product, user, { orderId: order.id });
+    const paymentUrl = await MercadoPagoRepository().generatePaymentUrl(
+      product,
+      user,
+      { orderId: order.id }
+    );
     return Response.json({ paymentUrl, order });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
     throw error;
   }
 }
