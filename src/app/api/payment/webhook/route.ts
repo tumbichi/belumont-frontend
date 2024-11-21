@@ -17,12 +17,10 @@ function verifySignature(
 
   const signaturePaymentHash = xSignatureArr[1].replace('v1=', '');
 
+  const secret = process.env.MERCADOPAGO_PAYMENT_SECRET_KEY as string;
   const template = `id:${paymentId};request-id:${xRequestId};ts:${ts};`;
 
-  const hmac = crypto.createHmac(
-    'sha256',
-    process.env.MERCADOPAGO_PAYMENT_SECRET_KEY as string
-  );
+  const hmac = crypto.createHmac('sha256', secret);
   hmac.update(template);
 
   const sha256Signature = hmac.digest('hex');
