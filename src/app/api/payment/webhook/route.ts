@@ -9,9 +9,10 @@ function verifySignature(
   paymentId: string
 ): true | never {
   console.log('x-signature', xSignature);
+  console.log('x-request-id', xRequestId);
   const xSignatureArr = xSignature.split(',');
 
-  const ts = xSignatureArr[0].replace('t=', '');
+  const ts = xSignatureArr[0].replace('ts=', '');
   console.log('ts', ts);
 
   const signaturePaymentHash = xSignatureArr[1].replace('v1=', '');
