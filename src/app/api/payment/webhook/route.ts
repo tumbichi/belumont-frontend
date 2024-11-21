@@ -17,13 +17,13 @@ function verifySignature(
 
   const signaturePaymentHash = xSignatureArr[1].replace('v1=', '');
 
-  console.log(
-    'process.env.MERCADOPAGO_PAYMENT_SECRET_KEY',
-    process.env.MERCADOPAGO_PAYMENT_SECRET_KEY
-  );
-
-  const secret = process.env.MERCADOPAGO_PAYMENT_SECRET_KEY as string;
-  const template = `id:${paymentId};request-id:${xRequestId};ts:${ts};`;
+  const secret = (process.env.MERCADOPAGO_PAYMENT_SECRET_KEY || '').trim();
+  console.log('secret', secret);
+  const template = Buffer.from(
+    `id:${paymentId};request-id:${xRequestId};ts:${ts};`,
+    'utf8'
+  ).toString();
+  console.log('template', template);
 
   const hmac = crypto.createHmac('sha256', secret);
   hmac.update(template);
