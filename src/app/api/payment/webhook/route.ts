@@ -17,6 +17,11 @@ function verifySignature(
 
   const signaturePaymentHash = xSignatureArr[1].replace('v1=', '');
 
+  console.log(
+    'process.env.MERCADOPAGO_PAYMENT_SECRET_KEY',
+    process.env.MERCADOPAGO_PAYMENT_SECRET_KEY
+  );
+
   const secret = process.env.MERCADOPAGO_PAYMENT_SECRET_KEY as string;
   const template = `id:${paymentId};request-id:${xRequestId};ts:${ts};`;
 
