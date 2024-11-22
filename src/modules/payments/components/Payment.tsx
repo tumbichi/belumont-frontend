@@ -1,7 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import React from 'react';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@core/components/ui/button';
@@ -18,7 +20,6 @@ import { Label } from '@core/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@core/components/ui/radio-group';
 import { PaymentProvider } from '@core/data/supabase/payments/payments.repository';
 import paymentSchema, { PaymentSchema } from '../schemas/payment.schema';
-import axios from 'axios';
 import { Product } from '@core/data/supabase/products';
 import {
   Form,
@@ -53,12 +54,11 @@ const paymentMethods: RadioItem[] = [
 
 interface PaymentProps {
   product: Product;
-  handlePayAction?: (data: PaymentSchema) => void;
 }
 
-export default function Payment({
-  product,
-}: /* handlePayAction */ PaymentProps) {
+export default function Payment({ product }: PaymentProps) {
+  const t = useTranslations('PAYMENT');
+
   const form = useForm<PaymentSchema>({
     resolver: zodResolver(paymentSchema),
   });
@@ -70,7 +70,7 @@ export default function Payment({
       productId: product.id,
     });
 
-    window.open(response.data.paymentUrl, '_blank');
+    window.open(response.data.paymentUrl);
   };
 
   return (
@@ -78,8 +78,8 @@ export default function Payment({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handlePayAction)}>
           <CardHeader>
-            <CardTitle>Metodo de pago</CardTitle>
-            <CardDescription>Ingresá tus datos de pago</CardDescription>
+            <CardTitle>{t('TITLE')}</CardTitle>
+            <CardDescription>{t('DESCRIPTION')}</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6">
             <RadioGroup
@@ -110,12 +110,14 @@ export default function Payment({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormLabel htmlFor="email">
+                      {t('FORM.EMAIL.LABEL')}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         id="email"
-                        placeholder="Ingresa el email donde queres recibir el producto"
+                        placeholder={t('FORM.EMAIL.PLACEHOLDER')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -129,12 +131,12 @@ export default function Payment({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="name">Nombre</FormLabel>
+                    <FormLabel htmlFor="name">{t('FORM.NAME.LABEL')}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         id="name"
-                        placeholder="Ej: Francis Mallmann"
+                        placeholder={t('FORM.NAME.PLACEHOLDER')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -150,7 +152,7 @@ export default function Payment({
               disabled={form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
             >
-              Redireccionar a MercadoPago
+              {t('FORM.SUBMIT')}
             </Button>
           </CardFooter>
         </form>

@@ -1,19 +1,22 @@
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { SVGProps } from 'react';
 
 export default function PaymentSuccessPage() {
+  const t = useTranslations('PAYMENT_SUCCESS');
+
   return (
     <div className="flex min-h-[calc(100dvh-80px)] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto text-center">
+      <div className="max-w-lg mx-auto text-center">
         <CircleCheckIcon className="w-16 h-16 mx-auto text-green-500 animate-bounce" />
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          ¡Gracias por tu compra! 🎉
+          {t('TITLE')}
         </h1>
         <p className="mt-4 text-muted-foreground text-pretty">
-          Tu compra se ha completado con éxito. Hemos enviado tu recetario
-          digital a tu correo electrónico.
+          {t('DESCRIPTION_1')}
           <br />
-          ¡Esperamos que lo disfrutes tanto como nosotros al crearlo! 🍳✨
+          <br />
+          {t('DESCRIPTION_2')}
         </p>
         <div className="mt-6 space-y-4">
           <Link
@@ -21,14 +24,14 @@ export default function PaymentSuccessPage() {
             className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium transition-colors rounded-md shadow-sm bg-primary text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             prefetch={false}
           >
-            Ver más productos
+            {t('BUTTON_1')}
           </Link>
           <Link
             href="/"
             className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-semibold transition-colors rounded-md shadow-sm text-primary hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             prefetch={false}
           >
-            Ir a inicio
+            {t('BUTTON_2')}
           </Link>
         </div>
       </div>

@@ -1,0 +1,40 @@
+{
+  "COMMON": {
+    "REQUIRED": "Campo obligatorio",
+    "INVALID_EMAIL": "Debe ingresar un email valido. Ej: francis.mallmann@gmail.com"
+  },
+  "HEADER": {
+    "HOME": "Inicio",
+    "PRODUCTS": "Productos"
+  },
+  "PRODUCT": {
+    "BUY": "Comprar"
+  },
+  "PAYMENT": {
+    "TITLE": "Método de pago",
+    "DESCRIPTION": "Ingresa tus datos de pago",
+    "FORM": {
+      "EMAIL": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "Ingresá el email donde quieres recibir el producto"
+      },
+      "NAME": {
+        "LABEL": "Nombre",
+        "PLACEHOLDER": "Ej: Francis Mallmann"
+      },
+      "SUBMIT": "Ir a Mercado Pago"
+    }
+  },
+  "ORDER_SUMMARY": {
+    "TITLE": "Detalle de tu compra",
+    "DESCRIPTION": "Revisa el detalle de tu compra",
+    "TOTAL": "Total"
+  },
+  "PAYMENT_SUCCESS": {
+    "TITLE": "¡Gracias por tu compra! 🎉",
+    "DESCRIPTION_1": "Tu compra se ha completado con éxito. Hemos enviado tu recetario digital a tu correo electrónico.",
+    "DESCRIPTION_2": "¡Esperamos que lo disfrutes tanto como nosotros al crearlo! 🍳✨",
+    "BUTTON_1": "Ver más productos",
+    "BUTTON_2": "Ir a inicio"
+  }
+}
