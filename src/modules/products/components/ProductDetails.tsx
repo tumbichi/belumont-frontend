@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Product } from '@core/data/supabase/products/products.repository';
 import { Label } from '@core/components/ui/label';
@@ -19,6 +20,8 @@ interface ProductDetailsProps {
 }
 
 function ProductDetails({ product }: ProductDetailsProps) {
+  const t = useTranslations('PRODUCT');
+
   return (
     <section className="py-12 bg-gray-100 dark:bg-gray-800 md:py-20">
       <div className="container px-4 md:px-6">
@@ -141,7 +144,7 @@ function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               )}
               <Link href={`/checkout?productId=${product.id}`}>
-                <Button size="lg">Comprar</Button>
+                <Button size="lg">{t('BUY')}</Button>
               </Link>
             </form>
           </div>

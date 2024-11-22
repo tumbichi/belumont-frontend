@@ -14,6 +14,7 @@ import {
 
 import { cn } from '@core/lib/utils';
 import { Label } from '@core/components/ui/label';
+import { useTranslations } from 'next-intl';
 
 const Form = FormProvider;
 
@@ -147,8 +148,9 @@ const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
+  const t = useTranslations();
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  const body = error ? t(String(error?.message) as never) : children;
 
   if (!body) {
     return null;

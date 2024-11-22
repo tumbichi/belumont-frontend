@@ -1,15 +1,18 @@
 import React from 'react';
-import { Button } from '@core/components/ui/button';
 import Image from 'next/image';
-import { Product } from '../../../core/data/supabase/products/products.repository';
-import { formatPrice } from '@core/utils';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Button } from '@core/components/ui/button';
+import { formatPrice } from '@core/utils';
+import { Product } from '@core/data/supabase/products/products.repository';
 
 interface ProductCardProps {
   product: Product;
 }
 
 function ProductCard({ product }: ProductCardProps) {
+  const t = useTranslations('PRODUCT');
+
   return (
     <div className="overflow-hidden transition bg-white rounded-lg shadow-sm dark:bg-gray-950 hover:shadow-md">
       <Image
@@ -34,7 +37,7 @@ function ProductCard({ product }: ProductCardProps) {
             href={`/products/${product.pathname}`}
             className="block mb-2"
           >
-            <Button size="sm">Comprar</Button>
+            <Button size="sm">{t('BUY')}</Button>
           </Link>
         </div>
       </div>

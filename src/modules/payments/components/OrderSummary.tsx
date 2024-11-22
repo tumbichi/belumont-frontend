@@ -1,3 +1,6 @@
+import React from 'react';
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import {
   Card,
   CardContent,
@@ -6,9 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@core/components/ui/card';
-import React from 'react';
 import { Product } from '../../../core/data/supabase/products/products.repository';
-import Image from 'next/image';
 import { formatPrice } from '@core/utils';
 import { Separator } from '@core/components/ui/separator';
 
@@ -38,12 +39,14 @@ const ProductItemList = ({ product }: ProductItemListProps) => (
 );
 
 export default function OrderSummary({ product }: ProductItemListProps) {
+  const t = useTranslations('ORDER_SUMMARY');
+
   return (
     <Card className="flex flex-col justify-between">
       <div>
         <CardHeader>
-          <CardTitle>Detalle de tu compra</CardTitle>
-          <CardDescription>Revisa el detalle de tu compra</CardDescription>
+          <CardTitle>{t('TITLE')}</CardTitle>
+          <CardDescription>{t('DESCRIPTION')}</CardDescription>
         </CardHeader>
         <CardContent>
           <ProductItemList product={product} />
@@ -52,7 +55,7 @@ export default function OrderSummary({ product }: ProductItemListProps) {
       <CardFooter className="flex flex-col ">
         <Separator />
         <div className="flex items-center justify-between w-full mt-4">
-          <div className="text-lg font-semibold">Total</div>
+          <div className="text-lg font-semibold">{t('TOTAL')}</div>
           <div className="text-xl font-semibold">
             {formatPrice(product.price)}
           </div>

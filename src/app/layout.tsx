@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
-import './globals.css';
-import Header from '@core/components/ui/header';
 import Script from 'next/script';
+import localFont from 'next/font/local';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
+import Header from '@core/components/ui/header';
+import './globals.css';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -20,13 +22,16 @@ export const metadata: Metadata = {
   description: 'Belu Mont - Chef',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <Script
           strategy="afterInteractive"
@@ -45,8 +50,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
+        <NextIntlClientProvider messages={messages}>
+          <Header />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
