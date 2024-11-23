@@ -1,20 +1,17 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import localFont from 'next/font/local';
+// import localFont from 'next/font/local';
+import { Eczar } from 'next/font/google';
+
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import Header from '@core/components/ui/header';
 import './globals.css';
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
+const eczar = Eczar({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'], // Incluye solo los pesos que usas
+  variable: '--font-eczar',
 });
 
 export const metadata: Metadata = {
@@ -47,9 +44,7 @@ export default async function RootLayout({
         `}
         </Script>
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${eczar.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Header />
           {children}
