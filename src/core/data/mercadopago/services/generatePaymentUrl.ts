@@ -26,10 +26,11 @@ export async function generatePaymentUrl(
         name: user.name,
         email: user.email,
       },
+      auto_return: 'all',
       back_urls: {
         success: process.env.MERCADOPAGO_SUCCESS_URL,
-        failure: process.env.MERCADOPAGO_FAILURE_URL,
-        pending: process.env.MERCADOPAGO_PENDING_URL,
+        failure: `${process.env.MERCADOPAGO_PRODUCTS_URL}/${product.pathname}?payment_status=failure`,
+        pending: `${process.env.MERCADOPAGO_PRODUCTS_URL}/${product.pathname}?payment_status=pending`,
       },
       metadata: {
         userId: user.id,

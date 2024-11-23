@@ -70,7 +70,7 @@ export default function Payment({ product }: PaymentProps) {
       productId: product.id,
     });
 
-    window.open(response.data.paymentUrl);
+    window.open(response.data.paymentUrl, "_self");
   };
 
   return (
