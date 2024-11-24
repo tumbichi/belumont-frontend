@@ -13,7 +13,7 @@ const Header: React.FC = () => {
     <Container>
       <header className="flex items-center w-full h-20 px-4 shrink-0 md:px-6">
         <Link href="#" className="hidden mr-6 lg:flex">
-          <p>Belu Mont</p>
+          <p className='text-2xl font-medium'>Belu Mont</p>
         </Link>
         <div className="flex gap-2 ml-auto">
           <Link
