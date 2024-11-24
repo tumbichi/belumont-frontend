@@ -1,6 +1,7 @@
 'use client';
 import { Toaster } from '@core/components/ui/toaster';
 import { useToast } from '@core/hooks/use-toast';
+import { useTranslations } from 'next-intl';
 import React, { PropsWithChildren, useEffect } from 'react';
 
 interface CheckoutLayoutProps extends PropsWithChildren {
@@ -11,6 +12,7 @@ export default function CheckoutLayout({
   children,
   paymentStatus,
 }: CheckoutLayoutProps) {
+  const t = useTranslations();
   const { toast } = useToast();
 
   useEffect(
@@ -18,9 +20,8 @@ export default function CheckoutLayout({
       switch (paymentStatus) {
         case 'pending': {
           toast({
-            title: 'Pago pendiente',
-            description:
-              'Cuando el pago sea aprobado te enviaremos un correo con tu producto',
+            title: t('PAYMENT_PENDING.TITLE'),
+            description: t('PAYMENT_PENDING.DESCRIPTION'),
             duration: 10000,
             className: 'bg-yellow-500 border-yellow-500',
           });
@@ -28,9 +29,8 @@ export default function CheckoutLayout({
         }
         case 'failure': {
           toast({
-            title: 'Pago fallido',
-            description:
-              'El pago no fue aprobado, te recomendamos volver a intentarlo',
+            title: t('PAYMENT_FAILURE.TITLE'),
+            description: t('PAYMENT_FAILURE.DESCRIPTION'),
             duration: 10000,
             variant: 'destructive',
           });
@@ -38,7 +38,7 @@ export default function CheckoutLayout({
         }
       }
     },
-    [paymentStatus, toast]
+    [paymentStatus, t, toast]
   );
 
   return (

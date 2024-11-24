@@ -22,7 +22,6 @@ interface ProductDetailsProps {
 }
 
 function ProductDetails({ product }: ProductDetailsProps) {
-  // const { toast } = useToast();
   const t = useTranslations('PRODUCT');
 
   return (
