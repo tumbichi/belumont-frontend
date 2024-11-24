@@ -54,12 +54,14 @@ const paymentMethods: RadioItem[] = [
 
 interface PaymentProps {
   product: Product;
+  defaultValues?: Partial<PaymentSchema>;
 }
 
-export default function Payment({ product }: PaymentProps) {
+export default function Payment({ product, defaultValues }: PaymentProps) {
   const t = useTranslations('PAYMENT');
 
   const form = useForm<PaymentSchema>({
+    defaultValues: defaultValues,
     resolver: zodResolver(paymentSchema),
   });
 
@@ -70,7 +72,7 @@ export default function Payment({ product }: PaymentProps) {
       productId: product.id,
     });
 
-    window.open(response.data.paymentUrl, "_self");
+    window.open(response.data.paymentUrl, '_self');
   };
 
   return (
