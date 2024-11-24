@@ -4,14 +4,14 @@ import ProductDetails from '../../../modules/products/components/ProductDetails'
 import Error from '../error';
 
 interface ProductDetailsPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ pathname: string }>;
 }
 
 export default async function ProductDetailsPage({
   params,
 }: ProductDetailsPageProps) {
-  const productId = (await params).id;
-  const product = await ProductsRepository().getByPathname(productId);
+  const productPathname = (await params).pathname;
+  const product = await ProductsRepository().getByPathname(productPathname);
 
   if (!product) {
     return <Error />;

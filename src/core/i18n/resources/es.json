@@ -36,5 +36,13 @@
     "DESCRIPTION_2": "¡Esperamos que lo disfrutes tanto como nosotros al crearlo! 🍳✨",
     "BUTTON_1": "Ver más productos",
     "BUTTON_2": "Ir a inicio"
+  },
+  "PAYMENT_FAILURE": {
+    "TITLE": "Pago fallido",
+    "DESCRIPTION": "El pago no fue aprobado, te recomendamos volver a intentarlo"
+  },
+  "PAYMENT_PENDING": {
+    "TITLE": "Pago pendiente",
+    "DESCRIPTION": "Cuando el pago sea aprobado te enviaremos un correo con tu producto"
   }
 }

@@ -34,7 +34,7 @@ function ProductCard({ product }: ProductCardProps) {
           </span>
           <Link
             key={product.id}
-            href={`/products/${product.pathname}`}
+            href={`/recetarios/${product.pathname}`}
             className="block mb-2"
           >
             <Button size="sm">{t('BUY')}</Button>

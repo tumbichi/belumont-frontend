@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -143,7 +145,7 @@ function ProductDetails({ product }: ProductDetailsProps) {
                   </Select>
                 </div>
               )}
-              <Link href={`/checkout?productId=${product.id}`}>
+              <Link href={`/detalle-de-compra?productId=${product.id}`}>
                 <Button size="lg">{t('BUY')}</Button>
               </Link>
             </form>
