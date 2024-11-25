@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React from 'react';
@@ -16,54 +15,22 @@ import {
 } from '@core/components/ui/select';
 import { Button } from '@core/components/ui/button';
 import { formatPrice } from '@core/utils';
+import ProductGallery from './ProductGallery';
 
 interface ProductDetailsProps {
   product: Product & { colors?: string[]; sizes?: string[]; quantity?: number };
 }
 
-function ProductDetails({ product }: ProductDetailsProps) {
+function ProductDetail({ product }: ProductDetailsProps) {
   const t = useTranslations('PRODUCT');
 
   return (
     <section className="py-12 bg-gray-100 dark:bg-gray-800 md:py-20">
       <div className="container px-4 md:px-6">
         <div className="grid items-start gap-8 md:grid-cols-2">
-          <div className="grid gap-4">
-            <Image
-              src={product.image_url}
-              alt="Product Image"
-              width={600}
-              height={600}
-              className="object-cover w-full rounded-lg"
-              style={{ aspectRatio: '600/600', objectFit: 'cover' }}
-            />
-            <div className="grid grid-cols-3 gap-4">
-              <Image
-                src={product.image_url}
-                alt="Product Thumbnail"
-                width={100}
-                height={100}
-                className="object-cover w-full rounded-lg"
-                style={{ aspectRatio: '100/100', objectFit: 'cover' }}
-              />
-              <Image
-                src={product.image_url}
-                alt="Product Thumbnail"
-                width={100}
-                height={100}
-                className="object-cover w-full rounded-lg"
-                style={{ aspectRatio: '100/100', objectFit: 'cover' }}
-              />
-              <Image
-                src={product.image_url}
-                alt="Product Thumbnail"
-                width={100}
-                height={100}
-                className="object-cover w-full rounded-lg"
-                style={{ aspectRatio: '100/100', objectFit: 'cover' }}
-              />
-            </div>
-          </div>
+          <ProductGallery
+            images={[product.image_url, ...(product.product_images || [])]}
+          />
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold md:text-4xl">{product.name}</h1>
@@ -156,4 +123,4 @@ function ProductDetails({ product }: ProductDetailsProps) {
   );
 }
 
-export default ProductDetails;
+export default ProductDetail;

@@ -1,6 +1,6 @@
 import Container from '@core/components/layouts/Container';
 import { ProductsRepository } from '@core/data/supabase/products';
-import ProductDetails from '../../../modules/products/components/ProductDetails';
+import ProductDetail from '../../../modules/products/components/ProductDetail';
 import Error from '../error';
 
 interface ProductDetailsPageProps {
@@ -19,7 +19,7 @@ export default async function ProductDetailsPage({
 
   return (
     <Container>
-      <ProductDetails product={product} />
+      <ProductDetail product={product} />
     </Container>
   );
 }

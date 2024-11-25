@@ -8,6 +8,7 @@ export interface Product {
   price: number;
   pathname: string;
   image_url: string;
+  product_images?: string[]
   description: string | null;
   created_at: Date;
 }
