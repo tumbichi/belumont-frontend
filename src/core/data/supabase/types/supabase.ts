@@ -114,6 +114,42 @@ export type Database = {
           },
         ];
       };
+      product_images: {
+        Row: {
+          created_at: string;
+          id: string;
+          product_id: string;
+          resource_url: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          product_id: string;
+          resource_url: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          product_id?: string;
+          resource_url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'product_images_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'product_images_resource_url_fkey';
+            columns: ['resource_url'];
+            isOneToOne: false;
+            referencedRelation: 'resources';
+            referencedColumns: ['url'];
+          },
+        ];
+      };
       products: {
         Row: {
           created_at: string;

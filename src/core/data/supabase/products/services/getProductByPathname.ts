@@ -10,5 +10,19 @@ export default async function getProductByPathname(
     .select('created_at,description,id,image_url,name,pathname,price,id')
     .eq('pathname', pathname);
 
-  return data && data.length > 0 ? sanatizeCreatedAtFromObject(data[0]) : null;
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  const { data: productImages } = await supabase
+    .from('product_images')
+    .select('resource_url')
+    .eq('product_id', data[0].id);
+
+  return {
+    ...sanatizeCreatedAtFromObject(data[0]),
+    product_images: productImages
+      ? productImages.map((productImage) => productImage.resource_url)
+      : [],
+  };
 }
