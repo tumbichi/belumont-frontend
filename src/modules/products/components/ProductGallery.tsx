@@ -1,3 +1,5 @@
+import Image from 'next/image';
+import React, { useState } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -6,8 +8,8 @@ import {
   CarouselPrevious,
 } from '@core/components/ui/carousel';
 import { LucideMaximize, LucideX } from 'lucide-react';
-import Image from 'next/image';
-import React, { useState } from 'react';
+import Fade from 'embla-carousel-fade'; 
+
 
 interface ProductGalleryProps {
   images: string[];
@@ -100,7 +102,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
       </div>
       {galleryOpen && (
         <div className="fixed inset-0 z-50 bg-black/80">
-          <Carousel className="w-full max-w-xl mx-auto 2xl:max-w-2xl">
+          <Carousel className="w-full max-w-xl mx-auto 2xl:max-w-2xl" plugins={[Fade()]}>
             <CarouselContent className="w-screen h-screen mx-0">
               <CarouselItem className="relative h-screen">
                 <Image
