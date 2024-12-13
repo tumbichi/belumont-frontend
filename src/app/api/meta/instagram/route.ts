@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   const validatedBody = instagramBodySchema.safeParse(body);
 
   if (!validatedBody.success) {
-    // Caso "default" para manejar un esquema inválido
+    // Caso "default" para manejar un esquema inválido`
     console.error(
       'Instragram body not handled',
       JSON.stringify(validatedBody.error, undefined, 2)
@@ -42,14 +42,42 @@ export async function POST(request: NextRequest) {
 
   console.log('validatiedBody.data.object', validatedBody.data?.object);
 
-  validatedBody.data?.entry.forEach((event) => {
-    if ('messaging' in event) {
+  validatedBody.data?.entry.forEach((entry) => {
+    if ('messaging' in entry) {
       // is a private message
-      console.log('is a message event', JSON.stringify(event, null, 2));
+      console.log('is a messaging entry', JSON.stringify(entry, null, 2));
+
+      entry.messaging.forEach((event) => {
+        if (event.message) {
+          console.log('is a message event', JSON.stringify(event, null, 2));
+          if (event.message.is_echo) {
+            console.log(
+              'is a sent message event',
+              JSON.stringify(event, null, 2)
+            );
+          } else {
+            console.log(
+              'is a received message event',
+              JSON.stringify(event, null, 2)
+            );
+          }
+        } else {
+          if (event.reaction) {
+            console.log('is a reaction event', JSON.stringify(event, null, 2));
+          }
+        }
+      });
     } else {
-      if ('changes' in event) {
+      if ('changes' in entry) {
         // is a change
-        console.log('is a change event', JSON.stringify(event, null, 2));
+        console.log('is a change entry', JSON.stringify(entry, null, 2));
+
+        entry.changes.forEach((event) => {
+          console.log(
+            `is a ${event.field} event`,
+            JSON.stringify(event, null, 2)
+          );
+        });
       }
     }
   });
