@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
   console.log('validatiedBody.data.object', validatedBody.data?.object);
 
-  validatedBody.data.entry.forEach((entry) => {
+  validatedBody.data?.entry.forEach((entry) => {
     switch (entry.type) {
       case 'changes':
         console.log('Entry changes:', JSON.stringify(entry));
