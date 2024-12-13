@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { instagramBodySchema } from './instagram.schema';
 // import { z } from 'zod';
 
 /* interface InstagramBody {
@@ -26,9 +27,30 @@ const bodySchema = z.object({
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  console.log('body', body);
 
-  if (body.object === 'instagram') {
+  // Intentamos hacer el parse del payload
+  const validatedBody = instagramBodySchema.safeParse(body);
+
+  if (!validatedBody.success) {
+    // Caso "default" para manejar un esquema inválido
+    console.error('Instragram body not handled');
+    console.log('unhandled response', JSON.stringify(body, null, 2));
+  }
+
+  console.log('validatiedBody.data.object', validatedBody.data?.object);
+
+  validatedBody.data.entry.forEach((entry) => {
+    switch (entry.type) {
+      case 'changes':
+        console.log('Entry changes:', JSON.stringify(entry));
+        break;
+      case 'messaging':
+        console.log('Entry messaging:', JSON.stringify(entry));
+        break;
+    }
+  });
+
+  /*   if (body.object === 'instagram') {
     body.entry.forEach((entry: object) => {
       if ('messaging' in entry) {
         // is a private message
@@ -42,15 +64,15 @@ export async function POST(request: NextRequest) {
           console.log('is a change entry', JSON.stringify(entry, null, 2));
         }
       }
-    });
-    /* body.entry.forEach((entry: { messaging: [] }) => {
+    }); */
+  /* body.entry.forEach((entry: { messaging: [] }) => {
       console.log('entry', entry);
 
       entry?.messaging.forEach((message) => {
         console.log('message', message);
       });
-    }); */
-  }
+    }); 
+  }*/
 
   // Verifica que el hub.mode y hub.verify_token son válidos
   // if (hubMode === 'subscribe' && hubVerifyToken === '$soybelumont') {
