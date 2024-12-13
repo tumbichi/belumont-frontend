@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { instagramBodySchema } from './instagram.schema';
+import { InstagramRepository } from '@core/data/instagram/instagram.repository';
 // import { z } from 'zod';
 
 /* interface InstagramBody {
@@ -42,6 +43,17 @@ export async function POST(request: NextRequest) {
 
   console.log('validatiedBody.data.object', validatedBody.data?.object);
 
+  const recipeMessage: {
+    message: string;
+    instagramUserId: string | null;
+    instagramUsername: string | null;
+  } = {
+    message: `Entrando a este link podes comprar el recetario: 
+    https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables`,
+    instagramUserId: null,
+    instagramUsername: null,
+  };
+
   validatedBody.data?.entry.forEach((entry) => {
     if ('messaging' in entry) {
       // is a private message
@@ -77,11 +89,45 @@ export async function POST(request: NextRequest) {
             `is a ${event.field} event`,
             JSON.stringify(event, null, 2)
           );
+
+          if (event.field === 'comments' && 'text' in event.value) {
+            const { text, from } = event.value;
+
+            if (text.toUpperCase().includes('RECETARIO')) {
+              console.log('Message include RECETARIO', text);
+              recipeMessage.instagramUserId = from.id;
+              recipeMessage.instagramUsername = from.username;
+              /* InstagramRepository()
+                .sendMessageTo(
+                  from.id,
+                  `Entrando a este link podes comprar el recetario: 
+                  https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables
+                `
+                )
+                .then(() => {
+                  console.log(`sent recipe link to ${from.username} success`);
+                }); */
+            }
+          }
         });
       }
     }
   });
 
+  if (recipeMessage.instagramUserId) {
+    // Enviar recetario por mensaje privado
+    try {
+      await InstagramRepository().sendMessageTo(
+        recipeMessage.instagramUserId,
+        recipeMessage.message
+      );
+      console.log(
+        `sent recipe link to ${recipeMessage.instagramUsername} success`
+      );
+    } catch (error) {
+      console.error('error sending recipe message', error);
+    }
+  }
   /*   if (body.object === 'instagram') {
     body.entry.forEach((entry: object) => {
       if ('messaging' in entry) {
