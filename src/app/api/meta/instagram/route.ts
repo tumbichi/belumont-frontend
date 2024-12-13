@@ -1,34 +1,35 @@
 import { NextRequest } from 'next/server';
+// import { z } from 'zod';
 
-interface InstagramEntry {
+/* interface InstagramBody {
+  object: 'instagram';
+} */
+
+/* interface InstagramEntry {
   id: string;
   time: number;
   messaging?: [];
   comments?: [];
   changes?: [];
-}
+} */
+
+/*   const changeEntrySchema = z.object({
+    id: z.string(),
+    time: z.number(),
+    changes: z.array(),
+  });
+
+const bodySchema = z.object({
+  object: z.literal('instagram'),
+  entry: z.array(),
+}); */
 
 export async function POST(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const hubChallenge = searchParams.get('hub.challenge');
-  const hubMode = searchParams.get('hub.mode');
-  const hubVerifyToken = searchParams.get('hub.verify_token');
-
-  console.log('hubChallenge', hubChallenge);
-  console.log('hubMode', hubMode);
-  console.log('hubVerifyToken', hubVerifyToken);
-  /*   console.log(
-    'process.env.INSTAGRAM_VERIFY_TOKEN',
-    process.env.INSTAGRAM_VERIFY_TOKEN
-  ); */
-  // request.
-
-  console.log('request', request);
   const body = await request.json();
   console.log('body', body);
 
   if (body.object === 'instagram') {
-    body.entry.forEach((entry: InstagramEntry) => {
+    body.entry.forEach((entry: object) => {
       if ('messaging' in entry) {
         // is a private message
         console.log('is a message entry', JSON.stringify(entry, null, 2));
