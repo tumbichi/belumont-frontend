@@ -33,20 +33,24 @@ export async function POST(request: NextRequest) {
 
   if (!validatedBody.success) {
     // Caso "default" para manejar un esquema inválido
-    console.error('Instragram body not handled');
+    console.error(
+      'Instragram body not handled',
+      JSON.stringify(validatedBody.error, undefined, 2)
+    );
     console.log('unhandled response', JSON.stringify(body, null, 2));
   }
 
   console.log('validatiedBody.data.object', validatedBody.data?.object);
 
-  validatedBody.data?.entry.forEach((entry) => {
-    switch (entry.type) {
-      case 'changes':
-        console.log('Entry changes:', JSON.stringify(entry));
-        break;
-      case 'messaging':
-        console.log('Entry messaging:', JSON.stringify(entry));
-        break;
+  validatedBody.data?.entry.forEach((event) => {
+    if ('messaging' in event) {
+      // is a private message
+      console.log('is a message event', JSON.stringify(event, null, 2));
+    } else {
+      if ('changes' in event) {
+        // is a change
+        console.log('is a change event', JSON.stringify(event, null, 2));
+      }
     }
   });
 

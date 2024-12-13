@@ -52,20 +52,18 @@ const instagramValueSchema = z.union([
 ]);
 
 const instagramChangeSchema = z.object({
-  value: instagramValueSchema,
   field: z.union([z.literal('comments'), z.literal('likes')]),
+  value: instagramValueSchema,
 });
 
 // Discriminated union para los tipos de `entry`
-const instagramEntrySchema = z.discriminatedUnion('type', [
+const instagramEntrySchema = z.union([
   z.object({
-    type: z.literal('changes'),
     id: z.string(),
     time: z.number(),
     changes: z.array(instagramChangeSchema),
   }),
   z.object({
-    type: z.literal('messaging'),
     id: z.string(),
     time: z.number(),
     messaging: z.array(messagingSchema),
