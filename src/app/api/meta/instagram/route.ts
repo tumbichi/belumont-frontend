@@ -48,8 +48,9 @@ export async function POST(request: NextRequest) {
     instagramUserId: string | null;
     instagramUsername: string | null;
   } = {
-    message: `Entrando a este link podes comprar el recetario: 
-    https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables`,
+    // message: `Entrando a este link podes comprar el recetario: https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables`,
+    message:
+      '¡Hola! 😊 Gracias por tu mensaje. Si querés conseguir mi recetario, te dejo el link para que lo compres directamente desde la web: \n \n https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables \n \n ¡Espero que te inspire a cocinar cosas ricas! 🧑‍🍳✨',
     instagramUserId: null,
     instagramUsername: null,
   };
