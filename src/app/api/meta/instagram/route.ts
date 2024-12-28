@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
   if (!validatedBody.success) {
     // Caso "default" para manejar un esquema inválido`
-    console.error(
+    console.warn(
       'Instragram body not handled',
       JSON.stringify(validatedBody.error, undefined, 2)
     );
@@ -45,13 +45,12 @@ export async function POST(request: NextRequest) {
 
   const recipeMessage: {
     message: string;
-    instagramUserId: string | null;
+    instagramCommentId: string | null;
     instagramUsername: string | null;
   } = {
-    // message: `Entrando a este link podes comprar el recetario: https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables`,
     message:
       '¡Hola! 😊 Gracias por tu mensaje. Si querés conseguir mi recetario, te dejo el link para que lo compres directamente desde la web: \n \n https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables \n \n ¡Espero que te inspire a cocinar cosas ricas! 🧑‍🍳✨',
-    instagramUserId: null,
+    instagramCommentId: null,
     instagramUsername: null,
   };
 
@@ -96,18 +95,8 @@ export async function POST(request: NextRequest) {
 
             if (text.toUpperCase().includes('RECETARIO')) {
               console.log('Message include RECETARIO', text);
-              recipeMessage.instagramUserId = from.id;
+              recipeMessage.instagramCommentId = event.value.id;
               recipeMessage.instagramUsername = from.username;
-              /* InstagramRepository()
-                .sendMessageTo(
-                  from.id,
-                  `Entrando a este link podes comprar el recetario: 
-                  https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables
-                `
-                )
-                .then(() => {
-                  console.log(`sent recipe link to ${from.username} success`);
-                }); */
             }
           }
         });
@@ -115,11 +104,11 @@ export async function POST(request: NextRequest) {
     }
   });
 
-  if (recipeMessage.instagramUserId) {
+  if (recipeMessage.instagramCommentId) {
     // Enviar recetario por mensaje privado
     try {
-      await InstagramRepository().sendMessageTo(
-        recipeMessage.instagramUserId,
+      await InstagramRepository().replyComment(
+        recipeMessage.instagramCommentId,
         recipeMessage.message
       );
       console.log(
