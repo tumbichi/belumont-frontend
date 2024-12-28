@@ -1,6 +1,6 @@
 import Container from '@core/components/layouts/Container';
 import { ProductsRepository } from '@core/data/supabase/products';
-import ProductDetail from '../../../modules/products/components/ProductDetail';
+import ProductDetail from '../../../../modules/products/components/ProductDetail';
 import Error from '../error';
 
 interface ProductDetailsPageProps {
