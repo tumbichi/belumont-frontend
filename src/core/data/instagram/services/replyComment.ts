@@ -1,14 +1,14 @@
 import instagramClient from '../client';
 
-export default async function sendMessageTo(
-  instagramUserId: string,
+export default async function replyComment(
+  commentId: string,
   message: string
 ) {
   const response = await instagramClient.post(
     `${process.env.INSTAGRAM_GRAPH_API_MESSAGES_PATH}`,
     {
       recipient: {
-        id: instagramUserId,
+        comment_id: commentId,
       },
       message: {
         text: message,
