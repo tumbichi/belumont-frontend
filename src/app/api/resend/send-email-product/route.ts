@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       })
       .then((data) => {
         console.log('email response:', data);
-        supabaseRepository.orders.updateStatus(order.id, 'completed');
+        supabaseRepository.orders.updateStatus(body.record.id, 'completed');
       })
       .catch((error) => {
         if (isAxiosError(error)) {

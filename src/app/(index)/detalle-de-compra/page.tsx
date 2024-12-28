@@ -1,8 +1,8 @@
 import React from 'react';
-import Payment from '../../modules/payments/components/Payment';
-import OrderSummary from '../../modules/payments/components/OrderSummary';
+import Payment from '../../../modules/payments/components/Payment';
+import OrderSummary from '../../../modules/payments/components/OrderSummary';
 import { ProductsRepository } from '@core/data/supabase/products';
-import CheckoutLayout from '../../modules/payments/layout/CheckoutLayout';
+import CheckoutLayout from '../../../modules/payments/layout/CheckoutLayout';
 
 interface CheckoutPageProps {
   searchParams: Promise<{
