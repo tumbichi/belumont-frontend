@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# soybelumont
 
-## Getting Started
+Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu Mont](https://www.instagram.com/belu.mont/), creadora de contenido enfocada en cocina saludable y estilo de vida. Construida con **Next.js** y **TypeScript**, esta plataforma está diseñada para evolucionar como el portafolio personal y blog de Belu, ofreciendo un espacio único para inspirar y conectar con una comunidad apasionada por la cocina, los viajes y el bienestar.
 
-First, run the development server:
+> **Nota:** Actualmente, la aplicación se encuentra en una fase inicial y la principal funcionalidad disponible es una tienda de recetarios saludables.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Características principales
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Tienda de recetarios saludables:** Descubre y adquiere recetarios digitales creados por Belu Mont, con recetas fáciles, nutritivas y deliciosas para incorporar a tu día a día.
+- **Arquitectura moderna:** Next.js para SSR/SSG, TypeScript para robustez y escalabilidad.
+- **Preparada para crecer:** El sitio está pensado para albergar próximamente:
+  - Blog de recetas y tips de cocina.
+  - Sección de viajes y experiencias.
+  - Colaboraciones con marcas.
+  - Galería de contenido multimedia.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Instalación y uso local
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/tumbichi/belumont-frontend.git
+   cd belumont-frontend
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Instala las dependencias:**
+   ```bash
+   npm install
+   # o
+   yarn install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Inicia la aplicación en modo desarrollo:**
+   ```bash
+   npm run dev
+   # o
+   yarn dev
+   ```
 
-## Deploy on Vercel
+4. **Visita:** [http://localhost:3000](http://localhost:3000)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tecnologías utilizadas
+
+- [Next.js](https://nextjs.org/) – Framework de React para aplicaciones web rápidas y escalables.
+- [TypeScript](https://www.typescriptlang.org/) – Tipado estático para mayor robustez.
+- CSS – Estilos personalizados.
+
+---
+
+## 👩‍🍳 Sobre Belu Mont
+
+Belu Mont es una creadora de contenido argentina especializada en gastronomía saludable y estilo de vida. En sus redes comparte recetas, tips, experiencias de viaje y colaboraciones con marcas del sector wellness.
+
+- [Instagram](https://www.instagram.com/soybelumont/)
+- [TikTok](https://www.tiktok.com/@soybelumont)
+- [YouTube](https://www.youtube.com/@soybelumont)
+
+---
+
+## 📌 Próximos pasos
+
+- [ ] Lanzamiento del blog con recetas y tips.
+- [ ] Integración de sección de viajes y colaboraciones.
+- [ ] Galería multimedia y recursos descargables.
+
+---
+
+## 📄 Licencia
+
+Este proyecto es de código cerrado y pertenece a Belu Mont. Para consultas, colaboraciones o soporte, por favor contacta a través de [Instagram](https://www.instagram.com/belu.mont/).
+
+---
