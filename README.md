@@ -1,6 +1,6 @@
 # soybelumont
 
-Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu Mont](https://www.instagram.com/belu.mont/), creadora de contenido enfocada en cocina saludable y estilo de vida. Construida con **Next.js** y **TypeScript**, esta plataforma está diseñada para evolucionar como el portafolio personal y blog de Belu, ofreciendo un espacio único para inspirar y conectar con una comunidad apasionada por la cocina, los viajes y el bienestar.
+Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu Mont](https://www.instagram.com/soybelumont/), creadora de contenido enfocada en cocina saludable y estilo de vida. Construida con **Next.js** y **TypeScript**, esta plataforma está diseñada para evolucionar como el portafolio personal y blog de Belu, ofreciendo un espacio único para inspirar y conectar con una comunidad apasionada por la cocina, los viajes y el bienestar.
 
 > **Nota:** Actualmente, la aplicación se encuentra en una fase inicial y la principal funcionalidad disponible es una tienda de recetarios saludables.
 
