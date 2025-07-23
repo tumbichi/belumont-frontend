@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-// import localFont from 'next/font/local';
 import { Eczar } from 'next/font/google';
 
 import { NextIntlClientProvider } from 'next-intl';
@@ -27,7 +26,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <Script
           strategy="afterInteractive"

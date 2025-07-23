@@ -27,13 +27,21 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface MediaCardProps {
   media: InstagramMedia;
 }
 
 function MediaCard({ media }: MediaCardProps) {
+  const description = useMemo(() => {
+    const captionArr = String(media.caption);
+
+    return captionArr.length > 128
+      ? captionArr.substring(0, 128) + '...'
+      : captionArr;
+  }, [media.caption]);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center p-4">
@@ -123,11 +131,7 @@ function MediaCard({ media }: MediaCardProps) {
           </div>
           <div className="inline-block">
             <h6 className="mb-1 font-semibold">Descripcion</h6>
-            <p className="overflow-hidden text-ellipsis">
-              {media.caption.length >= 192
-                ? media.caption.slice(0, 192) + '...'
-                : media.caption}
-            </p>
+            <p className="overflow-hidden text-ellipsis">{description}</p>
           </div>
           {/* <div>
             <Link href="#" className="font-medium" prefetch={false}>
