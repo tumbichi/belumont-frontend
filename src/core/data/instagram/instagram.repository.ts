@@ -1,4 +1,5 @@
 import replyComment from './services/replyComment';
+import getMeMedia from './services/getMeMedia';
 
 export interface InstagramMedia {
   id: string;
@@ -13,16 +14,17 @@ export interface InstagramMedia {
 
 interface InstagramRepositoryReturn {
   replyComment: (
-    instagramUserId: string,
+    instagramCommentId: string,
     message: string
   ) => Promise<{
     recipient_id: string;
     message_id: string;
   }>;
 
-  getMeMedia?: () => Promise<{ data: InstagramMedia[] }>;
+  getMeMedia: () => Promise<{ data: InstagramMedia[] }>;
 }
 
 export const InstagramRepository = (): InstagramRepositoryReturn => ({
   replyComment,
+  getMeMedia,
 });

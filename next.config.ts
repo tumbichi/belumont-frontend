@@ -10,8 +10,12 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: String(process.env.SUPABASE_DOMAIN),
       },
+      {
+        protocol: 'https',
+        hostname: 'scontent.cdninstagram.com',
+      },
     ],
-  },
+  } /* ,
   async headers() {
     return [
       {
@@ -32,7 +36,7 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
-  },
+  }, */,
 };
 
 export default withNextIntl(nextConfig);

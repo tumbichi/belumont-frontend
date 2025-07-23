@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-// import localFont from 'next/font/local';
 import { Eczar } from 'next/font/google';
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import Header from '@core/components/ui/header';
 import './globals.css';
 
 const eczar = Eczar({
@@ -28,7 +26,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <Script
           strategy="afterInteractive"
@@ -46,7 +44,6 @@ export default async function RootLayout({
       </head>
       <body className={`${eczar.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <Header />
           {children}
         </NextIntlClientProvider>
       </body>
