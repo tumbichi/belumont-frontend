@@ -16,7 +16,7 @@ export default async function updatePaymentStatus(
     throw error;
   }
 
-  if (!data || data.length <= 0) {
+  if (!data || data.length <= 0 || !data[0]) {
     throw new Error('Failed to update payment status');
   }
 

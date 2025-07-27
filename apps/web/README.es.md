@@ -32,12 +32,14 @@ Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu M
 ## 🚀 Instalación y uso local
 
 1. **Clona el repositorio:**
+
    ```bash
    git clone https://github.com/tumbichi/belumont-frontend.git
    cd belumont-frontend
    ```
 
 2. **Instala las dependencias:**
+
    ```bash
    pnpm install
    ```
@@ -46,6 +48,7 @@ Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu M
    Crea un archivo `.env.local` en la raíz del proyecto y añade las variables de entorno necesarias.
 
 4. **Inicia la aplicación en modo desarrollo:**
+
    ```bash
    pnpm run dev
    ```
@@ -92,21 +95,21 @@ El proyecto sigue una organización modular y centrada en las funcionalidades pa
 
 La aplicación expone varias rutas de API para gestionar la comunicación con servicios externos y la base de datos.
 
--   **`POST /api/meta/instagram`**
-    -   **Descripción:** Obtiene las últimas publicaciones de la cuenta de Instagram de BeluMont.
-    -   **Uso:** Se utiliza en la página de inicio para mostrar el feed de Instagram.
+- **`POST /api/meta/instagram`**
+  - **Descripción:** Obtiene las últimas publicaciones de la cuenta de Instagram de BeluMont.
+  - **Uso:** Se utiliza en la página de inicio para mostrar el feed de Instagram.
 
--   **`POST /api/payment`**
-    -   **Descripción:** Genera una URL de pago de Mercado Pago para la orden del cliente.
-    -   **Uso:** Se llama cuando el cliente procede al pago desde el carrito de compras.
+- **`POST /api/payment`**
+  - **Descripción:** Genera una URL de pago de Mercado Pago para la orden del cliente.
+  - **Uso:** Se llama cuando el cliente procede al pago desde el carrito de compras.
 
--   **`POST /api/payment/webhook`**
-    -   **Descripción:** Webhook que recibe notificaciones de Mercado Pago sobre el estado de los pagos.
-    -   **Uso:** Actualiza el estado de la orden en la base de datos cuando un pago es aprobado o rechazado.
+- **`POST /api/payment/webhook`**
+  - **Descripción:** Webhook que recibe notificaciones de Mercado Pago sobre el estado de los pagos.
+  - **Uso:** Actualiza el estado de la orden en la base de datos cuando un pago es aprobado o rechazado.
 
--   **`POST /api/resend/send-email-product`**
-    -   **Descripción:** Envía un correo electrónico al cliente con los detalles de su compra y el enlace de descarga del producto.
-    -   **Uso:** Se llama después de que un pago es aprobado con éxito.
+- **`POST /api/resend/send-email-product`**
+  - **Descripción:** Envía un correo electrónico al cliente con los detalles de su compra y el enlace de descarga del producto.
+  - **Uso:** Se llama después de que un pago es aprobado con éxito.
 
 ---
 

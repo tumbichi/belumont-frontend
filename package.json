@@ -1,20 +1,21 @@
 {
-  "name": "belumont-monorepo",
+  "name": "soybelumont",
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:web": "turbo build --filter=@belumont/web",
+    "build:web": "turbo build --filter=@soybelumont/web",
     "dev": "turbo dev",
     "lint": "turbo lint",
+    "lint:ci": "turbo lint:ci",
     "format": "prettier --write '**/*.{ts,tsx,md}'",
-    "lint:ci": "npm run lint $(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep  -E \"(.js$|.jsx$|.ts$|.tsx$)\") --quiet",
-    "prettier:ci": "prettier --check $(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep  -E \"(js,jsx,ts,tsx,css,scss,less,html,json,md$)\")",
+    "prettier:ci": "FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep -E '\\.(js|jsx|ts|tsx|css|scss|less|html|json|md)$' || true) && [ -n \"$FILES\" ] && prettier --check $FILES || echo 'No files to format'",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,less,html,json,md}\"",
     "prettier:write": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,less,html,json,md}\""
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
-    "turbo": "^2.5.5"
+    "prettier": "3.6.2",
+    "turbo": "2.5.5",
+    "typescript": "5.8.3"
   },
   "packageManager": "pnpm@9.13.0"
 }

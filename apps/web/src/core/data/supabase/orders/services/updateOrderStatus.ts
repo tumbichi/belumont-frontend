@@ -16,7 +16,7 @@ export default async function updateOrderStatus(
     throw error;
   }
 
-  if (!data || data.length <= 0) {
+  if (!data || data.length <= 0 || !data[0]) {
     throw new Error('Failed to create order');
   }
 

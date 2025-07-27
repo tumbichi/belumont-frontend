@@ -12,6 +12,10 @@ function verifySignature(
   console.log('x-request-id', xRequestId);
   const xSignatureArr = xSignature.split(',');
 
+  if (!xSignatureArr[0] || !xSignatureArr[1]) {
+    throw new Error('Invalid payment signature format');
+  }
+
   const ts = xSignatureArr[0].replace('ts=', '');
   console.log('ts', ts);
 
@@ -38,10 +42,6 @@ function verifySignature(
   } else {
     console.log('HMAC NOT verified');
   }
-
-  /* if (hmacSHA256Signature !== signaturePaymentHash) {
-    throw new Error('Invalid payment signature');
-  } */
 
   return true;
 }

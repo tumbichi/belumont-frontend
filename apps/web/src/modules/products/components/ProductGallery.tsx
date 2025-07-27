@@ -8,8 +8,7 @@ import {
   CarouselPrevious,
 } from '@core/components/ui/carousel';
 import { LucideMaximize, LucideX } from 'lucide-react';
-import Fade from 'embla-carousel-fade'; 
-
+import Fade from 'embla-carousel-fade';
 
 interface ProductGalleryProps {
   images: string[];
@@ -38,7 +37,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
         <div className="relative rounded-lg group">
           <Image
             priority
-            src={images[0]}
+            src={images[0] ? images[0] : ''}
             alt="Product Image"
             width={450}
             height={500}
@@ -63,7 +62,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <Image
-            src={images[1]}
+            src={images[1] ? images[1] : ''}
             alt="Product Thumbnail"
             width={200}
             height={260}
@@ -75,7 +74,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
             }}
           />
           <Image
-            src={images[2]}
+            src={images[2] ? images[2] : ''}
             alt="Product Thumbnail"
             width={200}
             height={260}
@@ -87,7 +86,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
             }}
           />
           <Image
-            src={images[3]}
+            src={images[3] ? images[3] : ''}
             alt="Product Thumbnail"
             width={200}
             height={260}
@@ -102,11 +101,14 @@ function ProductGallery({ images }: ProductGalleryProps) {
       </div>
       {galleryOpen && (
         <div className="fixed inset-0 z-50 bg-black/80">
-          <Carousel className="w-full max-w-xl mx-auto 2xl:max-w-2xl" plugins={[Fade()]}>
+          <Carousel
+            className="w-full max-w-xl mx-auto 2xl:max-w-2xl"
+            plugins={[Fade()]}
+          >
             <CarouselContent className="w-screen h-screen mx-0">
               <CarouselItem className="relative h-screen">
                 <Image
-                  src={images[0]}
+                  src={images[0] ? images[0] : ''}
                   alt="Product Image"
                   data-loaded="false"
                   className="!w-auto md:max-w-xl lg:max-w-2xl object-contain data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300 data-[loaded=false]:h-screen data-[loaded=false]:w-screen data-[loaded=false]:z-50"
@@ -118,7 +120,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
               </CarouselItem>
               <CarouselItem className="relative h-screen">
                 <Image
-                  src={images[1]}
+                  src={images[1] ? images[1] : ''}
                   alt="Product Image"
                   objectPosition="center"
                   data-loaded="false"
@@ -131,7 +133,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
               </CarouselItem>
               <CarouselItem className="relative h-screen">
                 <Image
-                  src={images[2]}
+                  src={images[2] ? images[2] : ''}
                   alt="Product Image"
                   // height={window.innerHeight}
                   // width={576}
@@ -145,7 +147,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
               </CarouselItem>
               <CarouselItem className="relative h-screen">
                 <Image
-                  src={images[3]}
+                  src={images[3] ? images[3] : ''}
                   alt="Product Image"
                   className="!w-auto md:max-w-xl lg:max-w-2xl object-contain data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300"
                   data-loaded="false"

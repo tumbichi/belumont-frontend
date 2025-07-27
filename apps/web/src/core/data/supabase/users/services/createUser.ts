@@ -15,7 +15,7 @@ export default async function createUser(
     throw error;
   }
 
-  if (!data || data.length === 0) {
+  if (!data || data.length === 0 || !data[0]) {
     throw new Error('Error al obtener usuario creado');
   }
 

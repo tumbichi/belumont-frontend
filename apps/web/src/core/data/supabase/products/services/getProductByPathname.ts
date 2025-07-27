@@ -10,7 +10,7 @@ export default async function getProductByPathname(
     .select('created_at,description,id,image_url,name,pathname,price,id')
     .eq('pathname', pathname);
 
-  if (!data || data.length === 0) {
+  if (!data || data.length === 0 || !data[0]) {
     return null;
   }
 

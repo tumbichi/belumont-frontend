@@ -7,5 +7,7 @@ export default async function getUserByEmail(
 ): Promise<User | null> {
   const { data } = await supabase.from('users').select().eq('email', email);
 
-  return data && data.length > 0 ? sanatizeCreatedAtFromObject(data[0]) : null;
+  return data && data.length > 0 && data[0]
+    ? sanatizeCreatedAtFromObject(data[0])
+    : null;
 }

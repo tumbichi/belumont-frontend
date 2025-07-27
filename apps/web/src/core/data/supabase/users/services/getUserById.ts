@@ -9,7 +9,7 @@ export default async function getUserById(id: string): Promise<User | null> {
     throw error;
   }
 
-  if (!data || data.length === 0) {
+  if (!data || data.length === 0 || !data[0]) {
     return null;
   }
 

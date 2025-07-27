@@ -85,7 +85,7 @@ export default function Payment({ product, defaultValues }: PaymentProps) {
           </CardHeader>
           <CardContent className="grid gap-6">
             <RadioGroup
-              defaultValue={paymentMethods[0].value}
+              defaultValue={paymentMethods[0] && paymentMethods[0].value}
               className="md:flex md:justify-center "
             >
               {paymentMethods.map((paymentMethod) => (

@@ -32,12 +32,14 @@ Welcome to the **soybelumont** repository, the official web application for [Bel
 ## 🚀 Local Installation and Usage
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/tumbichi/belumont-frontend.git
    cd belumont-frontend
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
@@ -46,6 +48,7 @@ Welcome to the **soybelumont** repository, the official web application for [Bel
    Create a `.env.local` file in the project root and add the necessary environment variables.
 
 4. **Start the application in development mode:**
+
    ```bash
    pnpm run dev
    ```
@@ -92,21 +95,21 @@ The project follows a modular, feature-centric organization to facilitate mainte
 
 The application exposes several API routes to manage communication with external services and the database.
 
--   **`POST /api/meta/instagram`**
-    -   **Description:** Fetches the latest posts from the BeluMont Instagram account.
-    -   **Usage:** Used on the homepage to display the Instagram feed.
+- **`POST /api/meta/instagram`**
+  - **Description:** Fetches the latest posts from the BeluMont Instagram account.
+  - **Usage:** Used on the homepage to display the Instagram feed.
 
--   **`POST /api/payment`**
-    -   **Description:** Generates a Mercado Pago payment URL for the customer's order.
-    -   **Usage:** Called when the customer proceeds to checkout from the shopping cart.
+- **`POST /api/payment`**
+  - **Description:** Generates a Mercado Pago payment URL for the customer's order.
+  - **Usage:** Called when the customer proceeds to checkout from the shopping cart.
 
--   **`POST /api/payment/webhook`**
-    -   **Description:** A webhook that receives notifications from Mercado Pago about the status of payments.
-    -   **Usage:** Updates the order status in the database when a payment is approved or rejected.
+- **`POST /api/payment/webhook`**
+  - **Description:** A webhook that receives notifications from Mercado Pago about the status of payments.
+  - **Usage:** Updates the order status in the database when a payment is approved or rejected.
 
--   **`POST /api/resend/send-email-product`**
-    -   **Description:** Sends an email to the customer with their purchase details and a link to download the product.
-    -   **Usage:** Called after a payment is successfully approved.
+- **`POST /api/resend/send-email-product`**
+  - **Description:** Sends an email to the customer with their purchase details and a link to download the product.
+  - **Usage:** Called after a payment is successfully approved.
 
 ---
 

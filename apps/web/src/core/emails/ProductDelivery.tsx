@@ -20,9 +20,8 @@ export default function ProductDelivery({
               ¡Hola {username}! 🧑🏽‍🍳✨
             </h1>
             <p className="text-gray-600 mt-2">
-              ¡Te doy la bienvenida a mi mundo culinario! Este es
-              el comienzo de una experiencia deliciosa con{' '}
-              <strong>{productName}</strong>.
+              ¡Te doy la bienvenida a mi mundo culinario! Este es el comienzo de
+              una experiencia deliciosa con <strong>{productName}</strong>.
             </p>
             <p className="text-gray-600 mt-2">
               Hacé clic en el botón de abajo para descargar tu recetario. Deseo
