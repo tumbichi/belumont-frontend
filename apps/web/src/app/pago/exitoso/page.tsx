@@ -1,4 +1,4 @@
-import { ConfettiSideCannons } from '@core/components/ui/confetti-side-cannons';
+import { ConfettiSideCannons } from '@core/components/confetti-side-cannons';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { SVGProps } from 'react';

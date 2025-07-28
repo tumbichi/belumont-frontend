@@ -6,7 +6,7 @@ import React from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@core/components/ui/button';
+import { Button } from '@soybelumont/ui/components/button';
 import {
   Card,
   CardContent,
@@ -14,10 +14,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@core/components/ui/card';
-import { Input } from '@core/components/ui/input';
-import { Label } from '@core/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@core/components/ui/radio-group';
+} from '@soybelumont/ui/components/card';
+import { Input } from '@soybelumont/ui/components/input';
+import { Label } from '@soybelumont/ui/components/label';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@soybelumont/ui/components/radio-group';
 import { PaymentProvider } from '@core/data/supabase/payments/payments.repository';
 import paymentSchema, { PaymentSchema } from '../schemas/payment.schema';
 import { Product } from '@core/data/supabase/products';
@@ -28,7 +31,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@core/components/ui/form';
+} from '@soybelumont/ui/components/form';
 
 interface RadioItem {
   label: string;
@@ -66,6 +69,8 @@ export default function Payment({ product, defaultValues }: PaymentProps) {
   });
 
   const handlePayAction = async (data: PaymentSchema) => {
+    console.log('data', data);
+    console.log('product', product);
     const response = await axios.post(`/api/payment`, {
       email: data.email,
       name: data.name,

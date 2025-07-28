@@ -1,4 +1,4 @@
-import Container from '@core/components/layouts/Container';
+import Container from '@soybelumont/ui/layouts/container';
 import { ProductsRepository } from '@core/data/supabase/products';
 
 import ProductCard from '../../modules/products/components/ProductCard';

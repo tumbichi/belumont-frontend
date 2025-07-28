@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import Container from '@core/components/layouts/Container';
+import Container from '@soybelumont/ui/layouts/container';
 
 /**
  * A simple header component with a logo and navigation links.

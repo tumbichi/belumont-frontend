@@ -8,10 +8,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@core/components/ui/card';
+} from '@soybelumont/ui/components/card';
 import { Product } from '../../../core/data/supabase/products/products.repository';
 import { formatPrice } from '@core/utils';
-import { Separator } from '@core/components/ui/separator';
+import { Separator } from '@soybelumont/ui/components/separator';
 
 interface ProductItemListProps {
   product: Product;

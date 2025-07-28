@@ -1,4 +1,4 @@
-import Container from '@core/components/layouts/Container';
+import Container from '@soybelumont/ui/layouts/container';
 
 export default function Home() {
   return (
