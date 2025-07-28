@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     }
 
     // Send email
-    ResendRepository()
+    await ResendRepository()
       .sendEmail({
         to: user.email,
         from: String(process.env.RESEND_FROM_EMAIL),
