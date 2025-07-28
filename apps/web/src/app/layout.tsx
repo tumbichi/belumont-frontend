@@ -1,16 +1,16 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import { Eczar } from 'next/font/google';
+import { Space_Grotesk } from 'next/font/google';
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import Header from '@core/components/header';
 import '@soybelumont/ui/globals.css';
 
-const eczar = Eczar({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'], // Incluye solo los pesos que usas
-  variable: '--font-eczar',
+  weight: ['300', '400', '500', '600', '700'], // Incluye solo los pesos que usas
+  variable: '--font-space-grotesk',
 });
 
 export const metadata: Metadata = {
@@ -43,7 +43,9 @@ export default async function RootLayout({
         `}
         </Script>
       </head>
-      <body className={`${eczar.variable} antialiased`}>
+      <body
+        className={`${spaceGrotesk.variable} antialiased bg-[linear-gradient(rgba(0,0,0,0.1),rgba(255,255,255,0.3)),url("/background.png")] bg-cover bg-no-repeat`}
+      >
         <NextIntlClientProvider messages={messages}>
           <Header />
           {children}
