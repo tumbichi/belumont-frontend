@@ -2,6 +2,7 @@ import crypto from 'crypto';
 
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
+import { isAxiosError } from 'axios';
 
 function verifySignature(
   xSignature: string,
@@ -64,12 +65,25 @@ export async function POST(request: Request) {
   }
 
   if (verifySignature(xSignature, xRequestId, body.data.id)) {
+    let mpPayment;
     const supabaseRepository = SupabaseRepository();
 
-    const mpPayment = await MercadoPagoRepository().getPaymentById(
-      body.data.id
-    );
-    console.log('mpPayment', mpPayment);
+    try {
+      mpPayment = await MercadoPagoRepository().getPaymentById(body.data.id);
+      console.log('mpPayment', mpPayment);
+    } catch (error) {
+      console.log('mercadopago.getPaymentById', error);
+      if (isAxiosError(error)) {
+        throw Response.json({
+          message: error.message,
+          cause: error.cause,
+          response: error.response,
+          status: error.response?.status || error.status,
+        });
+      }
+
+      throw Response.json({ error }, { status: 500 });
+    }
 
     const { order_id: orderId } = mpPayment.metadata;
 
