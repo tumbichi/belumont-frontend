@@ -3,6 +3,8 @@ import { ProductsRepository } from '@core/data/supabase/products';
 
 import ProductCard from '../../modules/products/components/ProductCard';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductsPage() {
   const products = await ProductsRepository().getAll();
   return (
