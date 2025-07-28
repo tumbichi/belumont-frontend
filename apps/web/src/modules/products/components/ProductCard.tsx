@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Button } from '@core/components/ui/button';
+import { Button } from '@soybelumont/ui/components/button';
 import { formatPrice } from '@core/utils';
 import { Product } from '@core/data/supabase/products/products.repository';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
@@ -15,27 +15,27 @@ function ProductCard({ product }: ProductCardProps) {
   const t = useTranslations('PRODUCT');
 
   return (
-    <div className="overflow-hidden transition flex flex-col bg-white rounded-lg shadow-sm dark:bg-gray-950">
+    <div className="flex flex-col overflow-hidden transition bg-white rounded-lg shadow-sm dark:bg-gray-950">
       <div className="relative group">
         <Image
-          src={product.image_url}
+          src={product.thumbnail_url}
           alt="Product Image"
           width={400}
           height={300}
           className="object-cover w-full h-48 transition-opacity group-hover:opacity-100"
-          style={{ aspectRatio: '400/300', objectFit: 'cover' }}
+          style={{ objectFit: 'cover' }}
         />
         <Link key={product.id} href={`/recetarios/${product.pathname}`}>
-          <div className="absolute inset-0 hidden group-hover:flex items-center justify-center group-hover:bg-black/30 transition-opacity">
+          <div className="absolute inset-0 items-center justify-center hidden transition-opacity group-hover:flex group-hover:bg-black/30">
             <Button className="z-20">
-              <ShoppingBag className="h-4 w-4" />
+              <ShoppingBag className="w-4 h-4" />
               Ver más
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
         </Link>
       </div>
-      <div className="p-4 space-y-2 flex flex-col flex-1">
+      <div className="flex flex-col flex-1 p-4 space-y-2">
         <h3 className="text-lg font-semibold">{product.name}</h3>
         <p className="text-gray-500 dark:text-gray-400">
           {product.description}
@@ -52,7 +52,7 @@ function ProductCard({ product }: ProductCardProps) {
           >
             <Button size="sm">
               {t('BUY')}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>

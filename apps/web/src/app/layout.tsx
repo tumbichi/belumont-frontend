@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
-// import localFont from 'next/font/local';
 import { Eczar } from 'next/font/google';
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import Header from '@core/components/ui/header';
-import './globals.css';
+import Header from '@core/components/header';
+import '@soybelumont/ui/globals.css';
 
 const eczar = Eczar({
   subsets: ['latin'],

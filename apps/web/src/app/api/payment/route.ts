@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
+import { AxiosError } from 'axios';
 
 const supabaseRepository = SupabaseRepository();
 
@@ -36,7 +37,18 @@ export async function POST(request: Request) {
     );
     return Response.json({ paymentUrl, order });
   } catch (error) {
-    console.log('error', error);
+    // console.log('error', error);
+    if (error instanceof AxiosError) {
+      console.log('error.message', error?.message);
+      console.log('response.data', error.response?.data);
+      console.log('response.status', error.response?.status);
+
+      throw Response.json(
+        { error: error.response, message: error.message, cause: error.cause },
+        { status: 500 }
+      );
+    }
+
     throw error;
   }
 }

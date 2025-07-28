@@ -6,6 +6,7 @@
     "build:web": "turbo build --filter=@soybelumont/web",
     "dev": "turbo dev",
     "lint": "turbo lint",
+    "check-types": "turbo check-types",
     "lint:ci": "turbo lint:ci",
     "format": "prettier --write '**/*.{ts,tsx,md}'",
     "prettier:ci": "FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep -E '\\.(js|jsx|ts|tsx|css|scss|less|html|json|md)$' || true) && [ -n \"$FILES\" ] && prettier --check $FILES || echo 'No files to format'",

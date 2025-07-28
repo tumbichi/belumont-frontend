@@ -1,6 +1,6 @@
 'use client';
-import { Toaster } from '@core/components/ui/toaster';
-import { useToast } from '@core/hooks/use-toast';
+import { Toaster } from '@soybelumont/ui/components/toaster';
+import { useToast } from '@soybelumont/ui/hooks/use-toast';
 import { useTranslations } from 'next-intl';
 import React, { PropsWithChildren, useEffect } from 'react';
 

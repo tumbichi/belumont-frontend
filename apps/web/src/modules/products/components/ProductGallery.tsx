@@ -6,9 +6,9 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from '@core/components/ui/carousel';
+  Fade,
+} from '@soybelumont/ui/components/carousel';
 import { LucideMaximize, LucideX } from 'lucide-react';
-import Fade from 'embla-carousel-fade';
 
 interface ProductGalleryProps {
   images: string[];
@@ -39,18 +39,18 @@ function ProductGallery({ images }: ProductGalleryProps) {
             priority
             src={images[0] ? images[0] : ''}
             alt="Product Image"
-            width={450}
-            height={500}
+            width={480}
+            height={750}
             className="object-cover w-full rounded-lg group-hover:outline-1 group-hover:outline-primary group-hover:outline data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300"
-            style={{ aspectRatio: '9/10', objectFit: 'cover' }}
+            style={{ objectFit: 'cover' }}
             data-loaded="false"
             onLoad={(event) => {
               event.currentTarget.setAttribute('data-loaded', 'true');
             }}
           />
           <div
-            className="absolute top-0 hidden w-full transition-all duration-1000 rounded-lg group-hover:block group-hover:bg-primary/45"
-            style={{ aspectRatio: '9/10', objectFit: 'cover' }}
+            className="absolute top-0 bottom-0 hidden w-full transition-all duration-1000 rounded-lg group-hover:block group-hover:bg-primary/45"
+            style={{ objectFit: 'cover' }}
           >
             <div
               className="absolute flex items-center justify-center p-2 -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer bg-primary-foreground top-1/2 left-1/2 hover:bg-neutral-300"

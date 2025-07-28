@@ -4,16 +4,19 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 import { Product } from '@core/data/supabase/products/products.repository';
-import { Label } from '@core/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@core/components/ui/radio-group';
+import { Label } from '@soybelumont/ui/components/label';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@soybelumont/ui/components/radio-group';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@core/components/ui/select';
-import { Button } from '@core/components/ui/button';
+} from '@soybelumont/ui/components/select';
+import { Button } from '@soybelumont/ui/components/button';
 import { formatPrice } from '@core/utils';
 import ProductGallery from './ProductGallery';
 
@@ -25,13 +28,15 @@ function ProductDetail({ product }: ProductDetailsProps) {
   const t = useTranslations('PRODUCT');
 
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-800 md:py-20">
-      <div className="container px-4 md:px-6">
-        <div className="grid items-start gap-8 md:grid-cols-2">
-          <ProductGallery
-            images={[product.image_url, ...(product.product_images || [])]}
-          />
-          <div className="space-y-6">
+    <section className="px-6 my-12 bg-gray-100 rounded-md md:px-6 lg:px-8 dark:bg-gray-800 md:mx-6 lg:mx-12 xl:mx-28 2xl:mx-48">
+      <div className="container py-8">
+        <div className="grid items-start gap-24 md:grid-cols-2">
+          <div className='order-2 md:order-1'>
+            <ProductGallery
+              images={[product.image_url, ...(product.product_images || [])]}
+            />
+          </div>
+          <div className="order-1 space-y-6 md:order-2">
             <div>
               <h1 className="text-3xl font-bold md:text-4xl">{product.name}</h1>
               <p className="text-lg text-gray-500 dark:text-gray-400">

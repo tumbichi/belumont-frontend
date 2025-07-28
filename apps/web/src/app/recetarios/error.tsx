@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@core/components/ui/button';
+import { Button } from '@soybelumont/ui/components/button';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
