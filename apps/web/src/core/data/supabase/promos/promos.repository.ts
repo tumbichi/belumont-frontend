@@ -11,7 +11,7 @@ export type PromoCode = {
   used_count: number;
   expires_at: string | null;
   is_active: boolean;
-  created_at: string;
+  created_at: Date;
   products: { product_id: string }[];
 };
 

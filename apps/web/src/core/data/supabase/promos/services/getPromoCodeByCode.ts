@@ -1,4 +1,5 @@
 import { supabase } from '@core/data/client';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
 import { PromoCode } from '../promos.repository';
 
 export default async function getPromoCodeByCode(
@@ -15,5 +16,9 @@ export default async function getPromoCodeByCode(
     .eq('code', code)
     .single();
 
-  return data as PromoCode | null;
+  if (!data) {
+    return null;
+  }
+
+  return sanatizeCreatedAtFromObject(data as any) as PromoCode;
 }
