@@ -58,9 +58,16 @@ const paymentMethods: RadioItem[] = [
 interface PaymentProps {
   product: Product;
   defaultValues?: Partial<PaymentSchema>;
+  finalPrice: number | null;
+  promoCode?: string;
 }
 
-export default function Payment({ product, defaultValues }: PaymentProps) {
+export default function Payment({
+  product,
+  defaultValues,
+  finalPrice,
+  promoCode,
+}: PaymentProps) {
   const t = useTranslations('PAYMENT');
 
   const form = useForm<PaymentSchema>({
@@ -69,15 +76,18 @@ export default function Payment({ product, defaultValues }: PaymentProps) {
   });
 
   const handlePayAction = async (data: PaymentSchema) => {
-    console.log('data', data);
-    console.log('product', product);
-    const response = await axios.post(`/api/payment`, {
+    const response = await axios.post(`/api/orders/create`, {
       email: data.email,
       name: data.name,
-      productId: product.id,
+      product_id: product.id,
+      promo_code: promoCode,
     });
 
-    window.open(response.data.paymentUrl, '_self');
+    if (response.data.payment_link) {
+      window.open(response.data.payment_link, '_self');
+    } else if (response.data.status === 'completed') {
+      window.open(`/pago/exitoso?orderId=${response.data.order_id}`, '_self');
+    }
   };
 
   return (

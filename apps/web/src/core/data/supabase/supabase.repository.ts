@@ -7,6 +7,10 @@ import {
   PaymentsRepositoryReturn,
 } from './payments/payments.repository';
 import { ProductsRepository, ProductsRepositoryReturn } from './products';
+import {
+  PromosRepository,
+  PromosRepositoryReturn,
+} from './promos/promos.repository';
 import { UsersRepository, UsersRepositoryReturn } from './users';
 
 interface SupabaseRepositoryReturn {
@@ -14,6 +18,7 @@ interface SupabaseRepositoryReturn {
   payments: PaymentsRepositoryReturn;
   products: ProductsRepositoryReturn;
   users: UsersRepositoryReturn;
+  promos: PromosRepositoryReturn;
 }
 
 const SupabaseRepository = (): SupabaseRepositoryReturn => ({
@@ -21,6 +26,7 @@ const SupabaseRepository = (): SupabaseRepositoryReturn => ({
   payments: PaymentsRepository(),
   products: ProductsRepository(),
   users: UsersRepository(),
+  promos: PromosRepository(),
 });
 
 export default SupabaseRepository;
