@@ -22,7 +22,8 @@
         "LABEL": "Nombre",
         "PLACEHOLDER": "Tu nombre Ej: Francis Mallmann"
       },
-      "SUBMIT": "Ir a Mercado Pago"
+      "SUBMIT": "Ir a Mercado Pago",
+      "SUBMIT_FREE": "Obtener gratis"
     }
   },
   "ORDER_SUMMARY": {

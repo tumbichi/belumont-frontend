@@ -76,17 +76,28 @@ export default function Payment({
   });
 
   const handlePayAction = async (data: PaymentSchema) => {
-    const response = await axios.post(`/api/orders/create`, {
-      email: data.email,
-      name: data.name,
-      product_id: product.id,
-      promo_code: promoCode,
-    });
+    if (finalPrice === 0 && promoCode) {
+      const response = await axios.post(`/api/orders/promo`, {
+        email: data.email,
+        name: data.name,
+        product_id: product.id,
+        promo_code: promoCode,
+      });
 
-    if (response.data.payment_link) {
-      window.open(response.data.payment_link, '_self');
-    } else if (response.data.status === 'completed') {
-      window.open(`/pago/exitoso?orderId=${response.data.order_id}`, '_self');
+      if (response.data.status === 'completed') {
+        window.open(`/pago/exitoso?orderId=${response.data.order_id}`, '_self');
+      }
+    } else {
+      const response = await axios.post(`/api/payment`, {
+        email: data.email,
+        name: data.name,
+        product_id: product.id,
+        promo_code: promoCode,
+      });
+
+      if (response.data.payment_link) {
+        window.open(response.data.payment_link, '_self');
+      }
     }
   };
 
@@ -169,7 +180,7 @@ export default function Payment({
               disabled={form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
             >
-              {t('FORM.SUBMIT')}
+              {finalPrice === 0 ? t('FORM.SUBMIT_FREE') : t('FORM.SUBMIT')}
             </Button>
           </CardFooter>
         </form>

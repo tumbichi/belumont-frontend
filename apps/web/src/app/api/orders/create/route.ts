@@ -2,7 +2,7 @@ import { z } from 'zod';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import { AxiosError } from 'axios';
-import { PromoCode } from '@core/data/supabase/promos/promos.repository';
+import { validatePromoCode } from '@core/data/supabase/promos/services/validatePromoCode';
 
 const supabaseRepository = SupabaseRepository();
 
@@ -12,38 +12,6 @@ const bodySchema = z.object({
   product_id: z.string(),
   promo_code: z.string().optional(),
 });
-
-const validatePromoCode = (
-  promoCode: PromoCode,
-  productId: string
-): { valid: boolean; message: string } => {
-  if (!promoCode.is_active) {
-    return { valid: false, message: 'El código promocional no está activo.' };
-  }
-
-  if (promoCode.expires_at && new Date(promoCode.expires_at) < new Date()) {
-    return { valid: false, message: 'El código promocional ha expirado.' };
-  }
-
-  if (promoCode.max_uses && promoCode.used_count >= promoCode.max_uses) {
-    return {
-      valid: false,
-      message: 'El código promocional ha alcanzado el límite de usos.',
-    };
-  }
-
-  if (
-    !promoCode.applies_to_all &&
-    !promoCode.products.some((p) => p.product_id === productId)
-  ) {
-    return {
-      valid: false,
-      message: 'El código promocional no es válido para este producto.',
-    };
-  }
-
-  return { valid: true, message: 'Código aplicado con éxito' };
-};
 
 export async function POST(request: Request) {
   const reqBody = await request.json();
@@ -66,24 +34,31 @@ export async function POST(request: Request) {
     }
 
     let finalPrice = product.price;
-    let promoCode: PromoCode | null = null;
+    let promoCode = null;
 
     if (body.promo_code) {
       promoCode = await supabaseRepository.promos.getByCode(body.promo_code);
-      if (promoCode) {
-        const validation = validatePromoCode(promoCode, body.product_id);
-        if (validation.valid) {
-          if (promoCode.discount_type === 'PERCENTAGE') {
-            finalPrice =
-              product.price -
-              (product.price * promoCode.discount_value) / 100;
-          } else if (promoCode.discount_type === 'FIXED') {
-            finalPrice = product.price - promoCode.discount_value;
-          }
-          if (finalPrice < 0) {
-            finalPrice = 0;
-          }
-        }
+      if (!promoCode) {
+        return Response.json(
+          { message: 'El código promocional no existe' },
+          { status: 404 }
+        );
+      }
+
+      const validation = validatePromoCode(promoCode, body.product_id);
+
+      if (!validation.valid) {
+        return Response.json({ message: validation.message }, { status: 400 });
+      }
+
+      if (promoCode.discount_type === 'PERCENTAGE') {
+        finalPrice =
+          product.price - (product.price * promoCode.discount_value) / 100;
+      } else if (promoCode.discount_type === 'FIXED') {
+        finalPrice = product.price - promoCode.discount_value;
+      }
+      if (finalPrice < 0) {
+        finalPrice = 0;
       }
     }
 
@@ -94,12 +69,7 @@ export async function POST(request: Request) {
 
     if (finalPrice === 0) {
       await supabaseRepository.orders.updateStatus(order.id, 'completed');
-      await supabaseRepository.payments.create({
-        order_id: order.id,
-        provider: 'free',
-        status: 'approved',
-        provider_id: 'N/A',
-      });
+      await supabaseRepository.payments.create(order.id, 'N/A', 'free');
 
       if (promoCode) {
         await supabaseRepository.promos.incrementUsage(promoCode.id);

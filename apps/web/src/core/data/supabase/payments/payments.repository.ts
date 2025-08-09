@@ -16,7 +16,7 @@ export interface Payment {
 }
 
 export interface PaymentsRepositoryReturn {
-  create: (orderId: string, providerId: string) => Promise<Payment>;
+  create: (orderId: string, providerId: string, provider?: PaymentProvider) => Promise<Payment>;
   updateStatus: (id: string, status: PaymentStatus) => Promise<Payment>;
 }
 

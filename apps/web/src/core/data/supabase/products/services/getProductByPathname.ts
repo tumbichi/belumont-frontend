@@ -7,7 +7,9 @@ export default async function getProductByPathname(
 ): Promise<Omit<Product, 'download_url'> | null> {
   const { data } = await supabase
     .from('products')
-    .select('created_at,description,id,image_url,thumbnail_url,name,pathname,price,id')
+    .select(
+      'created_at,description,id,image_url,thumbnail_url,name,pathname,price,id'
+    )
     .eq('pathname', pathname);
 
   if (!data || data.length === 0 || !data[0]) {

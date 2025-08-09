@@ -78,6 +78,8 @@ export default function OrderSummary({
         setDiscountAmount(response.data.discount_amount);
         setPromoCode(promoCodeInput);
         setSuccess(response.data.message);
+      } else {
+        setError(response.data.message);
       }
     } catch (err: any) {
       setError(
