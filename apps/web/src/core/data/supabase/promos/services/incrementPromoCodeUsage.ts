@@ -21,7 +21,7 @@ export default async function incrementPromoCodeUsage(id: string): Promise<void>
   // Then, increment the value and update the row
   const { error: updateError } = await supabase
     .from('promo_code')
-    .update({ used_count: promoData.used_count + 1 })
+    .update({ used_count: promoData.used_count ?? 0 + 1 })
     .eq('id', id);
 
   if (updateError) {
