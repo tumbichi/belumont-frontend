@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import React, { PropsWithChildren, useEffect } from 'react';
 
 interface CheckoutLayoutProps extends PropsWithChildren {
-  paymentStatus?: 'pending' | 'failure';
+  paymentStatus?: 'pending' | 'failure' | null;
 }
 
 export default function CheckoutLayout({

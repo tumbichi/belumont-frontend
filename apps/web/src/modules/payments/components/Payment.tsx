@@ -58,9 +58,16 @@ const paymentMethods: RadioItem[] = [
 interface PaymentProps {
   product: Product;
   defaultValues?: Partial<PaymentSchema>;
+  finalPrice: number | null;
+  promoCode?: string;
 }
 
-export default function Payment({ product, defaultValues }: PaymentProps) {
+export default function Payment({
+  product,
+  defaultValues,
+  finalPrice,
+  promoCode,
+}: PaymentProps) {
   const t = useTranslations('PAYMENT');
 
   const form = useForm<PaymentSchema>({
@@ -69,15 +76,29 @@ export default function Payment({ product, defaultValues }: PaymentProps) {
   });
 
   const handlePayAction = async (data: PaymentSchema) => {
-    console.log('data', data);
-    console.log('product', product);
-    const response = await axios.post(`/api/payment`, {
-      email: data.email,
-      name: data.name,
-      productId: product.id,
-    });
+    if (finalPrice === 0 && promoCode) {
+      const response = await axios.post(`/api/orders/promo`, {
+        email: data.email,
+        name: data.name,
+        product_id: product.id,
+        promo_code: promoCode,
+      });
 
-    window.open(response.data.paymentUrl, '_self');
+      if (response.data.status === 'completed') {
+        window.open(`/pago/exitoso?orderId=${response.data.order_id}`, '_self');
+      }
+    } else {
+      const response = await axios.post(`/api/payment`, {
+        email: data.email,
+        name: data.name,
+        productId: product.id,
+        promoCode: promoCode,
+      });
+
+      if (response.data.paymentUrl) {
+        window.open(response.data.paymentUrl, '_self');
+      }
+    }
   };
 
   return (
@@ -159,7 +180,7 @@ export default function Payment({ product, defaultValues }: PaymentProps) {
               disabled={form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
             >
-              {t('FORM.SUBMIT')}
+              {finalPrice === 0 ? t('FORM.SUBMIT_FREE') : t('FORM.SUBMIT')}
             </Button>
           </CardFooter>
         </form>

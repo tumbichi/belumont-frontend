@@ -2,8 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html{ 
+  min-height: 100%;
+}
+
 body {
   font-family: Space Grotesk, Helvetica, sans-serif;
+  min-height: 100%;
 }
 
 @layer base {

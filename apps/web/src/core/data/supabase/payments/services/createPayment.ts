@@ -4,13 +4,14 @@ import { Payment } from '../payments.repository';
 
 export async function createPayment(
   orderId: string,
-  providerId: string
+  providerId: string,
+  provider: 'mercadopago' | 'free' = 'mercadopago'
 ): Promise<Payment> {
   const { data, error } = await supabase
     .from('payments')
     .insert({
       order_id: orderId,
-      provider: 'mercadopago',
+      provider,
       provider_id: providerId,
     })
     .select();

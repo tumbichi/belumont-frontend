@@ -7,7 +7,7 @@ export default async function getProductById(
 ): Promise<(Product & { download_url: string }) | null> {
   const { data } = await supabase.from('products').select().eq('id', id);
 
-  console.log('getProductById', data);
+  console.log('GET_PRODUCT_BY_ID', data);
 
   return data && data.length > 0 && data[0]
     ? sanatizeCreatedAtFromObject(data[0])

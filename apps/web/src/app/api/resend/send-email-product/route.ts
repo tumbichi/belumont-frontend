@@ -18,7 +18,7 @@ const recordSchema = z.object({
     'charged_back',
   ]),
   order_id: z.string(),
-  provider: z.literal('mercadopago'),
+  provider: z.union([z.literal('mercadopago'), z.literal('free')]),
   created_at: z.string(),
   updated_at: z.string(),
   provider_id: z.string(),

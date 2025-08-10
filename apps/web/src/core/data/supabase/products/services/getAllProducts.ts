@@ -9,6 +9,7 @@ export default async function getActiveProducts(filters?: {
     .from('products')
     .select()
     .eq('active', filters?.active ?? true);
+
   if (!data) {
     return [];
   }
