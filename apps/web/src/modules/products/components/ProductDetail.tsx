@@ -29,7 +29,7 @@ function ProductDetail({ product }: ProductDetailsProps) {
 
   return (
     <section className="px-6 my-12 bg-gray-100 rounded-md md:px-6 lg:px-8 dark:bg-gray-800 md:mx-6 lg:mx-12 xl:mx-28 2xl:mx-48">
-      <div className="container py-8">
+      <div className="py-8">
         <div className="grid items-start gap-24 md:grid-cols-2">
           <div className='order-2 md:order-1'>
             <ProductGallery

@@ -91,12 +91,12 @@ export default function Payment({
       const response = await axios.post(`/api/payment`, {
         email: data.email,
         name: data.name,
-        product_id: product.id,
-        promo_code: promoCode,
+        productId: product.id,
+        promoCode: promoCode,
       });
 
-      if (response.data.payment_link) {
-        window.open(response.data.payment_link, '_self');
+      if (response.data.paymentUrl) {
+        window.open(response.data.paymentUrl, '_self');
       }
     }
   };
