@@ -4,16 +4,18 @@ import CheckoutLayout from '../../modules/payments/layout/CheckoutLayout';
 import Checkout from '../../modules/payments/components/Checkout';
 
 interface CheckoutPageProps {
-  searchParams: {
+  searchParams: Promise<{
     productId?: string;
     paymentStatus?: 'pending' | 'failure' | null;
     email?: string;
     name?: string;
-  };
+  }>;
 }
 
-export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
-  const { productId, paymentStatus, email, name } = searchParams;
+export default async function CheckoutPage({
+  searchParams,
+}: CheckoutPageProps) {
+  const { productId, paymentStatus, email, name } = await searchParams;
 
   if (!productId) {
     // Handle case where productId is not provided
