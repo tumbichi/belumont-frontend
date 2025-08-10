@@ -38,6 +38,9 @@ export async function POST(request: Request) {
 
     if (body.promo_code) {
       promoCode = await supabaseRepository.promos.getByCode(body.promo_code);
+
+      console.log('promoCode', promoCode);
+
       if (!promoCode) {
         return Response.json(
           { message: 'El código promocional no existe' },
@@ -62,6 +65,8 @@ export async function POST(request: Request) {
       }
     }
 
+    console.log('finalPrice', finalPrice);
+
     const order = await supabaseRepository.orders.create(
       body.product_id,
       user.id
@@ -70,6 +75,8 @@ export async function POST(request: Request) {
     if (finalPrice === 0) {
       await supabaseRepository.orders.updateStatus(order.id, 'completed');
       await supabaseRepository.payments.create(order.id, 'N/A', 'free');
+
+      console.log('Order completed with no payment required');
 
       if (promoCode) {
         await supabaseRepository.promos.incrementUsage(promoCode.id);
