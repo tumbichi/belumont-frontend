@@ -3,7 +3,29 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "NODE_ENV",
+        "SUPABASE_DOMAIN",
+        "SUPABASE_BASE_PATH",
+        "SUPABASE_API_KEY",
+        "MERCADOPAGO_API_URL",
+        "MERCADOPAGO_PREFERENCES_PATH",
+        "MERCADOPAGO_PAYMENTS_PATH",
+        "MERCADOPAGO_SUCCESS_URL",
+        "MERCADOPAGO_CHECKOUT_URL",
+        "MERCADOPAGO_ACCESS_TOKEN",
+        "MERCADOPAGO_PAYMENT_SECRET_KEY",
+        "RESEND_API_URL",
+        "RESEND_API_KEY",
+        "RESEND_FROM_EMAIL",
+        "NEXT_PUBLIC_GOOGLE_ANALYTICS",
+        "INSTAGRAM_GRAPH_API_DOMAIN",
+        "INSTAGRAM_GRAPH_API_VERSION",
+        "INSTAGRAM_GRAPH_API_MESSAGES_PATH",
+        "INSTAGRAM_GRAPH_API_MEDIA_PATH",
+        "INSTAGRAM_GRAPH_API_ACCESS_TOKEN"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
