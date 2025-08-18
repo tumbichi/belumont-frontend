@@ -1,12 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "SUPABASE_DOMAIN",
+    "SUPABASE_API_KEY"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "env": ["SUPABASE_DOMAIN", "SUPABASE_API_KEY"]
     },
     "lint:ci": {
       "dependsOn": ["^lint:ci"]
