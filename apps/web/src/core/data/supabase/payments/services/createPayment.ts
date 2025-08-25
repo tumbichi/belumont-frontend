@@ -1,22 +1,28 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
 import { Payment } from '../payments.repository';
 
 export async function createPayment(
-  orderId: string,
   providerId: string,
-  provider: 'mercadopago' | 'free' = 'mercadopago'
+  provider: 'mercadopago' | 'free' = 'mercadopago',
+  promoCodeId?: string
 ): Promise<Payment> {
+  console.debug('Creating payment for order:', {
+    providerId,
+    provider,
+    promoCodeId,
+  });
   const { data, error } = await supabase
     .from('payments')
     .insert({
-      order_id: orderId,
       provider,
       provider_id: providerId,
+      promo_code_id: promoCodeId,
     })
     .select();
 
   if (error) {
+    console.error('Error creating payment:', error);
     throw error;
   }
 

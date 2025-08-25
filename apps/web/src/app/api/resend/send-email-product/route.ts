@@ -17,7 +17,6 @@ const recordSchema = z.object({
     'refunded',
     'charged_back',
   ]),
-  order_id: z.string(),
   provider: z.union([z.literal('mercadopago'), z.literal('free')]),
   created_at: z.string(),
   updated_at: z.string(),
@@ -36,8 +35,8 @@ export async function POST(request: Request) {
   if (body.record.status === 'approved') {
     const supabaseRepository = SupabaseRepository();
 
-    const order = await supabaseRepository.orders.updateStatus(
-      body.record.order_id,
+    const order = await supabaseRepository.orders.updateStatusByPaymentId(
+      body.record.id,
       'paid'
     );
     const product = await supabaseRepository.products.getById(order.product_id);

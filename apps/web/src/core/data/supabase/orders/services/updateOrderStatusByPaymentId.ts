@@ -1,24 +1,21 @@
 import { supabase } from '@core/data/supabase/client';
-import { OrderStatus } from '../orders.repository';
+import { Order, OrderStatus } from '../orders.repository';
 import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
 
-export default async function updateOrderStatus(
-  id: string,
+export default async function updateOrderStatusByPaymentId(
+  paymentId: string,
   status: OrderStatus
 ) {
   const { data, error } = await supabase
     .from('orders')
     .update({ status })
-    .eq('id', id)
-    .select();
+    .eq('payment_id', paymentId)
+    .select()
+    .single();
 
   if (error) {
     throw error;
   }
 
-  if (!data || data.length <= 0 || !data[0]) {
-    throw new Error('Failed to create order');
-  }
-
-  return sanatizeDatesFromObject(data[0]);
+  return sanatizeDatesFromObject(data);
 }
