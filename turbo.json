@@ -1,9 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "SUPABASE_DOMAIN",
-    "SUPABASE_API_KEY"
-  ],
+  "globalDependencies": ["SUPABASE_DOMAIN", "SUPABASE_API_KEY"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -22,6 +19,10 @@
     },
     "check-types": {
       "dependsOn": ["^check-types"]
+    },
+    "start": {
+      "cache": false,
+      "dependsOn": ["build"]
     }
   }
 }
