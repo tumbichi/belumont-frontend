@@ -32,6 +32,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@soybelumont/ui/components/form';
+import { PostOrdersSuccessReturn } from '../../../app/api/orders/route';
 
 interface RadioItem {
   label: string;
@@ -76,28 +77,17 @@ export default function Payment({
   });
 
   const handlePayAction = async (data: PaymentSchema) => {
-    if (finalPrice === 0 && promoCode) {
-      const response = await axios.post(`/api/orders/promo`, {
-        email: data.email,
-        name: data.name,
-        product_id: product.id,
-        promo_code: promoCode,
-      });
+    const response = await axios.post<PostOrdersSuccessReturn>(`/api/orders`, {
+      email: data.email,
+      name: data.name,
+      product_id: product.id,
+      promo_code_id: promoCode,
+    });
 
-      if (response.data.status === 'completed') {
-        window.open(`/pago/exitoso?orderId=${response.data.order_id}`, '_self');
-      }
-    } else {
-      const response = await axios.post(`/api/payment`, {
-        email: data.email,
-        name: data.name,
-        productId: product.id,
-        promoCode: promoCode,
-      });
-
-      if (response.data.paymentUrl) {
-        window.open(response.data.paymentUrl, '_self');
-      }
+    if ('paymentUrl' in response.data) {
+      window.open(response.data.paymentUrl, '_self');
+    } else if (finalPrice === 0 && response.data.order.status === 'completed') {
+      window.open(`/pago/exitoso?orderId=${response.data.order.id}`, '_self');
     }
   };
 

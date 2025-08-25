@@ -87,31 +87,18 @@ export async function POST(request: Request) {
 
     const { order_id: orderId } = mpPayment.metadata;
 
-    let payment = await supabaseRepository.payments.create(
-      orderId,
-      body.data.id
-    );
+    const order = await supabaseRepository.orders.getById(orderId);
 
-    switch (mpPayment.status) {
-      case 'approved':
-      case 'authorized':
-      case 'in_process':
-      case 'in_mediation':
-      case 'pending':
-      case 'cancelled':
-      case 'charged_back':
-      case 'refunded':
-      case 'rejected': {
-        payment = await supabaseRepository.payments.updateStatus(
-          payment.id,
-          mpPayment.status
-        );
-        break;
-      }
-      default: {
-        throw new Error('Invalid payment status');
-      }
+    if (!order || !order.payment_id) {
+      throw new Error('Order not found', {
+        cause: { orderId, paymentId: order?.payment_id },
+      });
     }
+
+    const payment = await supabaseRepository.payments.update(order.payment_id, {
+      provider_id: body.data.id,
+      status: mpPayment.status,
+    });
 
     return Response.json({ payment });
   }

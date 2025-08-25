@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:ci": "FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep -E '\\.(js|jsx|ts|tsx)$' || true) && [ -n \"$FILES\" ] && eslint $FILES --quiet || echo 'No JS/TS files to lint'",
-    "lint:fix": "eslint \"src/**/*.ts\" --fix"
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.1",

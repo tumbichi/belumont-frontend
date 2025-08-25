@@ -1,8 +1,21 @@
 import { z } from 'zod';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
-import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
-import { AxiosError } from 'axios';
 import { validatePromoCode } from '@core/data/supabase/promos/services/validatePromoCode';
+import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
+import { Order } from '@core/data/supabase/orders/orders.repository';
+
+interface PostOrdersMercadoPagoReturn {
+  paymentUrl: string;
+  order: Order;
+}
+
+interface PostOrdersFreeReturn {
+  order: Order;
+}
+
+export type PostOrdersSuccessReturn =
+  | PostOrdersMercadoPagoReturn
+  | PostOrdersFreeReturn;
 
 const supabaseRepository = SupabaseRepository();
 
@@ -10,7 +23,7 @@ const bodySchema = z.object({
   email: z.string().email(),
   name: z.string(),
   product_id: z.string(),
-  promo_code: z.string().optional(),
+  promo_code_id: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -36,8 +49,8 @@ export async function POST(request: Request) {
     let finalPrice = product.price;
     let promoCode = null;
 
-    if (body.promo_code) {
-      promoCode = await supabaseRepository.promos.getByCode(body.promo_code);
+    if (body.promo_code_id) {
+      promoCode = await supabaseRepository.promos.getByCode(body.promo_code_id);
 
       console.log('promoCode', promoCode);
 
@@ -60,6 +73,7 @@ export async function POST(request: Request) {
       } else if (promoCode.discount_type === 'FIXED') {
         finalPrice = product.price - promoCode.discount_value;
       }
+
       if (finalPrice < 0) {
         finalPrice = 0;
       }
@@ -67,60 +81,53 @@ export async function POST(request: Request) {
 
     console.log('finalPrice', finalPrice);
 
-    const order = await supabaseRepository.orders.create(
+    const payment =
+      finalPrice === 0 && promoCode
+        ? await supabaseRepository.payments.create('N/A', 'free', promoCode.id)
+        : await supabaseRepository.payments.create(
+            'N/A',
+            'mercadopago',
+            promoCode?.id
+          );
+
+    let order = await supabaseRepository.orders.create(
       body.product_id,
-      user.id
+      user.id,
+      payment.id
     );
 
-    if (finalPrice === 0) {
-      await supabaseRepository.orders.updateStatus(order.id, 'completed');
-      await supabaseRepository.payments.create(order.id, 'N/A', 'free');
+    console.log('order created:', order);
 
-      console.log('Order completed with no payment required');
-
-      if (promoCode) {
-        await supabaseRepository.promos.incrementUsage(promoCode.id);
-      }
-
-      return Response.json({ order_id: order.id, status: 'completed' });
+    if (finalPrice === 0 && promoCode) {
+      console.log('Final price is 0, completing order without payment gateway');
+      order = await supabaseRepository.orders.updateStatus(
+        order.id,
+        'completed'
+      );
+      await supabaseRepository.promos.incrementUsage(promoCode.id);
+      await supabaseRepository.payments.update(payment.id, {
+        status: 'approved',
+      });
+      return Response.json({ order });
     } else {
-      try {
-        const paymentUrl = await MercadoPagoRepository().generatePaymentUrl(
-          { ...product, price: finalPrice },
-          user,
-          { orderId: order.id }
-        );
-        if (promoCode) {
-          await supabaseRepository.promos.incrementUsage(promoCode.id);
-        }
-        return Response.json({ order_id: order.id, payment_link: paymentUrl });
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          console.log('error.message', error?.message);
-          console.log('response.data', error.response?.data);
-          console.log('response.status', error.response?.status);
-
-          return Response.json(
-            {
-              error: error.response,
-              message: error.message,
-              cause: error.cause,
-            },
-            { status: 500 }
-          );
-        }
-
-        throw error;
-      }
+      const paymentUrl = await MercadoPagoRepository().generatePaymentUrl(
+        product,
+        user,
+        { orderId: order.id }
+      );
+      return Response.json({ paymentUrl, order });
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return Response.json(
-        { message: 'Invalid request body', errors: error.errors },
+        { message: 'Invalid request', errors: error.errors },
         { status: 400 }
       );
     }
     console.error(error);
-    return Response.json({ message: 'Internal server error' }, { status: 500 });
+    return Response.json(
+      { message: 'Internal server error', error: (error as Error).message },
+      { status: 500 }
+    );
   }
 }

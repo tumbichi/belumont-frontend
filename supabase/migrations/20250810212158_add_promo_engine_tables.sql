@@ -16,3 +16,6 @@ CREATE TABLE public.promo_code_product (
     promo_code_id uuid REFERENCES public.promo_code(id) ON DELETE CASCADE,
     product_id uuid REFERENCES public.products(id) ON DELETE CASCADE
 );
+
+ALTER TYPE public.payment_provider
+ADD VALUE 'free';

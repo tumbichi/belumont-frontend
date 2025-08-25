@@ -1,0 +1,18 @@
+{
+  "SIDEBAR": {
+    "DASHBOARD": "Dashboard",
+    "ORDERS": "Órdenes",
+    "PRODUCTS": "Productos",
+    "USERS": "Usuarios",
+    "PROMOS": "Promociones",
+    "ANALYTICS": "Analíticas"
+  },
+  "DASHBOARD": {
+    "TOTAL_SALES": "Ventas Totales",
+    "ORDERS": "Órdenes",
+    "USERS": "Usuarios",
+    "BEST_SELLING_PRODUCTS": "Productos Más Vendidos",
+    "PRODUCT": "Producto",
+    "SALES": "Ventas"
+  }
+}
