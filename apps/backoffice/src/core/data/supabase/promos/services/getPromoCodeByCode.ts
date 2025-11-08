@@ -1,4 +1,4 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 import { PromoCode } from '../promos.repository';
 
 export default async function getPromoCodeByCode(

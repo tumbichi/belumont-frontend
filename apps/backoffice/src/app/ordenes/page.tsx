@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@soybelumont/ui/components/table';
+import formatDatetime from '@core/utils/formatters/formatDate';
 
 async function getOrders(): Promise<OrderWithDetails[]> {
   const repository = SupabaseRepository();
@@ -28,6 +29,7 @@ export default async function OrdersPage() {
               <TableHead>ID de Orden</TableHead>
               <TableHead>Cliente</TableHead>
               <TableHead>Producto</TableHead>
+              <TableHead>Fecha de creacion</TableHead>
               <TableHead>Estado de Orden</TableHead>
               <TableHead>Estado de Pago</TableHead>
             </TableRow>
@@ -37,10 +39,17 @@ export default async function OrdersPage() {
               orders.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">{order.id}</TableCell>
-                  <TableCell>{order.users ? `${order.users.name} (${order.users.email})` : 'N/A'}</TableCell>
-                  <TableCell>{order.products ? order.products.name : 'N/A'}</TableCell>
+                  <TableCell>
+                    {order.users
+                      ? `${order.users.name} (${order.users.email})`
+                      : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    {order.products ? order.products.name : 'N/A'}
+                  </TableCell>
+                  <TableCell>{formatDatetime(order.created_at)}</TableCell>
                   <TableCell>{order.status}</TableCell>
-                  <TableCell>{order.payments[0]?.status || 'N/A'}</TableCell>
+                  <TableCell>{order.payments?.status || 'N/A'}</TableCell>
                 </TableRow>
               ))
             ) : (

@@ -7,6 +7,8 @@ export type Json =
   | Json[];
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: '12.2.12 (cd3cf9e)';
   };
@@ -20,10 +22,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
+          extensions?: Json;
           operationName?: string;
           query?: string;
           variables?: Json;
-          extensions?: Json;
         };
         Returns: Json;
       };
@@ -41,6 +43,7 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
+          payment_id: string | null;
           product_id: string;
           status: Database['public']['Enums']['order_status'];
           updated_at: string;
@@ -49,6 +52,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           id?: string;
+          payment_id?: string | null;
           product_id: string;
           status?: Database['public']['Enums']['order_status'];
           updated_at?: string;
@@ -57,12 +61,20 @@ export type Database = {
         Update: {
           created_at?: string;
           id?: string;
+          payment_id?: string | null;
           product_id?: string;
           status?: Database['public']['Enums']['order_status'];
           updated_at?: string;
           user_id?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: 'orders_payment_id_fkey';
+            columns: ['payment_id'];
+            isOneToOne: false;
+            referencedRelation: 'payments';
+            referencedColumns: ['id'];
+          },
           {
             foreignKeyName: 'orders_product_id_fkey';
             columns: ['product_id'];
@@ -81,27 +93,30 @@ export type Database = {
       };
       payments: {
         Row: {
+          amount: number;
           created_at: string;
           id: string;
-          order_id: string;
+          promo_code_id: string | null;
           provider: Database['public']['Enums']['payment_provider'];
           provider_id: string;
           status: Database['public']['Enums']['payment_status'];
           updated_at: string;
         };
         Insert: {
+          amount?: number;
           created_at?: string;
           id?: string;
-          order_id: string;
+          promo_code_id?: string | null;
           provider: Database['public']['Enums']['payment_provider'];
           provider_id: string;
           status?: Database['public']['Enums']['payment_status'];
           updated_at?: string;
         };
         Update: {
+          amount?: number;
           created_at?: string;
           id?: string;
-          order_id?: string;
+          promo_code_id?: string | null;
           provider?: Database['public']['Enums']['payment_provider'];
           provider_id?: string;
           status?: Database['public']['Enums']['payment_status'];
@@ -109,10 +124,10 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'payments_order_id_fkey';
-            columns: ['order_id'];
+            foreignKeyName: 'payments_promo_code_id_fkey';
+            columns: ['promo_code_id'];
             isOneToOne: false;
-            referencedRelation: 'orders';
+            referencedRelation: 'promo_code';
             referencedColumns: ['id'];
           },
         ];

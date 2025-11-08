@@ -1,5 +1,6 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 import { PromoCode } from '../promos.repository';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
 
 export default async function getAllPromoCodes(): Promise<PromoCode[]> {
   const { data, error } = await supabase
@@ -10,5 +11,10 @@ export default async function getAllPromoCodes(): Promise<PromoCode[]> {
     throw error;
   }
 
-  return data || [];
+  return (
+    data.map(
+      // NOTE: Cannot find a better way to type discount_type to enum value from supabase
+      (promoCode) => sanatizeCreatedAtFromObject(promoCode) /* as PromoCode */
+    ) || []
+  );
 }

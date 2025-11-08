@@ -1,5 +1,6 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 import { Product } from '../products.repository';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
 
 export interface BestSellingProduct extends Product {
   sales: number;
@@ -26,10 +27,12 @@ export default async function getBestSellingProducts(
   const productSales = new Map<string, BestSellingProduct>();
 
   for (const order of orders) {
+
+
     // NOTE: We need to ensure that the relationship is correctly named 'products'
     // and that RLS policies allow fetching them.
     if (order.products) {
-      const product = order.products as Product;
+      const product = sanatizeCreatedAtFromObject(order.products);
       const existing = productSales.get(product.id);
 
       if (existing) {

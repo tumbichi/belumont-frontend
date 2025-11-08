@@ -1,4 +1,4 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 
 export default async function getTotalOrders(): Promise<number> {
   const { count, error } = await supabase
