@@ -12,9 +12,13 @@ export default async function getAllPromoCodes(): Promise<PromoCode[]> {
   }
 
   return (
-    data.map(
-      // NOTE: Cannot find a better way to type discount_type to enum value from supabase
-      (promoCode) => sanatizeCreatedAtFromObject(promoCode) /* as PromoCode */
-    ) || []
+    data.map((promoCode) => {
+      // Explicitly cast discount_type to the expected literal type
+      const sanitizedPromoCode = {
+        ...promoCode,
+        discount_type: promoCode.discount_type as 'PERCENTAGE' | 'FIXED',
+      };
+      return sanatizeCreatedAtFromObject(sanitizedPromoCode) as PromoCode;
+    }) || []
   );
 }
