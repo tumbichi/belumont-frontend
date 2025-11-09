@@ -5,6 +5,7 @@
     "build": "turbo build",
     "build:web": "turbo build --filter=@soybelumont/web",
     "dev": "turbo dev",
+    "dev:backoffice": "turbo dev --filter=@soybelumont/backoffice",
     "lint": "turbo lint",
     "check-types": "turbo check-types",
     "lint:ci": "turbo lint:ci",

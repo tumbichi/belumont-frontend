@@ -19,6 +19,14 @@ export const config = [
     },
     rules: {
       'turbo/no-undeclared-env-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error', // Cambia a "error" si prefieres que sea un error en lugar de una advertencia
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   {

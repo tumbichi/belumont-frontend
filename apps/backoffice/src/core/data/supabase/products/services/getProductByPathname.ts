@@ -1,4 +1,4 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
 import { Product } from '../products.repository';
 export default async function getProductByPathname(

@@ -1,4 +1,4 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 import { OrderStatus } from '../orders.repository';
 import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
 

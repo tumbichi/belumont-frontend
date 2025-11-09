@@ -1,4 +1,4 @@
-import { supabase } from '@core/data/client';
+import { supabase } from '@core/data/supabase/client';
 
 export default async function incrementPromoCodeUsage(
   id: string
