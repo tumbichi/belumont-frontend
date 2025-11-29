@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "build:web": "turbo build --filter=@soybelumont/web",
+    "build:backoffice": "turbo build --filter=@soybelumont/backoffice",
     "dev": "turbo dev",
     "dev:backoffice": "turbo dev --filter=@soybelumont/backoffice",
     "lint": "turbo lint",
