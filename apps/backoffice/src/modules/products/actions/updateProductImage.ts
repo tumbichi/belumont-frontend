@@ -101,7 +101,10 @@ export const updateProductImage = async (payload: {
         })
       );
       if (error || !productUpdated) {
-        console.error('[updateProductImage] Failed to update product gallery', error);
+        console.error(
+          '[updateProductImage] Failed to update product gallery',
+          error
+        );
         throw error;
       }
 
@@ -112,14 +115,4 @@ export const updateProductImage = async (payload: {
     default:
       throw new Error('Invalid image type');
   }
-
-  // }
-  // case 'thumbnail': {
-  // throw new Error('Thumbnail update not implemented');
-  // }
-  // case 'gallery': {
-  // throw new Error('Gallery update not implemented');
-  // }
-  // default:
-  // throw new Error('Invalid image type');
 };

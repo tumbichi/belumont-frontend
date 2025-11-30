@@ -5,7 +5,7 @@ import { Button } from '@soybelumont/ui/components/button';
 import { Card } from '@soybelumont/ui/components/card';
 import { Label } from '@soybelumont/ui/components/label';
 import { sonner } from '@soybelumont/ui/components/sonner';
-import { Upload, UploadCloud, X } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import Image from 'next/image';
 import { ConfirmImageUpdateModal } from '../components/ConfirmImageUpdateModal';
 import { FileWithPreview } from '../actions/updateProductImage';
@@ -56,19 +56,6 @@ export function ProductImageManager() {
 
   const galleryImages = product.product_images || [];
 
-  const getImageLabel = () => {
-    switch (modalState.imageType) {
-      case 'cover':
-        return 'Cover Image';
-      case 'thumbnail':
-        return 'Thumbnail';
-      case 'gallery':
-        // return `Gallery Image ${(galleryIndex ?? 0) + 1}`;
-        return 'Gallery Image';
-      default:
-        return 'Image';
-    }
-  };
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = event.target;
 
@@ -230,7 +217,7 @@ export function ProductImageManager() {
         setImagesToUpload((prev) => ({ ...prev, thumbnail: null }));
 
         handleCloseModal();
-        sonner.toast.success(`${getImageLabel()} updated successfully!`);
+        sonner.toast.success(`Thumbnail updated successfully!`);
         return;
       }
       case 'gallery': {

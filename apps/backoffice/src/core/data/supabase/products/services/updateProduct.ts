@@ -1,13 +1,16 @@
 import { supabase } from '@core/data/supabase/client';
 import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
 import { Product, UpdateProduct } from '../products.repository';
+import { Database } from '../../types/supabase';
+
+type ProductSupabase = Database['public']['Tables']['products']['Row'];
 
 export default async function updateProduct(
   id: string,
   updates: UpdateProduct
-): Promise<Omit<Product, 'created_at'> & { product_images: string[] }> {
+): Promise<Product & { product_images: string[] }> {
   const { product_images, ...productFields } = updates;
-  let product: Omit<Product, 'created_at'> | null = null;
+  let product: ProductSupabase | null = null;
   let productImages: { resource_url: string }[] | null = null;
 
   if (Object.keys(productFields).length > 0) {
@@ -16,7 +19,7 @@ export default async function updateProduct(
       .from('products')
       .update(productFields)
       .eq('id', id)
-      .select()
+      .select('*')
       .single();
 
     if (updateError) {
@@ -66,8 +69,12 @@ export default async function updateProduct(
     productImages = data;
   }
 
+  if (!product) {
+    throw new Error('No updates were made to the product');
+  }
+
   return {
-    ...product,
+    ...sanatizeCreatedAtFromObject(product),
     product_images: productImages
       ? productImages.map((p) => p.resource_url)
       : [],
