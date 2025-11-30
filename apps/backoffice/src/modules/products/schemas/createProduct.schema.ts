@@ -23,5 +23,5 @@ export const pdfSchema = z.object({
   pdf: z.string().url('PDF must be a valid URL'),
 });
 
-export type ProductDetailsInput = z.infer<typeof productDetails>;
-// export type ProductDetailsOutput = z.output<typeof productDetails>;
+export type ProductDetailsInput = z.input<typeof productDetails>;
+// export type ProductDetailsOutput = z.infer<typeof productDetails>;

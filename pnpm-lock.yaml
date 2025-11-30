@@ -63,8 +63,8 @@ importers:
         specifier: 7.53.2
         version: 7.53.2(react@18.3.1)
       zod:
-        specifier: '4'
-        version: 4.1.12
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@soybelumont/eslint-config':
         specifier: workspace:*
@@ -4644,9 +4644,6 @@ packages:
 
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-
-  zod@4.1.12:
-    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
 snapshots:
 
@@ -9795,5 +9792,3 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.23.8: {}
-
-  zod@4.1.12: {}
