@@ -289,21 +289,27 @@ export type Database = {
       };
       resources: {
         Row: {
+          bucket: string;
           created_at: string;
           folder: string;
           id: string;
+          provider: Database['public']['Enums']['resource_provider'];
           url: string;
         };
         Insert: {
+          bucket?: string;
           created_at?: string;
           folder?: string;
           id?: string;
+          provider?: Database['public']['Enums']['resource_provider'];
           url: string;
         };
         Update: {
+          bucket?: string;
           created_at?: string;
           folder?: string;
           id?: string;
+          provider?: Database['public']['Enums']['resource_provider'];
           url?: string;
         };
         Relationships: [];
@@ -349,6 +355,7 @@ export type Database = {
         | 'cancelled'
         | 'refunded'
         | 'charged_back';
+      resource_provider: 'SUPABASE' | 'CLOUDFLARE_R2';
     };
     CompositeTypes: {
       [_ in never]: never;
