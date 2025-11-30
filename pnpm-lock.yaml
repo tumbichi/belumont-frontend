@@ -21,10 +21,10 @@ importers:
   apps/backoffice:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: ^3.940.0
+        specifier: 3.940.0
         version: 3.940.0
       '@aws-sdk/s3-request-presigner':
-        specifier: ^3.940.0
+        specifier: 3.940.0
         version: 3.940.0
       '@hookform/resolvers':
         specifier: 3.9.1
