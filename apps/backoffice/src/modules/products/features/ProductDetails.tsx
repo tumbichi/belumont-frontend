@@ -2,31 +2,21 @@
 
 import React from 'react';
 import { Separator } from '@soybelumont/ui/components/separator';
-// import ProductDetailsView from '../components/ProductDetailsView';
-import { ProductHeader } from '../components/ProductHeader';
+import { ProductHeader } from './ProductHeader';
 import { ProductForm } from './ProductForm';
 import { ProductImageManager } from './ProductImageManager';
-import { PdfManager } from '../components/ProductPdfManager';
-import { ProductDetailsInput } from '../schemas/createProduct.schema';
+import { PdfManager } from './ProductPdfManager';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from '@soybelumont/ui/components/tabs';
-import useProductSelected from '../contexts/product-selected-context/useProductSelected';
 
 function ProductDetails() {
-  const { product } = useProductSelected();
-
-  const handleProductUpdate = async (data: ProductDetailsInput) => {
-    // 'use server';
-    console.log('Edit product data:', data);
-  };
-
-  return product ? (
+  return (
     <div className="min-h-screen bg-background">
-      <ProductHeader product={product} />
+      <ProductHeader />
 
       <main className="max-w-4xl px-4 py-8 mx-auto sm:px-6 lg:px-8">
         <div className="space-y-8">
@@ -40,15 +30,7 @@ function ProductDetails() {
             <TabsContent value="product_info">
               <section>
                 <h2 className="mb-6 text-2xl font-bold">Product Information</h2>
-                <ProductForm
-                  product={{
-                    name: product.name,
-                    price: product.price,
-                    pathname: product.pathname,
-                    description: product.description,
-                  }}
-                  onSubmitAction={handleProductUpdate}
-                />
+                <ProductForm />
               </section>
             </TabsContent>
 
@@ -67,15 +49,13 @@ function ProductDetails() {
             <TabsContent value="pdfs">
               <section>
                 <h2 className="mb-6 text-2xl font-bold">Downloadable Files</h2>
-                <PdfManager product={product} />
+                <PdfManager />
               </section>
             </TabsContent>
           </Tabs>
         </div>
       </main>
     </div>
-  ) : (
-    <div>Product not found</div>
   );
 }
 

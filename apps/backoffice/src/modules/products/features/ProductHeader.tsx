@@ -12,21 +12,11 @@ import {
   AlertDialogTitle,
 } from '@soybelumont/ui/components/alert-dialog';
 import { Badge } from '@soybelumont/ui/components/badge';
+import { useProductSelected } from '../contexts/product-selected-context';
 
-interface Product {
-  id: string;
-  name: string;
-  active: boolean;
-  created_at: Date;
-  [key: string]: any;
-}
+export function ProductHeader() {
+  const { product } = useProductSelected();
 
-interface ProductHeaderProps {
-  product: Product;
-  onToggleActive?: (updates: Partial<Product>) => void;
-}
-
-export function ProductHeader({ product, onToggleActive }: ProductHeaderProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<boolean | null>(null);
 
@@ -37,7 +27,7 @@ export function ProductHeader({ product, onToggleActive }: ProductHeaderProps) {
 
   const handleConfirm = () => {
     if (pendingStatus !== null) {
-      onToggleActive && onToggleActive({ active: pendingStatus });
+      // onToggleActive && onToggleActive({ active: pendingStatus });
     }
     setShowConfirm(false);
     setPendingStatus(null);
@@ -56,11 +46,11 @@ export function ProductHeader({ product, onToggleActive }: ProductHeaderProps) {
                 <Badge variant={product.active ? 'default' : 'secondary'}>
                   {product.active ? 'Active' : 'Inactive'}
                 </Badge>
-                <span className="text-sm text-muted-foreground">
-                  Created:{' '}
-                  {typeof window !== 'undefined'
-                    ? new Date(product.created_at).toLocaleDateString()
-                    : ''}
+                <span
+                  className="text-sm text-muted-foreground"
+                  suppressHydrationWarning
+                >
+                  Creado: {new Date(product.created_at).toLocaleString()}
                 </span>
               </div>
             </div>

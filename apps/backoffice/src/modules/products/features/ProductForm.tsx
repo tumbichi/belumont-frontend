@@ -11,17 +11,19 @@ import {
   productDetails,
   ProductDetailsInput,
 } from '../schemas/createProduct.schema';
+import { updateProduct } from '../actions/updateProduct';
+import { useProductSelected } from '../contexts/product-selected-context';
+import { sonner } from '@soybelumont/ui/components/sonner';
 
-interface ProductFormProps {
-  product: ProductDetailsInput;
-  onSubmitAction: (updatedProduct: ProductDetailsInput) => void;
-}
+export function ProductForm() {
+  const { product, updateProduct: updateProductSelected } =
+    useProductSelected();
 
-export function ProductForm({ product, onSubmitAction }: ProductFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, isValidating, isDirty, errors },
+    reset,
   } = useForm<ProductDetailsInput>({
     resolver: zodResolver(productDetails),
     defaultValues: {
@@ -32,6 +34,29 @@ export function ProductForm({ product, onSubmitAction }: ProductFormProps) {
     },
   });
 
+  const handleSucessSubmit = async (data: ProductDetailsInput) => {
+    console.log('[ProductForm] Submitted data:', data);
+    try {
+      const updatedProduct = await updateProduct(product.id, data);
+      updateProductSelected(updatedProduct);
+      reset({
+        name: updatedProduct.name,
+        price: updatedProduct.price,
+        pathname: updatedProduct.pathname,
+        description: updatedProduct.description,
+      });
+      sonner.toast.success('Producto actualizado con éxito.', {
+        dismissible: true,
+      });
+    } catch (error) {
+      console.error('[ProductForm] Error updating product:', error);
+      sonner.toast.error('Hubo un error al actualizar el producto.', {
+        dismissible: true,
+        description: JSON.stringify(error),
+      });
+    }
+  };
+
   const handleError: SubmitErrorHandler<ProductDetailsInput> = (errors) => {
     console.error('Form errors:', errors);
   };
@@ -40,7 +65,7 @@ export function ProductForm({ product, onSubmitAction }: ProductFormProps) {
     <Card className="p-6">
       <form
         className="space-y-6"
-        onSubmit={handleSubmit((data) => onSubmitAction(data), handleError)}
+        onSubmit={handleSubmit(handleSucessSubmit, handleError)}
       >
         {/* Product Name */}
         <div className="space-y-2">
@@ -101,7 +126,12 @@ export function ProductForm({ product, onSubmitAction }: ProductFormProps) {
 
         {/* Save Button */}
         <div className="flex justify-end">
-          <Button type="submit" size="lg">
+          <Button
+            type="submit"
+            size="lg"
+            disabled={!isDirty}
+            loading={isSubmitting || isValidating}
+          >
             Save Changes
           </Button>
         </div>
