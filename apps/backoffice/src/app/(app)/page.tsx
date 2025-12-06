@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@soybelumont/ui/components/table';
 import { formatPrice } from '@core/utils/formatters/formatPrice';
+import { getTranslations } from 'next-intl/server';
 
 async function getDashboardData() {
   const repository = SupabaseRepository();
@@ -29,16 +30,17 @@ async function getDashboardData() {
 }
 
 export default async function DashboardPage() {
+  const t = await getTranslations();
   const { totalSales, totalOrders, totalUsers, bestSellingProducts } =
     await getDashboardData();
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('DASHBOARD.TITLE')}</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ventas Totales</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('DASHBOARD.TOTAL_SALES')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatPrice(totalSales)}</div>
@@ -46,7 +48,7 @@ export default async function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Órdenes</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('DASHBOARD.ORDERS')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalOrders}</div>
@@ -54,7 +56,7 @@ export default async function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usuarios</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('DASHBOARD.USERS')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalUsers}</div>
@@ -62,13 +64,13 @@ export default async function DashboardPage() {
         </Card>
       </div>
       <div className="mt-6">
-        <h2 className="text-xl font-bold mb-4">Productos Más Vendidos</h2>
+        <h2 className="text-xl font-bold mb-4">{t('DASHBOARD.BEST_SELLING_PRODUCTS')}</h2>
         <div className="border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Producto</TableHead>
-                <TableHead>Ventas</TableHead>
+                <TableHead>{t('DASHBOARD.PRODUCT')}</TableHead>
+                <TableHead>{t('DASHBOARD.SALES')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

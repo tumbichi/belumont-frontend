@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Product } from '@core/data/supabase/products';
+import { useTranslations } from 'next-intl';
 import {
   Card,
   CardContent,
@@ -24,6 +25,7 @@ interface ProductDetailsViewProps {
 }
 
 function ProductDetailsView({ product }: ProductDetailsViewProps) {
+  const t = useTranslations();
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -31,7 +33,7 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
       <div>
         <Card>
           <CardHeader>
-            <CardTitle>Product Images</CardTitle>
+            <CardTitle>{t('PRODUCTS.PRODUCT_IMAGES')}</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
             <div className="relative">
@@ -43,12 +45,12 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
                 className="rounded-lg"
               />
               <Badge className="absolute -top-2 right-2 py-1 px-3">
-                Imagen de portada
+                {t('PRODUCTS.COVER_IMAGE_LABEL')}
               </Badge>
             </div>
             {product.product_images && product.product_images.length > 0 && (
               <div className="mt-4">
-                <Badge className="text-sm font-medium">Galeria de imagenes</Badge>
+                <Badge className="text-sm font-medium">{t('PRODUCTS.GALLERY_LABEL')}</Badge>
                 <div className="grid grid-cols-4 gap-4 mt-2">
                   {product.product_images.map((image, index) => (
                     <Image
@@ -72,25 +74,25 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
             <CardTitle>{product.name}</CardTitle>
             <Button size="sm" onClick={() => setIsEditing(!isEditing)}>
               <Pencil className="w-4 h-4 mr-2" />
-              {isEditing ? 'Cancel' : 'Edit'}
+              {isEditing ? t('PRODUCTS.CANCEL') : t('PRODUCTS.EDIT')}
             </Button>
           </CardHeader>
           <CardContent>
             {isEditing ? (
               <form className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t('PRODUCTS.NAME')}</Label>
                   <Input id="name" defaultValue={product.name} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">{t('PRODUCTS.DESCRIPTION')}</Label>
                   <Textarea
                     id="description"
                     defaultValue={product.description || ''}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price</Label>
+                  <Label htmlFor="price">{t('PRODUCTS.PRICE')}</Label>
                   <Input
                     id="price"
                     type="number"
@@ -98,27 +100,27 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="pathname">Pathname</Label>
+                  <Label htmlFor="pathname">{t('PRODUCTS.PATHNAME')}</Label>
                   <Input id="pathname" defaultValue={product.pathname} />
                 </div>
                 <div className="flex items-center space-x-2">
                   <Switch id="active" defaultChecked={product.active} />
-                  <Label htmlFor="active">Active</Label>
+                  <Label htmlFor="active">{t('PRODUCTS.ACTIVE')}</Label>
                 </div>
-                <Button>Save Changes</Button>
+                <Button>{t('PRODUCTS.SAVE_CHANGES')}</Button>
               </form>
             ) : (
               <div className="space-y-4">
                 <p>{product.description}</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Price</Label>
+                    <Label className="text-sm font-medium">{t('PRODUCTS.PRICE')}</Label>
                     <p className="text-2xl font-bold">
                       {formatPrice(product.price)}
                     </p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Status</Label>
+                    <Label className="text-sm font-medium">{t('PRODUCTS.STATUS')}</Label>
                     <p>
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -127,18 +129,18 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
                             : 'bg-red-100 text-red-800'
                         }`}
                       >
-                        {product.active ? 'Activo' : 'Inactivo'}
+                        {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
                       </span>
                     </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Pathname</Label>
+                    <Label className="text-sm font-medium">{t('PRODUCTS.PATHNAME')}</Label>
                     <p>{product.pathname}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Download URL</Label>
+                    <Label className="text-sm font-medium">{t('PRODUCTS.DOWNLOAD_URL')}</Label>
                     <p>
                       <Link
                         href={product.download_url}
@@ -153,7 +155,7 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium">Created At</Label>
+                  <Label className="text-sm font-medium">{t('PRODUCTS.CREATED_AT')}</Label>
                   <p>{formatDatetime(product.created_at)}</p>
                 </div>
                 <div>
@@ -169,7 +171,7 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
                       />
                     </div>
                     <Badge className="absolute -top-2 right-2 py-1 px-3">
-                      Imagen de portada
+                      {t('PRODUCTS.COVER_IMAGE_LABEL')}
                     </Badge>
                   </div>
                 </div>

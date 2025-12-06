@@ -14,8 +14,10 @@ import {
 import { updateProduct } from '../actions/updateProduct';
 import { useProductSelected } from '../contexts/product-selected-context';
 import { sonner } from '@soybelumont/ui/components/sonner';
+import { useTranslations } from 'next-intl';
 
 export function ProductForm() {
+  const t = useTranslations();
   const { product, updateProduct: updateProductSelected } =
     useProductSelected();
 
@@ -45,12 +47,12 @@ export function ProductForm() {
         pathname: updatedProduct.pathname,
         description: updatedProduct.description,
       });
-      sonner.toast.success('Producto actualizado con éxito.', {
+      sonner.toast.success(t('PRODUCTS.PRODUCT_UPDATED_SUCCESS'), {
         dismissible: true,
       });
     } catch (error) {
       console.error('[ProductForm] Error updating product:', error);
-      sonner.toast.error('Hubo un error al actualizar el producto.', {
+      sonner.toast.error(t('PRODUCTS.PRODUCT_UPDATE_ERROR'), {
         dismissible: true,
         description: JSON.stringify(error),
       });
@@ -69,10 +71,10 @@ export function ProductForm() {
       >
         {/* Product Name */}
         <div className="space-y-2">
-          <Label htmlFor="name">Product Name</Label>
+          <Label htmlFor="name">{t('PRODUCTS.PRODUCT_NAME')}</Label>
           <Input
             id="name"
-            placeholder="Enter product name"
+            placeholder={t('PRODUCTS.PRODUCT_NAME_PLACEHOLDER')}
             {...register('name')}
           />
           {errors.name && (
@@ -83,12 +85,12 @@ export function ProductForm() {
         {/* Price */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="price">Price ($)</Label>
+            <Label htmlFor="price">{t('PRODUCTS.PRODUCT_PRICE')}</Label>
             <Input
               id="price"
               type="number"
               step="0.01"
-              placeholder="0.00"
+              placeholder={t('PRODUCTS.PRODUCT_PRICE_PLACEHOLDER')}
               {...register('price', { valueAsNumber: true })}
             />
             {errors.price && (
@@ -98,10 +100,10 @@ export function ProductForm() {
 
           {/* Pathname */}
           <div className="space-y-2">
-            <Label htmlFor="pathname">URL Pathname</Label>
+            <Label htmlFor="pathname">{t('PRODUCTS.PRODUCT_PATHNAME')}</Label>
             <Input
               id="pathname"
-              placeholder="product-url-slug"
+              placeholder={t('PRODUCTS.PRODUCT_PATHNAME_PLACEHOLDER')}
               {...register('pathname')}
             />
             {errors.pathname && (
@@ -112,10 +114,10 @@ export function ProductForm() {
 
         {/* Description */}
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">{t('PRODUCTS.PRODUCT_DESCRIPTION')}</Label>
           <Textarea
             id="description"
-            placeholder="Enter product description"
+            placeholder={t('PRODUCTS.PRODUCT_DESCRIPTION_PLACEHOLDER')}
             rows={5}
             {...register('description')}
           />
@@ -132,7 +134,7 @@ export function ProductForm() {
             disabled={!isDirty}
             loading={isSubmitting || isValidating}
           >
-            Save Changes
+            {t('PRODUCTS.SAVE_CHANGES')}
           </Button>
         </div>
       </form>

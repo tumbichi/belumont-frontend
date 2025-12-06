@@ -12,8 +12,11 @@ import {
   TabsList,
   TabsTrigger,
 } from '@soybelumont/ui/components/tabs';
+import { useTranslations } from 'next-intl';
 
 function ProductDetails() {
+  const t = useTranslations();
+
   return (
     <div className="min-h-screen bg-background">
       <ProductHeader />
@@ -22,14 +25,21 @@ function ProductDetails() {
         <div className="space-y-8">
           <Tabs defaultValue="product_info">
             <TabsList className="mb-4">
-              <TabsTrigger value="product_info">Info del Producto</TabsTrigger>
-              <TabsTrigger value="images">Imagenes</TabsTrigger>
-              <TabsTrigger value="pdfs">Archivo PDF</TabsTrigger>
+              <TabsTrigger value="product_info">
+                {t('PRODUCTS.PRODUCT_INFO_TAB')}
+              </TabsTrigger>
+              <TabsTrigger value="images">
+                {t('PRODUCTS.IMAGES_TAB')}
+              </TabsTrigger>
+              <TabsTrigger value="pdfs">{t('PRODUCTS.PDF_TAB')}</TabsTrigger>
             </TabsList>
+
             {/* Product Information Section */}
             <TabsContent value="product_info">
               <section>
-                <h2 className="mb-6 text-2xl font-bold">Product Information</h2>
+                <h2 className="mb-6 text-2xl font-bold">
+                  {t('PRODUCTS.PRODUCT_INFO_TITLE')}
+                </h2>
                 <ProductForm />
               </section>
             </TabsContent>
@@ -39,7 +49,9 @@ function ProductDetails() {
             {/* Images Management Section */}
             <TabsContent value="images">
               <section>
-                <h2 className="mb-6 text-2xl font-bold">Images</h2>
+                <h2 className="mb-6 text-2xl font-bold">
+                  {t('PRODUCTS.IMAGES_TITLE')}
+                </h2>
                 <ProductImageManager />
               </section>
             </TabsContent>
@@ -48,7 +60,9 @@ function ProductDetails() {
             {/* PDF Management Section */}
             <TabsContent value="pdfs">
               <section>
-                <h2 className="mb-6 text-2xl font-bold">Downloadable Files</h2>
+                <h2 className="mb-6 text-2xl font-bold">
+                  {t('PRODUCTS.PDF_TITLE')}
+                </h2>
                 <PdfManager />
               </section>
             </TabsContent>

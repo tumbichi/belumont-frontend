@@ -1,5 +1,6 @@
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { PromoCode } from '@core/data/supabase/promos/promos.repository';
+import { getTranslations } from 'next-intl/server';
 
 async function getPromos(): Promise<PromoCode[]> {
   const repository = SupabaseRepository();
@@ -8,11 +9,12 @@ async function getPromos(): Promise<PromoCode[]> {
 }
 
 export default async function PromosPage() {
+  const t = await getTranslations();
   const promos = await getPromos();
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Códigos Promocionales</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('PROMOS.TITLE')}</h1>
       <div className="border rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -21,37 +23,37 @@ export default async function PromosPage() {
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Código
+                {t('PROMOS.CODE')}
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Tipo de Descuento
+                {t('PROMOS.DISCOUNT_TYPE')}
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Valor de Descuento
+                {t('PROMOS.DISCOUNT_VALUE')}
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Usos
+                {t('PROMOS.USES')}
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Fecha de Expiración
+                {t('PROMOS.EXPIRES_AT')}
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Estado
+                {t('PROMOS.STATUS')}
               </th>
             </tr>
           </thead>
@@ -80,7 +82,7 @@ export default async function PromosPage() {
                         promo.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                       }`}
                     >
-                      {promo.is_active ? 'Activo' : 'Inactivo'}
+                      {promo.is_active ? t('PROMOS.ACTIVE') : t('PROMOS.INACTIVE')}
                     </span>
                   </td>
                 </tr>
@@ -91,7 +93,7 @@ export default async function PromosPage() {
                   colSpan={6}
                   className="px-6 py-4 text-center text-sm text-gray-500"
                 >
-                  No se encontraron códigos promocionales.
+                  {t('PROMOS.NO_PROMOS')}
                 </td>
               </tr>
             )}

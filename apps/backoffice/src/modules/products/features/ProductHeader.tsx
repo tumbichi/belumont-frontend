@@ -13,8 +13,10 @@ import {
 } from '@soybelumont/ui/components/alert-dialog';
 import { Badge } from '@soybelumont/ui/components/badge';
 import { useProductSelected } from '../contexts/product-selected-context';
+import { useTranslations } from 'next-intl';
 
 export function ProductHeader() {
+  const t = useTranslations();
   const { product } = useProductSelected();
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -44,7 +46,7 @@ export function ProductHeader() {
               </h1>
               <div className="flex items-center gap-3">
                 <Badge variant={product.active ? 'default' : 'secondary'}>
-                  {product.active ? 'Active' : 'Inactive'}
+                  {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
                 </Badge>
                 <span
                   className="text-sm text-muted-foreground"
@@ -57,7 +59,7 @@ export function ProductHeader() {
 
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-muted-foreground">
-                {product.active ? 'Active' : 'Inactive'}
+                {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
               </span>
               <Switch checked={product.active} onCheckedChange={handleToggle} />
             </div>
@@ -68,17 +70,15 @@ export function ProductHeader() {
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Change Product Status</AlertDialogTitle>
+            <AlertDialogTitle>{t('PRODUCTS.STATUS')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to{' '}
-              {pendingStatus ? 'activate' : 'deactivate'} this product? This
-              will {pendingStatus ? 'make it visible' : 'hide it'} to customers.
+              {pendingStatus ? t('PRODUCTS.ACTIVATE_CONFIRM') : t('PRODUCTS.DEACTIVATE_CONFIRM')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex gap-3 justify-end">
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('COMMON.CANCEL')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirm}>
-              {pendingStatus ? 'Activate' : 'Deactivate'}
+              {pendingStatus ? t('PRODUCTS.ACTIVATE') : t('PRODUCTS.DEACTIVATE')}
             </AlertDialogAction>
           </div>
         </AlertDialogContent>

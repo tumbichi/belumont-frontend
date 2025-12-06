@@ -14,6 +14,7 @@ import {
 import { Button } from '@soybelumont/ui/components/button';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { FileWithPreview } from '../actions/updateProductImage';
+import { useTranslations } from 'next-intl';
 
 interface OldImageDetails {
   url: string;
@@ -61,6 +62,7 @@ export function ConfirmImageUpdateModal({
   onClose,
   onConfirm,
 }: ConfirmImageUpdateModalProps) {
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,11 +71,11 @@ export function ConfirmImageUpdateModal({
   const getImageLabel = () => {
     switch (imageType) {
       case 'cover':
-        return 'Cover Image';
+        return t('PRODUCTS.COVER_IMAGE');
       case 'thumbnail':
-        return 'Thumbnail';
+        return t('PRODUCTS.THUMBNAIL');
       case 'gallery':
-        return `Gallery Image ${(galleryIndex ?? 0) + 1}`;
+        return `${t('PRODUCTS.GALLERY_IMAGE')} ${(galleryIndex ?? 0) + 1}`;
       default:
         return 'Image';
     }
@@ -111,9 +113,9 @@ export function ConfirmImageUpdateModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Confirm {getImageLabel()} Update</DialogTitle>
+          <DialogTitle>{t('PRODUCTS.CONFIRM_IMAGE_UPDATE')} - {getImageLabel()}</DialogTitle>
           <DialogDescription>
-            Review the changes before confirming
+            {t('PRODUCTS.REVIEW_CHANGES')}
           </DialogDescription>
         </DialogHeader>
 
@@ -124,7 +126,7 @@ export function ConfirmImageUpdateModal({
               <div className="flex flex-col w-[50%] flex-1 p-4 border rounded-lg">
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-muted-foreground">
-                    Current Image
+                    {t('PRODUCTS.CURRENT_IMAGE')}
                   </p>
                   <div className="relative w-full overflow-hidden rounded-md bg-muted">
                     <Image
@@ -138,14 +140,14 @@ export function ConfirmImageUpdateModal({
                 </div>
                 <div className="pt-2 mt-auto space-y-1 text-xs text-muted-foreground">
                   <p>
-                    <strong>Name:</strong> {oldImage.name}
+                    <strong>{t('PRODUCTS.IMAGE_NAME')}:</strong> {oldImage.name}
                   </p>
                   <p>
-                    <strong>Size:</strong> {(oldImage.size / 1024).toFixed(2)}{' '}
+                    <strong>{t('PRODUCTS.IMAGE_SIZE')}:</strong> {(oldImage.size / 1024).toFixed(2)}{' '}
                     KB
                   </p>
                   <p>
-                    <strong>Type:</strong> {oldImage.type}
+                    <strong>{t('PRODUCTS.IMAGE_TYPE')}:</strong> {oldImage.type}
                   </p>
                 </div>
               </div>
@@ -153,7 +155,7 @@ export function ConfirmImageUpdateModal({
             <div className="flex flex-col w-[50%] flex-1 p-4 border rounded-lg">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">
-                  New Image
+                  {t('PRODUCTS.NEW_IMAGE')}
                 </p>
                 <div className="relative w-full overflow-hidden rounded-md bg-muted">
                   <Image
@@ -168,13 +170,13 @@ export function ConfirmImageUpdateModal({
               {file && (
                 <div className="pt-2 mt-auto space-y-1 text-xs text-muted-foreground">
                   <p>
-                    <strong>Name:</strong> {file.name}
+                    <strong>{t('PRODUCTS.IMAGE_NAME')}:</strong> {file.name}
                   </p>
                   <p>
-                    <strong>Size:</strong> {(file.size / 1024).toFixed(2)} KB
+                    <strong>{t('PRODUCTS.IMAGE_SIZE')}:</strong> {(file.size / 1024).toFixed(2)} KB
                   </p>
                   <p>
-                    <strong>Type:</strong> {file.type}
+                    <strong>{t('PRODUCTS.IMAGE_TYPE')}:</strong> {file.type}
                   </p>
                 </div>
               )}
@@ -187,7 +189,7 @@ export function ConfirmImageUpdateModal({
               <AlertCircle className="h-5 w-5 flex-shrink-0 text-destructive mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-destructive">
-                  Error updating image
+                  {t('PRODUCTS.ERROR_UPDATING_IMAGE')}
                 </p>
                 <p className="mt-1 text-sm text-destructive/90">{error}</p>
               </div>
@@ -197,18 +199,18 @@ export function ConfirmImageUpdateModal({
           {/* Image Details */}
           <div className="p-3 space-y-1 text-sm rounded-lg bg-muted text-muted-foreground">
             <p>
-              <strong>Type:</strong> {getImageLabel()}
+              <strong>{t('PRODUCTS.IMAGE_TYPE')}:</strong> {getImageLabel()}
             </p>
             <p>
-              <strong>Action:</strong>{' '}
-              {oldImage ? 'Replace existing image' : 'Upload new image'}
+              <strong>{t('PRODUCTS.IMAGE_ACTION')}:</strong>{' '}
+              {oldImage ? t('PRODUCTS.REPLACE_EXISTING_IMAGE') : t('PRODUCTS.UPLOAD_NEW_IMAGE_ACTION')}
             </p>
           </div>
         </div>
 
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-            Cancel
+            {t('PRODUCTS.CANCEL')}
           </Button>
           {error ? (
             <Button
@@ -217,7 +219,7 @@ export function ConfirmImageUpdateModal({
               className="gap-2"
             >
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              Retry
+              {t('PRODUCTS.RETRY')}
             </Button>
           ) : (
             <Button
@@ -226,7 +228,7 @@ export function ConfirmImageUpdateModal({
               className="gap-2"
             >
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {isLoading ? 'Updating...' : 'Confirm Update'}
+              {isLoading ? t('PRODUCTS.UPDATING') : t('PRODUCTS.CONFIRM_UPDATE')}
             </Button>
           )}
         </DialogFooter>

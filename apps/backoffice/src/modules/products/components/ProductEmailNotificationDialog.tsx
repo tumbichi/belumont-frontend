@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from '@soybelumont/ui/components/dialog';
 import { Mail, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface Buyer {
   id: string;
@@ -33,6 +34,7 @@ export function EmailNotificationDialog({
   buyers,
   onConfirm,
 }: EmailNotificationDialogProps) {
+  const t = useTranslations();
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(buyers.length / ITEMS_PER_PAGE);
@@ -65,18 +67,17 @@ export function EmailNotificationDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5" />
-            Notify Previous Buyers
+            {t('PRODUCTS.NOTIFY_PREVIOUS_BUYERS')}
           </DialogTitle>
           <DialogDescription>
-            Send an email to customers who already purchased this product,
-            inviting them to download the updated version with corrections.
+            {t('PRODUCTS.NOTIFY_BUYERS_DESCRIPTION')}
           </DialogDescription>
         </DialogHeader>
 
         {/* Buyer Count Summary */}
         <div className="bg-muted rounded-lg p-4 mb-6">
           <p className="text-sm font-medium">
-            Total users to notify:{' '}
+            {t('PRODUCTS.TOTAL_USERS_TO_NOTIFY')}{' '}
             <span className="text-lg font-bold text-primary">
               {buyers.length}
             </span>
@@ -108,8 +109,8 @@ export function EmailNotificationDialog({
             {totalPages > 1 && (
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">
-                  Showing {startIndex + 1}-{Math.min(endIndex, buyers.length)}{' '}
-                  of {buyers.length}
+                  {t('PRODUCTS.SHOWING')} {startIndex + 1}-{Math.min(endIndex, buyers.length)}{' '}
+                  {t('PRODUCTS.OF')} {buyers.length}
                 </p>
                 <div className="flex gap-2">
                   <Button
@@ -139,13 +140,13 @@ export function EmailNotificationDialog({
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">No buyers to notify</p>
+            <p className="text-muted-foreground">{t('PRODUCTS.NO_BUYERS_TO_NOTIFY')}</p>
           </div>
         )}
 
         <DialogFooter>
           <Button variant="outline" onClick={handleClose}>
-            Cancel
+            {t('PRODUCTS.CANCEL')}
           </Button>
           <Button
             onClick={handleConfirm}
@@ -153,7 +154,7 @@ export function EmailNotificationDialog({
             className="gap-2"
           >
             <Mail className="w-4 h-4" />
-            Send to {buyers.length} {buyers.length === 1 ? 'User' : 'Users'}
+            {t('PRODUCTS.SEND_TO')} {buyers.length} {buyers.length === 1 ? t('PRODUCTS.USER') : t('PRODUCTS.USERS')}
           </Button>
         </DialogFooter>
       </DialogContent>

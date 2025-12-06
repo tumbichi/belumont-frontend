@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Product, ProductsRepository } from '@core/data/supabase/products';
 import { ProductSelectedProvider } from '@modules/products/contexts/product-selected-context';
+import { getTranslations } from 'next-intl/server';
 
 async function getProduct(id: string): Promise<Product | null> {
   const repository = ProductsRepository();
@@ -19,11 +20,12 @@ async function ProductDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = await getTranslations();
   const { id } = await params;
   const product = await getProduct(id);
 
   if (!product) {
-    throw new Error('Product not found');
+    throw new Error(t('PRODUCTS.PRODUCT_NOT_FOUND'));
   }
 
   return (
@@ -39,8 +41,8 @@ async function ProductDetailsPage({
                   </Button>
                 </Link>
                 <div>
-                  <h1 className="text-2xl font-bold">Producto: {id}</h1>
-                  <p className="text-gray-500">Manage your product details</p>
+                  <h1 className="text-2xl font-bold">{t('PRODUCTS.PRODUCT_DETAILS')}: {id}</h1>
+                  <p className="text-gray-500">{t('PRODUCTS.MANAGE_DETAILS')}</p>
                 </div>
               </div>
             </div>

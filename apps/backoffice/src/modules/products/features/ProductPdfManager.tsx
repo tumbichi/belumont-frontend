@@ -18,6 +18,7 @@ import { EmailNotificationDialog } from '../components/ProductEmailNotificationD
 import { useProductSelected } from '../contexts/product-selected-context';
 import { FileWithPreview } from '../actions/updateProductImage';
 import { sonner } from '@soybelumont/ui/components/sonner';
+import { useTranslations } from 'next-intl';
 import {
   createMultipartUpload,
   getSignedUrlForPart,
@@ -36,6 +37,7 @@ interface Buyer {
 }
 
 export function PdfManager() {
+  const t = useTranslations();
   const { product, updateProduct: updateProductSelected } =
     useProductSelected();
 
@@ -83,7 +85,7 @@ export function PdfManager() {
     if (pendingPdfUrl) {
       setShowReplaceConfirm(true);
     } else {
-      sonner.toast.info('Please select a PDF file to upload first.');
+      sonner.toast.info(t('PRODUCTS.SELECT_PDF_FIRST'));
     }
   };
 
@@ -104,7 +106,7 @@ export function PdfManager() {
     );
 
     if (error || !createUploadResult) {
-      sonner.toast.error('Error initiating multipart upload.');
+      sonner.toast.error(t('PRODUCTS.ERROR_INITIATING_UPLOAD'));
       setIsUploading(false);
       return;
     }
@@ -112,7 +114,7 @@ export function PdfManager() {
     const { uploadId, filename } = createUploadResult;
 
     if (!uploadId || !filename) {
-      sonner.toast.error('Failed to get upload ID or key.');
+      sonner.toast.error(t('PRODUCTS.FAILED_TO_GET_UPLOAD_ID'));
       setIsUploading(false);
       return;
     }
@@ -174,7 +176,7 @@ export function PdfManager() {
       console.log('Old URL:', oldDownloadUrl);
       // console.log('Location:', completeResult.location);
 
-      sonner.toast.success('File uploaded successfully!');
+      sonner.toast.success(t('PRODUCTS.FILE_UPLOADED_SUCCESS'));
 
       // TODO: Guardar completeResult.publicUrl en la base de datos
       // await updateProductPdfUrl(product.id, completeResult.publicUrl);
@@ -223,7 +225,7 @@ export function PdfManager() {
           <div className="flex flex-col">
             <div className="flex justify-between space-y-2">
               <Label className="text-base font-semibold">
-                Current Document
+                {t('PRODUCTS.CURRENT_DOCUMENT')}
               </Label>
               <a
                 href={product.download_url}
@@ -231,7 +233,7 @@ export function PdfManager() {
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-primary hover:underline"
               >
-                Download
+                {t('PRODUCTS.DOWNLOAD')}
               </a>
             </div>
 
@@ -251,7 +253,7 @@ export function PdfManager() {
             <div className="flex flex-col ">
               <div className="flex justify-between space-y-2">
                 <Label className="text-base font-semibold">
-                  Pending Document to Upload
+                  {t('PRODUCTS.PENDING_DOCUMENT')}
                 </Label>
               </div>
               <div className="flex items-center w-full gap-3 p-3 mt-3 rounded-lg bg-muted">
@@ -271,10 +273,9 @@ export function PdfManager() {
 
           {/* Upload New PDF */}
           <div className="pt-4 space-y-3 border-t border-border">
-            <Label className="text-base font-semibold">Update Document</Label>
+            <Label className="text-base font-semibold">{t('PRODUCTS.UPDATE_DOCUMENT')}</Label>
             <p className="text-sm text-muted-foreground">
-              Upload a new PDF to replace the current version. Previous buyers
-              will be notified.
+              {t('PRODUCTS.UPDATE_DOCUMENT_DESCRIPTION')}
             </p>
             <input
               type="file"
@@ -297,13 +298,13 @@ export function PdfManager() {
                 className="flex items-center justify-center w-full gap-2"
               >
                 <Upload size={16} />
-                <span>Select New PDF</span>
+                <span>{t('PRODUCTS.SELECT_NEW_PDF')}</span>
               </label>
             </Button>
 
             {isUploading && (
               <div className="space-y-2">
-                <Label>Uploading...</Label>
+                <Label>{t('PRODUCTS.UPLOADING')}</Label>
                 <Progress value={uploadProgress} />
                 <p className="text-sm text-center text-muted-foreground">
                   {Math.round(uploadProgress)}%
@@ -316,7 +317,7 @@ export function PdfManager() {
               onClick={handleUpdatePdf}
               disabled={isUploading || !pendingPdfUrl}
             >
-              {isUploading ? 'Uploading...' : 'Update PDF'}
+              {isUploading ? t('PRODUCTS.UPLOADING') : t('PRODUCTS.UPDATE_PDF')}
             </Button>
           </div>
         </div>
@@ -329,19 +330,18 @@ export function PdfManager() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Replace PDF Document</AlertDialogTitle>
+            <AlertDialogTitle>{t('PRODUCTS.REPLACE_PDF_DOCUMENT')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to replace the current PDF? The new version
-              will become available for download immediately.
+              {t('PRODUCTS.REPLACE_PDF_DOCUMENT_DESCRIPTION')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex justify-end gap-3">
-            <AlertDialogCancel disabled={isUploading}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isUploading}>{t('PRODUCTS.CANCEL')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmReplace}
               disabled={isUploading}
             >
-              {isUploading ? 'Uploading...' : 'Replace'}
+              {isUploading ? t('PRODUCTS.UPLOADING') : t('PRODUCTS.REPLACE')}
             </AlertDialogAction>
           </div>
         </AlertDialogContent>

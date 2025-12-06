@@ -15,6 +15,7 @@ import { Button } from '@soybelumont/ui/components/button';
 import { BookImageIcon } from 'lucide-react';
 import { Product } from '@core/data/supabase/products';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 // interface Column<T extends object> {
 //   title: string;
@@ -26,6 +27,7 @@ interface ProductsListProps {
   products: Product[];
 }
 function ProductTable({ products }: ProductsListProps) {
+  const t = useTranslations();
   const router = useRouter();
   const isEmpty = products.length == 0;
 
@@ -37,13 +39,13 @@ function ProductTable({ products }: ProductsListProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Portada</TableHead>
-          <TableHead>Estado</TableHead>
-          <TableHead>Nombre</TableHead>
-          <TableHead>Precio</TableHead>
-          <TableHead>Slug</TableHead>
-          <TableHead>Creado el</TableHead>
-          <TableHead>Acciones</TableHead>
+          <TableHead>{t('PRODUCTS.COVER_IMAGE')}</TableHead>
+          <TableHead>{t('PRODUCTS.STATUS')}</TableHead>
+          <TableHead>{t('PRODUCTS.NAME')}</TableHead>
+          <TableHead>{t('PRODUCTS.PRICE')}</TableHead>
+          <TableHead>{t('PRODUCTS.SLUG')}</TableHead>
+          <TableHead>{t('PRODUCTS.CREATED_AT')}</TableHead>
+          <TableHead>{t('PRODUCTS.ACTIONS')}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -67,7 +69,7 @@ function ProductTable({ products }: ProductsListProps) {
                       : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {product.active ? 'Activo' : 'Inactivo'}
+                  {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
                 </span>
               </TableCell>
               <TableCell className="font-medium">{product.name}</TableCell>
@@ -85,7 +87,7 @@ function ProductTable({ products }: ProductsListProps) {
                   }}
                 >
                   <BookImageIcon />
-                  Ver detalles
+                  {t('PRODUCTS.VIEW_DETAILS')}
                 </Button>
               </TableCell>
             </TableRow>
@@ -96,7 +98,7 @@ function ProductTable({ products }: ProductsListProps) {
               colSpan={4}
               className="px-6 py-4 text-sm text-center text-gray-500"
             >
-              No se encontraron productos.
+              {t('PRODUCTS.NO_PRODUCTS')}
             </TableCell>
           </TableRow>
         )}

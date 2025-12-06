@@ -7,6 +7,7 @@ import { Label } from '@soybelumont/ui/components/label';
 import { sonner } from '@soybelumont/ui/components/sonner';
 import { Upload } from 'lucide-react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { ConfirmImageUpdateModal } from '../components/ConfirmImageUpdateModal';
 import { FileWithPreview } from '../actions/updateProductImage';
 import attempt from '@core/lib/promises/attempt';
@@ -29,6 +30,7 @@ type ModalState =
     };
 
 export function ProductImageManager() {
+  const t = useTranslations();
   const { product, updateProduct } = useProductSelected();
 
   const [imagesToUpload, setImagesToUpload] = useState<{
@@ -75,7 +77,7 @@ export function ProductImageManager() {
     switch (imageType) {
       case 'cover': {
         if (!imagesToUpload.cover) {
-          sonner.toast.error('La imagen de portada no ha sido seleccionada.');
+          sonner.toast.error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
           return;
         }
         setModalState({
@@ -88,7 +90,7 @@ export function ProductImageManager() {
       }
       case 'thumbnail': {
         if (!imagesToUpload.thumbnail) {
-          sonner.toast.error('La imagen miniatura no ha sido seleccionada.');
+          sonner.toast.error(t('PRODUCTS.THUMBNAIL_IMAGE_NOT_SELECTED'));
           return;
         }
         setModalState({
@@ -101,7 +103,7 @@ export function ProductImageManager() {
       }
       case 'gallery': {
         if (index === undefined) {
-          sonner.toast.error('Índice de galería no proporcionado.');
+          sonner.toast.error(t('PRODUCTS.GALLERY_INDEX_NOT_PROVIDED'));
           return;
         }
 
@@ -110,7 +112,7 @@ export function ProductImageManager() {
             `gallery_image_${index + 1}` as keyof typeof imagesToUpload
           ]
         ) {
-          sonner.toast.error('La imagen de galería no ha sido seleccionada.');
+          sonner.toast.error(t('PRODUCTS.GALLERY_IMAGE_NOT_SELECTED'));
           return;
         }
 
@@ -147,8 +149,8 @@ export function ProductImageManager() {
     switch (modalState.imageType) {
       case 'cover': {
         if (!imagesToUpload.cover) {
-          sonner.toast.error('La imagen de portada no ha sido seleccionada.');
-          throw new Error('La imagen de portada no ha sido seleccionada.');
+          sonner.toast.error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
+          throw new Error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
         }
 
         if (!imagesToUpload.cover) {
@@ -182,13 +184,13 @@ export function ProductImageManager() {
         setImagesToUpload((prev) => ({ ...prev, cover: null }));
         handleCloseModal();
 
-        sonner.toast.success(`Imagen de portada actualizada con éxito`);
+        sonner.toast.success(t('PRODUCTS.COVER_IMAGE_UPDATED'));
         return;
       }
       case 'thumbnail': {
         if (!imagesToUpload.thumbnail) {
-          sonner.toast.error('La imagen miniatura no ha sido seleccionada.');
-          throw new Error('La imagen miniatura no ha sido seleccionada.');
+          sonner.toast.error(t('PRODUCTS.THUMBNAIL_IMAGE_NOT_SELECTED'));
+          throw new Error(t('PRODUCTS.THUMBNAIL_IMAGE_NOT_SELECTED'));
         }
 
         const { data: productUpdated, error: e } = await attempt(
@@ -217,13 +219,13 @@ export function ProductImageManager() {
         setImagesToUpload((prev) => ({ ...prev, thumbnail: null }));
 
         handleCloseModal();
-        sonner.toast.success(`Thumbnail updated successfully!`);
+        sonner.toast.success(t('PRODUCTS.THUMBNAIL_UPDATED_SUCCESS'));
         return;
       }
       case 'gallery': {
         if (modalState.galleryIndex === undefined) {
-          sonner.toast.error('Índice de galería no proporcionado.');
-          throw new Error('Índice de galería no proporcionado.');
+          sonner.toast.error(t('PRODUCTS.GALLERY_INDEX_NOT_PROVIDED'));
+          throw new Error(t('PRODUCTS.GALLERY_INDEX_NOT_PROVIDED'));
         }
 
         const { data: productUpdated, error: e } = await attempt(
@@ -257,7 +259,7 @@ export function ProductImageManager() {
         }));
 
         handleCloseModal();
-        sonner.toast.success(`Imagen de galería actualizada con éxito`);
+        sonner.toast.success(t('PRODUCTS.GALLERY_IMAGE_UPDATED_SUCCESS'));
         return;
       }
       default: {
@@ -276,7 +278,7 @@ export function ProductImageManager() {
       {/* Cover Image */}
       <Card className="p-6">
         <Label className="block mb-4 text-base font-semibold">
-          Cover Image
+          {t('PRODUCTS.COVER_IMAGE')}
         </Label>
         <div className="space-y-4">
           <div className="relative flex justify-center rounded-lg">
@@ -307,21 +309,21 @@ export function ProductImageManager() {
           >
             <label htmlFor="cover-upload">
               <Upload />
-              Upload Cover Image
+              {t('PRODUCTS.UPLOAD_COVER_IMAGE')}
             </label>
           </Button>
           <Button
             className="w-full cursor-pointer"
             onClick={() => handleUploadImage('cover')}
           >
-            Cambiar imagen de portada
+            {t('PRODUCTS.CHANGE_COVER')}
           </Button>
         </div>
       </Card>
 
       {/* Thumbnail */}
       <Card className="p-6">
-        <Label className="block mb-4 text-base font-semibold">Thumbnail</Label>
+        <Label className="block mb-4 text-base font-semibold">{t('PRODUCTS.THUMBNAIL')}</Label>
         <div className="space-y-4">
           <div className="relative max-w-xs overflow-hidden rounded-lg">
             <Image
@@ -352,14 +354,14 @@ export function ProductImageManager() {
           >
             <label htmlFor="thumbnail-upload">
               <Upload />
-              Upload Thumbnail
+              {t('PRODUCTS.UPLOAD_THUMBNAIL')}
             </label>
           </Button>
           <Button
             className="w-full cursor-pointer"
             onClick={() => handleUploadImage('thumbnail')}
           >
-            Cambiar imagen miniatura
+            {t('PRODUCTS.CHANGE_THUMBNAIL')}
           </Button>
         </div>
       </Card>
@@ -367,7 +369,7 @@ export function ProductImageManager() {
       {/* Gallery Images */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <Label className="text-base font-semibold">Gallery Images</Label>
+          <Label className="text-base font-semibold">{t('PRODUCTS.GALLERY_IMAGES')}</Label>
           <span className="text-sm text-muted-foreground">
             {galleryImages.length} / 3
           </span>
@@ -421,7 +423,7 @@ export function ProductImageManager() {
               >
                 <label htmlFor={`gallery-image-${index + 1}-upload`}>
                   <Upload />
-                  Subir nueva imagen {index + 1}
+                  {t('PRODUCTS.UPLOAD_NEW_IMAGE')} {index + 1}
                 </label>
               </Button>
 
@@ -432,7 +434,7 @@ export function ProductImageManager() {
                   className="absolute cursor-pointer left-2 right-2 -bottom-4"
                   onClick={() => handleUploadImage('gallery', index)}
                 >
-                  Reemplazar imagen {index + 1}
+                  {t('PRODUCTS.REPLACE_IMAGE')} {index + 1}
                 </Button>
               )}
             </div>
@@ -477,21 +479,21 @@ export function ProductImageManager() {
           modalState.imageType === 'cover'
             ? {
                 url: product.image_url,
-                name: 'Cover Image',
+                name: t('PRODUCTS.COVER_IMAGE'),
                 size: 0,
                 type: 'n/a',
               }
             : modalState.imageType === 'thumbnail'
               ? {
                   url: product.thumbnail_url,
-                  name: 'Thumbnail Image',
+                  name: t('PRODUCTS.THUMBNAIL'),
                   size: 0,
                   type: 'n/a',
                 }
               : modalState.imageType === 'gallery'
                 ? {
                     url: modalState.oldImageUrl ?? '',
-                    name: `Gallery image ${modalState.galleryIndex}`,
+                    name: `${t('PRODUCTS.GALLERY_IMAGE')} ${modalState.galleryIndex}`,
                     size: 0,
                     type: 'n/a',
                   }
