@@ -153,10 +153,6 @@ export function ProductImageManager() {
           throw new Error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
         }
 
-        if (!imagesToUpload.cover) {
-          throw new Error('No hay imagen seleccionada');
-        }
-
         const { data: productUpdated, error: e } = await attempt(
           uploadAndUpdateProductImage({
             productId: product.id,
@@ -323,7 +319,9 @@ export function ProductImageManager() {
 
       {/* Thumbnail */}
       <Card className="p-6">
-        <Label className="block mb-4 text-base font-semibold">{t('PRODUCTS.THUMBNAIL')}</Label>
+        <Label className="block mb-4 text-base font-semibold">
+          {t('PRODUCTS.THUMBNAIL')}
+        </Label>
         <div className="space-y-4">
           <div className="relative max-w-xs overflow-hidden rounded-lg">
             <Image
@@ -369,7 +367,9 @@ export function ProductImageManager() {
       {/* Gallery Images */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <Label className="text-base font-semibold">{t('PRODUCTS.GALLERY_IMAGES')}</Label>
+          <Label className="text-base font-semibold">
+            {t('PRODUCTS.GALLERY_IMAGES')}
+          </Label>
           <span className="text-sm text-muted-foreground">
             {galleryImages.length} / 3
           </span>

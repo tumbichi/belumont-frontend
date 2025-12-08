@@ -57,7 +57,7 @@ function ProductTable({ products }: ProductsListProps) {
                   src={product.thumbnail_url}
                   width={320}
                   height={192}
-                  className="object-cover w- w-full aspect-[5/3] transition-opacity group-hover:opacity-100"
+                  className="object-cover w-full aspect-[5/3] transition-opacity group-hover:opacity-100"
                   alt="Product Image"
                 />
               </TableCell>

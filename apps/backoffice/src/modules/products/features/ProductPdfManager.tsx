@@ -203,9 +203,7 @@ export function PdfManager() {
           ? error.message
           : 'An error occurred during upload.';
       sonner.toast.error(errorMessage);
-      if (filename && uploadId) {
-        await abortMultipartUpload(filename, uploadId);
-      }
+      await abortMultipartUpload(filename, uploadId);
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -273,7 +271,9 @@ export function PdfManager() {
 
           {/* Upload New PDF */}
           <div className="pt-4 space-y-3 border-t border-border">
-            <Label className="text-base font-semibold">{t('PRODUCTS.UPDATE_DOCUMENT')}</Label>
+            <Label className="text-base font-semibold">
+              {t('PRODUCTS.UPDATE_DOCUMENT')}
+            </Label>
             <p className="text-sm text-muted-foreground">
               {t('PRODUCTS.UPDATE_DOCUMENT_DESCRIPTION')}
             </p>
@@ -330,13 +330,17 @@ export function PdfManager() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('PRODUCTS.REPLACE_PDF_DOCUMENT')}</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t('PRODUCTS.REPLACE_PDF_DOCUMENT')}
+            </AlertDialogTitle>
             <AlertDialogDescription>
               {t('PRODUCTS.REPLACE_PDF_DOCUMENT_DESCRIPTION')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex justify-end gap-3">
-            <AlertDialogCancel disabled={isUploading}>{t('PRODUCTS.CANCEL')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isUploading}>
+              {t('PRODUCTS.CANCEL')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmReplace}
               disabled={isUploading}

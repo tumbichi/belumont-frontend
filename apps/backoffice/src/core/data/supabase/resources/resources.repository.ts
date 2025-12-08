@@ -1,4 +1,3 @@
-import { Database } from '@core/data/supabase/types/supabase';
 import createResource from './services/createResource';
 import updateResource from './services/updateResource';
 import getResourceByUrl from './services/getResourceByUrl';
