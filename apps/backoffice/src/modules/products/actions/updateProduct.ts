@@ -1,13 +1,11 @@
 'use server';
 
-import { Product, ProductsRepository } from '@core/data/supabase/products';
+import { Product, ProductsRepository, UpdateProduct as UpdateProductType } from '@core/data/supabase/products';
 import attempt from '@core/lib/promises/attempt';
 
 export const updateProduct = async (
   productId: string,
-  updateData: Partial<
-    Pick<Product, 'name' | 'price' | 'pathname' | 'description'>
-  >
+  updateData: UpdateProductType
 ): Promise<Product> => {
   if (Object.keys(updateData).length === 0) {
     throw new Error('No update data provided', {

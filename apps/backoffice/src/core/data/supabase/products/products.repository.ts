@@ -6,6 +6,7 @@ import getBestSellingProducts, {
   BestSellingProduct,
 } from './services/getBestSellingProducts';
 import updateProduct from './services/updateProduct';
+import createProduct, { CreateProductInput } from './services/createProduct';
 
 export interface Product {
   id: string;
@@ -38,6 +39,7 @@ export interface ProductsRepositoryReturn {
   getByPathname: (pathname: string) => Promise<PublicProduct | null>;
   getBestSelling: (limit?: number) => Promise<BestSellingProduct[]>;
   update: (id: string, product: UpdateProduct) => Promise<Product>;
+  create: (product: CreateProductInput) => Promise<Product>;
 }
 
 export const ProductsRepository = (): ProductsRepositoryReturn => ({
@@ -47,4 +49,5 @@ export const ProductsRepository = (): ProductsRepositoryReturn => ({
   getByPathname: getProductByPathname,
   getBestSelling: getBestSellingProducts,
   update: updateProduct,
+  create: createProduct,
 });

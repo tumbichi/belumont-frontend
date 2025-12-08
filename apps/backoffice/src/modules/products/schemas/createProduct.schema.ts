@@ -7,6 +7,11 @@ export const productDetails = z.object({
   description: z.string().nullable().optional(),
 });
 
+export const createProductFormSchema = productDetails.extend({
+  coverImage: z.any().optional(),
+  pdfFile: z.any().optional(),
+});
+
 export const coverImageSchema = z.object({
   coverImage: z.string().url('Cover image must be a valid URL'),
 });
@@ -24,4 +29,5 @@ export const pdfSchema = z.object({
 });
 
 export type ProductDetailsInput = z.input<typeof productDetails>;
+export type CreateProductFormInput = z.input<typeof createProductFormSchema>;
 // export type ProductDetailsOutput = z.infer<typeof productDetails>;

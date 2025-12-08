@@ -1,10 +1,6 @@
 'use client';
 
-import { Button } from '@soybelumont/ui/components/button';
 import { Card } from '@soybelumont/ui/components/card';
-import { Input } from '@soybelumont/ui/components/input';
-import { Label } from '@soybelumont/ui/components/label';
-import { Textarea } from '@soybelumont/ui/components/textarea';
 import { SubmitErrorHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -15,6 +11,7 @@ import { updateProduct } from '../actions/updateProduct';
 import { useProductSelected } from '../contexts/product-selected-context';
 import { sonner } from '@soybelumont/ui/components/sonner';
 import { useTranslations } from 'next-intl';
+import { ProductFormContent } from '../components/ProductFormContent';
 
 export function ProductForm() {
   const t = useTranslations();
@@ -69,74 +66,13 @@ export function ProductForm() {
         className="space-y-6"
         onSubmit={handleSubmit(handleSucessSubmit, handleError)}
       >
-        {/* Product Name */}
-        <div className="space-y-2">
-          <Label htmlFor="name">{t('PRODUCTS.PRODUCT_NAME')}</Label>
-          <Input
-            id="name"
-            placeholder={t('PRODUCTS.PRODUCT_NAME_PLACEHOLDER')}
-            {...register('name')}
-          />
-          {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
-          )}
-        </div>
-
-        {/* Price */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="price">{t('PRODUCTS.PRODUCT_PRICE')}</Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              placeholder={t('PRODUCTS.PRODUCT_PRICE_PLACEHOLDER')}
-              {...register('price', { valueAsNumber: true })}
-            />
-            {errors.price && (
-              <p className="text-sm text-red-500">{errors.price.message}</p>
-            )}
-          </div>
-
-          {/* Pathname */}
-          <div className="space-y-2">
-            <Label htmlFor="pathname">{t('PRODUCTS.PRODUCT_PATHNAME')}</Label>
-            <Input
-              id="pathname"
-              placeholder={t('PRODUCTS.PRODUCT_PATHNAME_PLACEHOLDER')}
-              {...register('pathname')}
-            />
-            {errors.pathname && (
-              <p className="text-sm text-red-500">{errors.pathname.message}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="space-y-2">
-          <Label htmlFor="description">{t('PRODUCTS.PRODUCT_DESCRIPTION')}</Label>
-          <Textarea
-            id="description"
-            placeholder={t('PRODUCTS.PRODUCT_DESCRIPTION_PLACEHOLDER')}
-            rows={5}
-            {...register('description')}
-          />
-          {errors.description && (
-            <p className="text-sm text-red-500">{errors.description.message}</p>
-          )}
-        </div>
-
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={!isDirty}
-            loading={isSubmitting || isValidating}
-          >
-            {t('PRODUCTS.SAVE_CHANGES')}
-          </Button>
-        </div>
+        <ProductFormContent
+          register={register}
+          errors={errors}
+          isSubmitting={isSubmitting}
+          isValidating={isValidating}
+          isDirty={isDirty}
+        />
       </form>
     </Card>
   );
