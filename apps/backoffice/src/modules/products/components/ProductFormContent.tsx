@@ -4,7 +4,7 @@ import { Button } from '@soybelumont/ui/components/button';
 import { Input } from '@soybelumont/ui/components/input';
 import { Label } from '@soybelumont/ui/components/label';
 import { Textarea } from '@soybelumont/ui/components/textarea';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { ProductDetailsInput } from '../schemas/createProduct.schema';
 import { useTranslations } from 'next-intl';
 
@@ -16,6 +16,9 @@ interface ProductFormContentProps {
   isDirty: boolean;
   submitLabel?: string;
   hideSubmitButton?: boolean;
+  watch?: UseFormWatch<ProductDetailsInput>;
+  setValue?: UseFormSetValue<ProductDetailsInput>;
+  onPathnameManualEdit?: () => void;
 }
 
 export function ProductFormContent({
@@ -26,8 +29,26 @@ export function ProductFormContent({
   isDirty,
   submitLabel,
   hideSubmitButton,
+  watch,
+  setValue,
+  onPathnameManualEdit,
 }: ProductFormContentProps) {
   const t = useTranslations();
+
+  const handlePathnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onPathnameManualEdit) {
+      onPathnameManualEdit();
+    }
+    
+    const value = e.target.value
+      .toLowerCase()
+      .replace(/[^\w-]/g, '')
+      .replace(/^-+/, '');
+    
+    if (setValue) {
+      setValue('pathname', value, { shouldValidate: true, shouldDirty: true });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -67,6 +88,7 @@ export function ProductFormContent({
             id="pathname"
             placeholder={t('PRODUCTS.PRODUCT_PATHNAME_PLACEHOLDER')}
             {...register('pathname')}
+            onChange={handlePathnameChange}
           />
           {errors.pathname && (
             <p className="text-sm text-red-500">{errors.pathname.message}</p>

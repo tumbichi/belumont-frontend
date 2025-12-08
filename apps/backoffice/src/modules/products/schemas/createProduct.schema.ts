@@ -1,9 +1,9 @@
 import z from 'zod';
 
 export const productDetails = z.object({
-  name: z.string().min(1, 'Product name is required'),
-  price: z.number().min(0, 'Price must be a positive number'),
-  pathname: z.string().min(1, 'URL pathname is required'),
+  name: z.string().min(1, 'El nombre del producto es requerido'),
+  price: z.number().min(0, 'El precio debe ser un número positivo'),
+  pathname: z.string().min(1, 'La ruta es requerida'),
   description: z.string().nullable().optional(),
 });
 

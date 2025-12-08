@@ -54,6 +54,8 @@ export function CreateProduct() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { isSubmitting, isValidating, isDirty, errors },
   } = useForm<ProductDetailsInput>({
     resolver: zodResolver(productDetails),
@@ -64,6 +66,22 @@ export function CreateProduct() {
       description: '',
     },
   });
+
+  const nameValue = watch('name');
+  const [pathnameManuallyEdited, setPathnameManuallyEdited] = useState(false);
+
+  // Auto-generate pathname from name (only if not manually edited)
+  useEffect(() => {
+    if (nameValue && !pathnameManuallyEdited) {
+      const kebabCase = nameValue
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      setValue('pathname', kebabCase, { shouldValidate: true, shouldDirty: true });
+    }
+  }, [nameValue, pathnameManuallyEdited, setValue]);
 
   // Cleanup preview URL on unmount or change
   useEffect(() => {
@@ -269,6 +287,9 @@ export function CreateProduct() {
                 isValidating={isValidating}
                 isDirty={isDirty}
                 hideSubmitButton={true}
+                watch={watch}
+                setValue={setValue}
+                onPathnameManualEdit={() => setPathnameManuallyEdited(true)}
               />
 
               <div className="space-y-8">
