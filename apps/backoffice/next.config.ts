@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: String(process.env.SUPABASE_DOMAIN),
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1'
       }
     ],
   },

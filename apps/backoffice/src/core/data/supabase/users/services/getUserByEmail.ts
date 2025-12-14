@@ -1,4 +1,4 @@
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 import { supabase } from '../../client';
 import { User } from '../users.repository';
 export default async function getUserByEmail(

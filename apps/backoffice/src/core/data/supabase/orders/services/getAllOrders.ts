@@ -1,5 +1,5 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { Order } from '../orders.repository';
 
 export interface OrderWithDetails extends Order {
@@ -36,5 +36,5 @@ export default async function getAllOrders(): Promise<OrderWithDetails[]> {
     return [];
   }
 
-  return data.map((order) => sanatizeDatesFromObject(order));
+  return data.map((order) => sanitizeDatesFromObject(order));
 }

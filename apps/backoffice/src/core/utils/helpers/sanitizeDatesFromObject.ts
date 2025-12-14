@@ -1,4 +1,4 @@
-export default function sanatizeDatesFromObject<
+export default function sanitizeDatesFromObject<
   T extends { created_at: string; updated_at: string },
 >(object: T): T & { created_at: Date; updated_at: Date } {
   return {
