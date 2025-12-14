@@ -2,6 +2,11 @@ import getActiveProducts from './services/getAllProducts';
 import getAllProductsForBackoffice from './services/getAllProductsForBackoffice';
 import getProductById from './services/getProductById';
 import getProductByPathname from './services/getProductByPathname';
+import getBestSellingProducts, {
+  BestSellingProduct,
+} from './services/getBestSellingProducts';
+import updateProduct from './services/updateProduct';
+import createProduct, { CreateProductInput } from './services/createProduct';
 
 export interface Product {
   id: string;
@@ -14,20 +19,27 @@ export interface Product {
   description: string | null;
   created_at: Date;
   active: boolean;
+  download_url: string;
 }
 
-import getBestSellingProducts, {
-  BestSellingProduct,
-} from './services/getBestSellingProducts';
+type PublicProduct = Omit<Product, 'download_url'>;
+
+export type UpdateProduct = Partial<
+  Omit<Product, 'id' | 'created_at' | 'product_images'>
+> & {
+  product_images?: string[] | null;
+};
 
 // ... (imports)
 
 export interface ProductsRepositoryReturn {
   getAll: (filters?: { active: boolean }) => Promise<Product[]>;
   getAllForBackoffice: () => Promise<Product[]>;
-  getById: (id: string) => Promise<(Product & { download_url: string }) | null>;
-  getByPathname: (pathname: string) => Promise<Product | null>;
+  getById: (id: string) => Promise<Product | null>;
+  getByPathname: (pathname: string) => Promise<PublicProduct | null>;
   getBestSelling: (limit?: number) => Promise<BestSellingProduct[]>;
+  update: (id: string, product: UpdateProduct) => Promise<Product>;
+  create: (product: CreateProductInput) => Promise<Product>;
 }
 
 export const ProductsRepository = (): ProductsRepositoryReturn => ({
@@ -36,4 +48,6 @@ export const ProductsRepository = (): ProductsRepositoryReturn => ({
   getById: getProductById,
   getByPathname: getProductByPathname,
   getBestSelling: getBestSellingProducts,
+  update: updateProduct,
+  create: createProduct,
 });

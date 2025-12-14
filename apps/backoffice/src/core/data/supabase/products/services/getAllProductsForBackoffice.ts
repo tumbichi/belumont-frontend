@@ -1,4 +1,4 @@
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 import { supabase } from '../../client';
 import { Product } from '../products.repository';
 
@@ -7,8 +7,14 @@ export default async function getAllProductsForBackoffice(): Promise<
 > {
   const { data, error } = await supabase.from('products').select();
 
-  console.log('data', data);
-  console.log('error', error);
+  console.log('[supabase.products] getAllProductsForBackoffice', data);
+
+  if (error) {
+    console.error(
+      '[supabase.products] getAllProductsForBackoffice error',
+      error
+    );
+  }
 
   if (!data) {
     return [];

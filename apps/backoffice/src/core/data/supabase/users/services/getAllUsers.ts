@@ -1,5 +1,5 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 import { User } from '../users.repository';
 
 export default async function getAllUsers(): Promise<User[]> {

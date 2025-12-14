@@ -1,12 +1,44 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 import { Product } from '../products.repository';
+
 export default async function getProductById(
   id: string
-): Promise<(Product & { download_url: string }) | null> {
-  const { data } = await supabase.from('products').select().eq('id', id);
-  console.log('GET_PRODUCT_BY_ID', data);
-  return data && data.length > 0 && data[0]
-    ? sanatizeCreatedAtFromObject(data[0])
-    : null;
+): Promise<Product | null> {
+  const { data: product, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) {
+    console.error('[supabase.products] getProductById error', error);
+    throw error;
+  }
+
+  if (!product) {
+    // No product found for given id
+    return null;
+  }
+
+  const { data: productImages, error: productImagesError } = await supabase
+    .from('product_images')
+    .select('resource_url')
+    .order('resource_url', { ascending: true })
+    .eq('product_id', product.id);
+
+  if (productImagesError) {
+    console.error(
+      '[supabase.products] getProductById product images error',
+      productImagesError
+    );
+    throw productImagesError;
+  }
+
+  return sanatizeCreatedAtFromObject({
+    ...product,
+    product_images: productImages
+      ? productImages.map((image) => image.resource_url)
+      : [],
+  });
 }

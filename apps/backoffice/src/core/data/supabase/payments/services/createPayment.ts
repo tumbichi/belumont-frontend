@@ -1,5 +1,5 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { Payment } from '../payments.repository';
 
 export async function createPayment(
@@ -24,5 +24,5 @@ export async function createPayment(
     throw new Error('Failed to create payment');
   }
 
-  return sanatizeDatesFromObject(data[0]);
+  return sanitizeDatesFromObject(data[0]);
 }

@@ -1,5 +1,5 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { Order } from '../orders.repository';
 
 export async function createOrder(
@@ -19,5 +19,5 @@ export async function createOrder(
     throw new Error('Failed to create order');
   }
 
-  return sanatizeDatesFromObject(data[0]);
+  return sanitizeDatesFromObject(data[0]);
 }

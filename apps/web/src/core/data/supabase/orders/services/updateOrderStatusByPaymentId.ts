@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import { Order, OrderStatus } from '../orders.repository';
-import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 
 export default async function updateOrderStatusByPaymentId(
   paymentId: string,
@@ -17,5 +17,5 @@ export default async function updateOrderStatusByPaymentId(
     throw error;
   }
 
-  return sanatizeDatesFromObject(data);
+  return sanitizeDatesFromObject(data);
 }

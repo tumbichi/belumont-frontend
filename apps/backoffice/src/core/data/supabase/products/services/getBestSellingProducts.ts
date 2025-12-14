@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import { Product } from '../products.repository';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 
 export interface BestSellingProduct extends Product {
   sales: number;

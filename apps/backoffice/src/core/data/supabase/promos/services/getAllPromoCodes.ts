@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import { PromoCode } from '../promos.repository';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanatizeCreatedAtFromObject';
+import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 
 export default async function getAllPromoCodes(): Promise<PromoCode[]> {
   const { data, error } = await supabase

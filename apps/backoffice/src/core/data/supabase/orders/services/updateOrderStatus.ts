@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import { OrderStatus } from '../orders.repository';
-import sanatizeDatesFromObject from '@core/utils/helpers/sanatizeDatesFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 
 export default async function updateOrderStatus(
   id: string,
@@ -20,5 +20,5 @@ export default async function updateOrderStatus(
     throw new Error('Failed to create order');
   }
 
-  return sanatizeDatesFromObject(data[0]);
+  return sanitizeDatesFromObject(data[0]);
 }
