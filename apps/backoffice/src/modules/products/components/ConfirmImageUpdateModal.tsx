@@ -111,12 +111,12 @@ export function ConfirmImageUpdateModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="w-fit max-w-2xl lg:max-w-screen-lg overflow-y-scroll max-h-screen">
         <DialogHeader>
-          <DialogTitle>{t('PRODUCTS.CONFIRM_IMAGE_UPDATE')} - {getImageLabel()}</DialogTitle>
-          <DialogDescription>
-            {t('PRODUCTS.REVIEW_CHANGES')}
-          </DialogDescription>
+          <DialogTitle>
+            {t('PRODUCTS.CONFIRM_IMAGE_UPDATE')} - {getImageLabel()}
+          </DialogTitle>
+          <DialogDescription>{t('PRODUCTS.REVIEW_CHANGES')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -143,8 +143,8 @@ export function ConfirmImageUpdateModal({
                     <strong>{t('PRODUCTS.IMAGE_NAME')}:</strong> {oldImage.name}
                   </p>
                   <p>
-                    <strong>{t('PRODUCTS.IMAGE_SIZE')}:</strong> {(oldImage.size / 1024).toFixed(2)}{' '}
-                    KB
+                    <strong>{t('PRODUCTS.IMAGE_SIZE')}:</strong>{' '}
+                    {(oldImage.size / 1024).toFixed(2)} KB
                   </p>
                   <p>
                     <strong>{t('PRODUCTS.IMAGE_TYPE')}:</strong> {oldImage.type}
@@ -173,7 +173,8 @@ export function ConfirmImageUpdateModal({
                     <strong>{t('PRODUCTS.IMAGE_NAME')}:</strong> {file.name}
                   </p>
                   <p>
-                    <strong>{t('PRODUCTS.IMAGE_SIZE')}:</strong> {(file.size / 1024).toFixed(2)} KB
+                    <strong>{t('PRODUCTS.IMAGE_SIZE')}:</strong>{' '}
+                    {(file.size / 1024).toFixed(2)} KB
                   </p>
                   <p>
                     <strong>{t('PRODUCTS.IMAGE_TYPE')}:</strong> {file.type}
@@ -203,7 +204,9 @@ export function ConfirmImageUpdateModal({
             </p>
             <p>
               <strong>{t('PRODUCTS.IMAGE_ACTION')}:</strong>{' '}
-              {oldImage ? t('PRODUCTS.REPLACE_EXISTING_IMAGE') : t('PRODUCTS.UPLOAD_NEW_IMAGE_ACTION')}
+              {oldImage
+                ? t('PRODUCTS.REPLACE_EXISTING_IMAGE')
+                : t('PRODUCTS.UPLOAD_NEW_IMAGE_ACTION')}
             </p>
           </div>
         </div>
@@ -228,7 +231,9 @@ export function ConfirmImageUpdateModal({
               className="gap-2"
             >
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {isLoading ? t('PRODUCTS.UPDATING') : t('PRODUCTS.CONFIRM_UPDATE')}
+              {isLoading
+                ? t('PRODUCTS.UPDATING')
+                : t('PRODUCTS.CONFIRM_UPDATE')}
             </Button>
           )}
         </DialogFooter>
