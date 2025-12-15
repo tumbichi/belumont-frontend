@@ -71,11 +71,32 @@ export default async function updateProduct(
       .order('resource_url', { ascending: true });
 
     productImages = data;
-    console.log('[updateProduct] fetched updated product images', productImages);
+    console.log(
+      '[updateProduct] fetched updated product images',
+      productImages
+    );
   }
 
   if (!product) {
-    throw new Error('No updates were made to the product');
+    // console.error('[updateProduct] no updates were made to the product');
+    // throw new Error('No updates were made to the product');
+
+    // fetch the product if only product_images were updated
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      throw new Error('Product not found after update');
+    }
+
+    product = data;
   }
 
   return {
