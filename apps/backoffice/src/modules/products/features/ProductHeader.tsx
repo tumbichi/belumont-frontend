@@ -14,6 +14,7 @@ import {
 import { Badge } from '@soybelumont/ui/components/badge';
 import { useProductSelected } from '../contexts/product-selected-context';
 import { useTranslations } from 'next-intl';
+import { sonner } from '@soybelumont/ui/components/sonner';
 
 export function ProductHeader() {
   const t = useTranslations();
@@ -29,7 +30,17 @@ export function ProductHeader() {
 
   const handleConfirm = async () => {
     if (pendingStatus !== null) {
-      await toggleActive(pendingStatus);
+      try {
+        await toggleActive(pendingStatus);
+        sonner.toast.success(t('PRODUCTS.PRODUCT_UPDATED_SUCCESS'), {
+          dismissible: true,
+        });
+      } catch (error) {
+        console.error('[ProductHeader] Error toggling product active:', error);
+        sonner.toast.error(t('PRODUCTS.PRODUCT_UPDATE_ERROR'), {
+          dismissible: true,
+        });
+      }
     }
     setShowConfirm(false);
     setPendingStatus(null);

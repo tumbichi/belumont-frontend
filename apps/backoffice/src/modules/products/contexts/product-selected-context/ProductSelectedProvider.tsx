@@ -32,15 +32,18 @@ const ProductSelectedProvider = ({
    * Toggles the active status of the product.
    *
    * @param {boolean} active - The new active status.
+   * @throws {Error} If the toggle operation fails.
    */
   const toggleActive = async (active: boolean) => {
     setIsTogglingActive(true);
     try {
       const updatedProduct = await toggleProductActive(product.id, active);
       setProduct(updatedProduct);
-    } finally {
+    } catch (error) {
       setIsTogglingActive(false);
+      throw error;
     }
+    setIsTogglingActive(false);
   };
 
   return (
