@@ -14,6 +14,7 @@ export default async function updateProduct(
   let productImages: { resource_url: string }[] | null = null;
 
   if (Object.keys(productFields).length > 0) {
+    console.log('[updateProduct] updating product fields', productFields);
     // update main product fields (excluding product_images)
     const { data, error: updateError } = await supabase
       .from('products')
@@ -34,6 +35,7 @@ export default async function updateProduct(
   }
   // synchronize product_images if provided (replace existing)
   if (Array.isArray(product_images)) {
+    console.log('[updateProduct] updating product images', product_images);
     // remove existing image relations
     const { error: delError } = await supabase
       .from('product_images')
@@ -49,6 +51,8 @@ export default async function updateProduct(
         product_id: id,
         resource_url,
       }));
+
+      console.log('[updateProduct] inserting new product images', rows);
 
       const { error: insertError } = await supabase
         .from('product_images')
@@ -67,6 +71,7 @@ export default async function updateProduct(
       .order('resource_url', { ascending: true });
 
     productImages = data;
+    console.log('[updateProduct] fetched updated product images', productImages);
   }
 
   if (!product) {

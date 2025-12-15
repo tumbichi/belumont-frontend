@@ -27,27 +27,27 @@ export const updateProductImage = async (payload: {
     throw new Error('Product not found', { cause: 'PRODUCT_NOT_FOUND' });
   }
 
-  console.log('[products] updateProductImage after product check', product);
+  console.log('[updateProductImage] product founded', product);
 
   // switch (payload.imageType) {
   // case 'cover': {
   let resource = await resourcesClient.getByUrl(payload.oldImageUrl);
 
   if (resource) {
-    const { data, error } = await attempt(
+    const { data: updatedResource, error } = await attempt(
       resourcesClient.update(resource.id, {
         url: payload.newImageUrl,
       })
     );
 
-    if (error || !data) {
+    if (error || !updatedResource) {
       console.error('[updateProductImage] Failed to update resource', error);
       throw new Error('[updateProductImage] Failed to update resource', {
         cause: error,
       });
     }
-
-    resource = data;
+    resource = updatedResource;
+    console.log('[updateProductImage] resource updated', resource);
   } else {
     resource = await resourcesClient.create({
       url: payload.newImageUrl,
@@ -55,6 +55,7 @@ export const updateProductImage = async (payload: {
       folder: payload.uploadPath,
       provider: 'SUPABASE',
     });
+    console.log('[updateProductImage] resource created', resource);
   }
 
   switch (payload.imageType) {
@@ -92,8 +93,21 @@ export const updateProductImage = async (payload: {
         throw new Error('Gallery index is required for gallery image update');
       }
 
+      console.log(
+        '[updateProductImage] updating gallery image at index',
+        payload.galleryIndex
+      );
+
       const currentGallery = product.product_images || [];
+
+      console.log(
+        '[updateProductImage] current gallery before update',
+        currentGallery
+      );
+
       currentGallery[payload.galleryIndex] = resource.url;
+
+      console.log('[updateProductImage] updating gallery', currentGallery);
 
       const { data: productUpdated, error } = await attempt(
         productsClient.update(product.id, {
