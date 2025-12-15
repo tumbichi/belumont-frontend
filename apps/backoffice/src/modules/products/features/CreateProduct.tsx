@@ -227,7 +227,7 @@ export function CreateProduct() {
       for (let i = 0; i < galleryFiles.length; i++) {
         const file = galleryFiles[i];
         if (file) {
-          const path = `${imageFolderName}/gallery_${i + 1}_${Date.now()}`;
+          const path = `${imageFolderName}/gallery_image_${i + 1}_${Date.now()}`;
           const publicUrl = await uploadImage(file, path, 'public-assets');
 
           await createResource({
