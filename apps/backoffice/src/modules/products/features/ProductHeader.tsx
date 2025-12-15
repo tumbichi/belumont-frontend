@@ -17,7 +17,7 @@ import { useTranslations } from 'next-intl';
 
 export function ProductHeader() {
   const t = useTranslations();
-  const { product } = useProductSelected();
+  const { product, toggleActive, isTogglingActive } = useProductSelected();
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<boolean | null>(null);
@@ -27,9 +27,9 @@ export function ProductHeader() {
     setShowConfirm(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (pendingStatus !== null) {
-      // onToggleActive && onToggleActive({ active: pendingStatus });
+      await toggleActive(pendingStatus);
     }
     setShowConfirm(false);
     setPendingStatus(null);
@@ -61,7 +61,11 @@ export function ProductHeader() {
               <span className="text-sm font-medium text-muted-foreground">
                 {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
               </span>
-              <Switch checked={product.active} onCheckedChange={handleToggle} />
+              <Switch
+                checked={product.active}
+                onCheckedChange={handleToggle}
+                disabled={isTogglingActive}
+              />
             </div>
           </div>
         </div>
@@ -76,9 +80,15 @@ export function ProductHeader() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex gap-3 justify-end">
-            <AlertDialogCancel>{t('COMMON.CANCEL')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirm}>
-              {pendingStatus ? t('PRODUCTS.ACTIVATE') : t('PRODUCTS.DEACTIVATE')}
+            <AlertDialogCancel disabled={isTogglingActive}>
+              {t('COMMON.CANCEL')}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm} disabled={isTogglingActive}>
+              {isTogglingActive
+                ? t('COMMON.LOADING')
+                : pendingStatus
+                  ? t('PRODUCTS.ACTIVATE')
+                  : t('PRODUCTS.DEACTIVATE')}
             </AlertDialogAction>
           </div>
         </AlertDialogContent>
