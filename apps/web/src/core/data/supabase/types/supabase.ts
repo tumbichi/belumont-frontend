@@ -7,11 +7,6 @@ export type Json =
   | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: '12.2.12 (cd3cf9e)';
-  };
   graphql_public: {
     Tables: {
       [_ in never]: never;
@@ -71,21 +66,18 @@ export type Database = {
           {
             foreignKeyName: 'orders_payment_id_fkey';
             columns: ['payment_id'];
-            isOneToOne: false;
             referencedRelation: 'payments';
             referencedColumns: ['id'];
           },
           {
             foreignKeyName: 'orders_product_id_fkey';
             columns: ['product_id'];
-            isOneToOne: false;
             referencedRelation: 'products';
             referencedColumns: ['id'];
           },
           {
             foreignKeyName: 'orders_user_id_fkey';
             columns: ['user_id'];
-            isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
           },
@@ -126,8 +118,44 @@ export type Database = {
           {
             foreignKeyName: 'payments_promo_code_id_fkey';
             columns: ['promo_code_id'];
-            isOneToOne: false;
             referencedRelation: 'promo_code';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      product_bundle_items: {
+        Row: {
+          bundle_id: string;
+          created_at: string | null;
+          id: string;
+          product_id: string;
+          sort_order: number | null;
+        };
+        Insert: {
+          bundle_id: string;
+          created_at?: string | null;
+          id?: string;
+          product_id: string;
+          sort_order?: number | null;
+        };
+        Update: {
+          bundle_id?: string;
+          created_at?: string | null;
+          id?: string;
+          product_id?: string;
+          sort_order?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'product_bundle_items_bundle_id_fkey';
+            columns: ['bundle_id'];
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'product_bundle_items_product_id_fkey';
+            columns: ['product_id'];
+            referencedRelation: 'products';
             referencedColumns: ['id'];
           },
         ];
@@ -155,14 +183,12 @@ export type Database = {
           {
             foreignKeyName: 'product_images_product_id_fkey';
             columns: ['product_id'];
-            isOneToOne: false;
             referencedRelation: 'products';
             referencedColumns: ['id'];
           },
           {
             foreignKeyName: 'product_images_resource_url_fkey';
             columns: ['resource_url'];
-            isOneToOne: false;
             referencedRelation: 'resources';
             referencedColumns: ['url'];
           },
@@ -173,43 +199,45 @@ export type Database = {
           active: boolean;
           created_at: string;
           description: string | null;
-          download_url: string;
+          download_url: string | null;
           id: string;
           image_url: string;
           name: string;
           pathname: string;
           price: number;
+          product_type: string;
           thumbnail_url: string;
         };
         Insert: {
           active?: boolean;
           created_at?: string;
           description?: string | null;
-          download_url: string;
+          download_url?: string | null;
           id?: string;
           image_url: string;
           name: string;
           pathname: string;
           price: number;
+          product_type?: string;
           thumbnail_url?: string;
         };
         Update: {
           active?: boolean;
           created_at?: string;
           description?: string | null;
-          download_url?: string;
+          download_url?: string | null;
           id?: string;
           image_url?: string;
           name?: string;
           pathname?: string;
           price?: number;
+          product_type?: string;
           thumbnail_url?: string;
         };
         Relationships: [
           {
             foreignKeyName: 'products_download_url_fkey';
             columns: ['download_url'];
-            isOneToOne: false;
             referencedRelation: 'resources';
             referencedColumns: ['url'];
           },
@@ -274,14 +302,12 @@ export type Database = {
           {
             foreignKeyName: 'promo_code_product_product_id_fkey';
             columns: ['product_id'];
-            isOneToOne: false;
             referencedRelation: 'products';
             referencedColumns: ['id'];
           },
           {
             foreignKeyName: 'promo_code_product_promo_code_id_fkey';
             columns: ['promo_code_id'];
-            isOneToOne: false;
             referencedRelation: 'promo_code';
             referencedColumns: ['id'];
           },
@@ -289,21 +315,27 @@ export type Database = {
       };
       resources: {
         Row: {
+          bucket: string;
           created_at: string;
           folder: string;
           id: string;
+          provider: Database['public']['Enums']['resource_provider'];
           url: string;
         };
         Insert: {
+          bucket?: string;
           created_at?: string;
           folder?: string;
           id?: string;
+          provider?: Database['public']['Enums']['resource_provider'];
           url: string;
         };
         Update: {
+          bucket?: string;
           created_at?: string;
           folder?: string;
           id?: string;
+          provider?: Database['public']['Enums']['resource_provider'];
           url?: string;
         };
         Relationships: [];
@@ -349,6 +381,7 @@ export type Database = {
         | 'cancelled'
         | 'refunded'
         | 'charged_back';
+      resource_provider: 'SUPABASE' | 'CLOUDFLARE_R2';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -495,6 +528,7 @@ export const Constants = {
         'refunded',
         'charged_back',
       ],
+      resource_provider: ['SUPABASE', 'CLOUDFLARE_R2'],
     },
   },
 } as const;

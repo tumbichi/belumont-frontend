@@ -3,9 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Button } from '@soybelumont/ui/components/button';
+import { Badge } from '@soybelumont/ui/components/badge';
 import { formatPrice } from '@core/utils';
 import { Product } from '@core/data/supabase/products/products.repository';
-import { ArrowRight, ShoppingBag } from 'lucide-react';
+import { ArrowRight, ShoppingBag, Package } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -13,10 +14,17 @@ interface ProductCardProps {
 
 function ProductCard({ product }: ProductCardProps) {
   const t = useTranslations('PRODUCT');
+  const isBundle = product.product_type === 'bundle';
 
   return (
     <div className="flex flex-col overflow-hidden transition bg-white rounded-lg shadow-sm dark:bg-gray-950">
       <div className="relative group">
+        {isBundle && (
+          <Badge className="absolute top-2 left-2 z-10 bg-orange-500 hover:bg-orange-600">
+            <Package className="w-3 h-3 mr-1" />
+            Pack
+          </Badge>
+        )}
         <Image
           src={product.thumbnail_url}
           alt="Product Image"
