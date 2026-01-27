@@ -4,11 +4,15 @@ import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject
 
 export default async function updatePayment(
   id: string,
-  payment: Partial<Pick<Payment, 'status' | 'provider_id'>>
+  payment: Partial<Pick<Payment, 'status' | 'provider_id' | 'amount'>>
 ) {
   const { data, error } = await supabase
     .from('payments')
-    .update({ status: payment.status, provider_id: payment.provider_id })
+    .update({
+      status: payment.status,
+      provider_id: payment.provider_id,
+      amount: payment.amount,
+    })
     .eq('id', id)
     .select();
 

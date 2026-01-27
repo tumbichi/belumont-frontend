@@ -13,6 +13,7 @@ export interface Payment {
   status: PaymentStatus;
   updated_at: Date;
   promo_code_id: string | null;
+  amount: number;
 }
 
 export interface PaymentsRepositoryReturn {
@@ -23,7 +24,7 @@ export interface PaymentsRepositoryReturn {
   ) => Promise<Payment>;
   update: (
     id: string,
-    payment: Partial<Pick<Payment, 'status' | 'provider_id'>>
+    payment: Partial<Pick<Payment, 'status' | 'provider_id' | 'amount'>>
   ) => Promise<Payment>;
 }
 
