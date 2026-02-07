@@ -98,6 +98,7 @@ export async function POST(request: Request) {
     const payment = await supabaseRepository.payments.update(order.payment_id, {
       provider_id: body.data.id,
       status: mpPayment.status,
+      amount: mpPayment.transaction_amount,
     });
 
     return Response.json({ payment });

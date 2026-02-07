@@ -23,7 +23,7 @@ import {
 } from '@soybelumont/ui/components/radio-group';
 import { PaymentProvider } from '@core/data/supabase/payments/payments.repository';
 import paymentSchema, { PaymentSchema } from '../schemas/payment.schema';
-import { Product } from '@core/data/supabase/products';
+import { Product } from '@core/data/supabase/products/products.repository';
 import {
   Form,
   FormControl,

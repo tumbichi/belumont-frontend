@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import Payment from './Payment';
 import OrderSummary from './OrderSummary';
-import { Product } from '@core/data/supabase/products/products.repository';
+import { ProductWithDownload } from '@core/data/supabase/products/products.repository';
 
 interface CheckoutProps {
-  product: Product & { download_url: string };
+  product: ProductWithDownload;
   email?: string;
   name?: string;
 }

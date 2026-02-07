@@ -1,6 +1,7 @@
 import ResendRepository from '@core/data/resend/resend.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import ProductDelivery from '@core/emails/ProductDelivery';
+import PackDelivery from '@core/emails/PackDelivery';
 import { isAxiosError } from 'axios';
 import { z } from 'zod';
 
@@ -50,17 +51,47 @@ export async function POST(request: Request) {
       throw new Error('Product does not exist');
     }
 
+    // Determine email template based on product type
+    let emailReactComponent: React.ReactElement;
+
+    if (product.product_type === 'bundle') {
+      // Get all items in the bundle
+      const bundleItems = await supabaseRepository.products.getBundleItems(
+        product.id
+      );
+
+      const downloadItems = bundleItems
+        .filter((item) => item.product.download_url) // Only items with download URL
+        .map((item) => ({
+          name: item.product.name,
+          downloadUrl: item.product.download_url!,
+        }));
+
+      emailReactComponent = PackDelivery({
+        packName: product.name,
+        username: user.name,
+        items: downloadItems,
+      });
+    } else {
+      // Single product - use original template
+      if (!product.download_url) {
+        throw new Error('Product does not have a download URL');
+      }
+
+      emailReactComponent = ProductDelivery({
+        productName: product.name,
+        username: user.name,
+        downloadLink: product.download_url,
+      });
+    }
+
     // Send email
     await ResendRepository()
       .sendEmail({
         to: user.email,
         from: String(process.env.RESEND_FROM_EMAIL),
         subject: `${product.name} | @soybelumont`,
-        react: ProductDelivery({
-          productName: product.name,
-          username: user.name,
-          downloadLink: product.download_url,
-        }),
+        react: emailReactComponent,
       })
       .then((data) => {
         console.log('email response:', data);

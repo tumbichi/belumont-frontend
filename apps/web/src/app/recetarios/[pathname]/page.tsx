@@ -11,15 +11,22 @@ export default async function ProductDetailsPage({
   params,
 }: ProductDetailsPageProps) {
   const productPathname = (await params).pathname;
-  const product = await ProductsRepository().getByPathname(productPathname);
+  const productsRepo = ProductsRepository();
+  const product = await productsRepo.getByPathname(productPathname);
 
   if (!product) {
     return <Error />;
   }
 
+  // If it's a bundle, fetch the bundle items
+  const bundleItems =
+    product.product_type === 'bundle'
+      ? await productsRepo.getBundleItems(product.id)
+      : [];
+
   return (
     <Container>
-      <ProductDetail product={product} />
+      <ProductDetail product={product} bundleItems={bundleItems} />
     </Container>
   );
 }
