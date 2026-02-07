@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 import {
@@ -22,6 +21,7 @@ import {
 } from '@soybelumont/ui/components/select';
 import { Button } from '@soybelumont/ui/components/button';
 import { Badge } from '@soybelumont/ui/components/badge';
+import { OptimizedImage } from '@soybelumont/ui/components/optimized-image';
 import { formatPrice } from '@core/utils';
 import ProductGallery from './ProductGallery';
 import { Package, Check } from 'lucide-react';
@@ -68,7 +68,7 @@ function ProductDetail({ product, bundleItems = [] }: ProductDetailsProps) {
                   {bundleItems.map((item) => (
                     <li key={item.id} className="flex items-center gap-3">
                       <div className="relative w-12 h-12 overflow-hidden rounded-md shrink-0">
-                        <Image
+                        <OptimizedImage
                           src={item.product.thumbnail_url}
                           alt={item.product.name}
                           fill
