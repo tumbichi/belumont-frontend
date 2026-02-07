@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import sanitizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
-import { Product, UpdateProduct } from '../products.repository';
+import { Product, ProductType, UpdateProduct } from '../products.repository';
 import { Database } from '../../types/supabase';
 
 type ProductSupabase = Database['public']['Tables']['products']['Row'];
@@ -101,6 +101,7 @@ export default async function updateProduct(
 
   return {
     ...sanitizeCreatedAtFromObject(product),
+    product_type: (product.product_type || 'single') as ProductType,
     product_images: productImages
       ? productImages.map((p) => p.resource_url)
       : [],

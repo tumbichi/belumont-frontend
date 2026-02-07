@@ -21,6 +21,8 @@ export function ProductForm() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { isSubmitting, isValidating, isDirty, errors },
     reset,
   } = useForm<ProductDetailsInput>({
@@ -30,19 +32,23 @@ export function ProductForm() {
       price: product.price,
       pathname: product.pathname,
       description: product.description,
+      product_type: product.product_type,
     },
   });
 
   const handleSucessSubmit = async (data: ProductDetailsInput) => {
     console.log('[ProductForm] Submitted data:', data);
+    // Exclude product_type from updates - it should not be changed after creation
+    const { product_type: _product_type, ...updateData } = data;
     try {
-      const updatedProduct = await updateProduct(product.id, data);
+      const updatedProduct = await updateProduct(product.id, updateData);
       updateProductSelected(updatedProduct);
       reset({
         name: updatedProduct.name,
         price: updatedProduct.price,
         pathname: updatedProduct.pathname,
         description: updatedProduct.description,
+        product_type: updatedProduct.product_type,
       });
       sonner.toast.success(t('PRODUCTS.PRODUCT_UPDATED_SUCCESS'), {
         dismissible: true,
@@ -72,6 +78,10 @@ export function ProductForm() {
           isSubmitting={isSubmitting}
           isValidating={isValidating}
           isDirty={isDirty}
+          watch={watch}
+          setValue={setValue}
+          showProductType={true}
+          disableProductType={true}
         />
       </form>
     </Card>

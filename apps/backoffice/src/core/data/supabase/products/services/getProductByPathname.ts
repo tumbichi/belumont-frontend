@@ -1,13 +1,13 @@
 import { supabase } from '@core/data/supabase/client';
 import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
-import { Product } from '../products.repository';
+import { Product, ProductType } from '../products.repository';
 export default async function getProductByPathname(
   pathname: string
 ): Promise<Omit<Product, 'download_url'> | null> {
   const { data: product } = await supabase
     .from('products')
     .select(
-      'active,created_at,description,id,image_url,thumbnail_url,name,pathname,price,id'
+      'active,created_at,description,id,image_url,thumbnail_url,name,pathname,price,product_type,id'
     )
     .eq('pathname', pathname)
     .single();
@@ -21,6 +21,7 @@ export default async function getProductByPathname(
     .order('resource_url', { ascending: true });
   return {
     ...sanatizeCreatedAtFromObject(product),
+    product_type: (product.product_type || 'single') as ProductType,
     product_images: productImages
       ? productImages.map((productImage) => productImage.resource_url)
       : [],

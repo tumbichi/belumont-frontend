@@ -132,6 +132,45 @@ export type Database = {
           },
         ];
       };
+      product_bundle_items: {
+        Row: {
+          bundle_id: string;
+          created_at: string | null;
+          id: string;
+          product_id: string;
+          sort_order: number | null;
+        };
+        Insert: {
+          bundle_id: string;
+          created_at?: string | null;
+          id?: string;
+          product_id: string;
+          sort_order?: number | null;
+        };
+        Update: {
+          bundle_id?: string;
+          created_at?: string | null;
+          id?: string;
+          product_id?: string;
+          sort_order?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'product_bundle_items_bundle_id_fkey';
+            columns: ['bundle_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'product_bundle_items_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       product_images: {
         Row: {
           created_at: string;
@@ -179,6 +218,7 @@ export type Database = {
           name: string;
           pathname: string;
           price: number;
+          product_type: string;
           thumbnail_url: string;
         };
         Insert: {
@@ -191,6 +231,7 @@ export type Database = {
           name: string;
           pathname: string;
           price: number;
+          product_type?: string;
           thumbnail_url?: string;
         };
         Update: {
@@ -203,6 +244,7 @@ export type Database = {
           name?: string;
           pathname?: string;
           price?: number;
+          product_type?: string;
           thumbnail_url?: string;
         };
         Relationships: [
