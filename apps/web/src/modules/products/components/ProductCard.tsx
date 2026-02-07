@@ -22,7 +22,7 @@ function ProductCard({ product }: ProductCardProps) {
         {isBundle && (
           <Badge className="absolute top-2 left-2 z-10 bg-orange-500 hover:bg-orange-600">
             <Package className="w-3 h-3 mr-1" />
-            Pack
+            {t('PACK_BADGE')}
           </Badge>
         )}
         <Image

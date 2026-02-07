@@ -69,7 +69,7 @@ export default async function getBundleItems(
 
   if (error) {
     console.error('Error fetching bundle items:', error);
-    return [];
+    throw error;
   }
 
   if (!data) {
