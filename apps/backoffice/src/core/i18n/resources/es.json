@@ -166,7 +166,9 @@
     "SELECTED_COUNT": "seleccionado(s)",
     "BUNDLE_SELECT_PRODUCTS": "Seleccionar productos para el pack",
     "BUNDLE_SELECT_PRODUCTS_DESCRIPTION": "Después de crear el producto, podrás agregar productos individuales al pack desde la pestaña de productos del pack.",
-    "SORT_ORDER": "Orden"
+    "SORT_ORDER": "Orden",
+    "PRODUCT_SINGULAR": "producto",
+    "PRODUCT_PLURAL": "productos"
   },
   "ORDERS": {
     "TITLE": "Órdenes",

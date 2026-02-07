@@ -127,7 +127,7 @@ export function BundleItemsManager() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {bundleItems.length} {bundleItems.length === 1 ? 'producto' : 'productos'}
+          {bundleItems.length} {t(bundleItems.length === 1 ? 'PRODUCTS.PRODUCT_SINGULAR' : 'PRODUCTS.PRODUCT_PLURAL')}
         </p>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
