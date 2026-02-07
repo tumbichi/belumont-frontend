@@ -78,7 +78,7 @@ export default function PackDelivery({
 
               {items.map((item, index) => (
                 <Section
-                  key={index}
+                  key={item.downloadUrl}
                   className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-3"
                 >
                   <Row>

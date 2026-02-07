@@ -11,6 +11,7 @@ type ProductRow = {
   description: string | null;
   product_type: string;
   download_url: string | null;
+  created_at: string;
 };
 
 /**
@@ -37,7 +38,8 @@ export default async function getBundleItems(
         thumbnail_url,
         description,
         product_type,
-        download_url
+        download_url,
+        created_at
       )
     `
     )
@@ -46,7 +48,7 @@ export default async function getBundleItems(
 
   if (error) {
     console.error('Error fetching bundle items:', error);
-    return [];
+    throw error;
   }
 
   if (!data) {
@@ -76,7 +78,7 @@ export default async function getBundleItems(
         description: product.description,
         product_type: (product.product_type || 'single') as ProductType,
         download_url: product.download_url,
-        created_at: new Date(),
+        created_at: new Date(product.created_at),
       },
     };
   });
