@@ -12,16 +12,11 @@ import { formatPrice } from '@core/utils/formatters/formatPrice';
 import formatDatetime from '@core/utils/formatters/formatDate';
 import Image from 'next/image';
 import { Button } from '@soybelumont/ui/components/button';
+import { Badge } from '@soybelumont/ui/components/badge';
 import { BookImageIcon } from 'lucide-react';
 import { Product } from '@core/data/supabase/products';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-
-// interface Column<T extends object> {
-//   title: string;
-//   key: keyof T;
-//   render?: (item: T) => React.ReactNode;
-// }
 
 interface ProductsListProps {
   products: Product[];
@@ -41,6 +36,7 @@ function ProductTable({ products }: ProductsListProps) {
         <TableRow>
           <TableHead>{t('PRODUCTS.COVER_IMAGE')}</TableHead>
           <TableHead>{t('PRODUCTS.STATUS')}</TableHead>
+          <TableHead>{t('PRODUCTS.PRODUCT_TYPE')}</TableHead>
           <TableHead>{t('PRODUCTS.NAME')}</TableHead>
           <TableHead>{t('PRODUCTS.PRICE')}</TableHead>
           <TableHead>{t('PRODUCTS.SLUG')}</TableHead>
@@ -72,6 +68,13 @@ function ProductTable({ products }: ProductsListProps) {
                   {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
                 </span>
               </TableCell>
+              <TableCell>
+                <Badge variant={product.product_type === 'bundle' ? 'default' : 'secondary'}>
+                  {product.product_type === 'bundle'
+                    ? t('PRODUCTS.PRODUCT_TYPE_BUNDLE')
+                    : t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
+                </Badge>
+              </TableCell>
               <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{formatPrice(product.price)}</TableCell>
               <TableCell>{product.pathname}</TableCell>
@@ -95,7 +98,7 @@ function ProductTable({ products }: ProductsListProps) {
         ) : (
           <TableRow>
             <TableCell
-              colSpan={4}
+              colSpan={8}
               className="px-6 py-4 text-sm text-center text-gray-500"
             >
               {t('PRODUCTS.NO_PRODUCTS')}

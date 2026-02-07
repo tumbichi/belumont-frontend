@@ -59,6 +59,11 @@ export function ProductHeader() {
                 <Badge variant={product.active ? 'default' : 'secondary'}>
                   {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
                 </Badge>
+                <Badge variant="outline">
+                  {product.product_type === 'bundle'
+                    ? t('PRODUCTS.PRODUCT_TYPE_BUNDLE')
+                    : t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
+                </Badge>
                 <span
                   className="text-sm text-muted-foreground"
                   suppressHydrationWarning

@@ -1,6 +1,6 @@
 import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 import { supabase } from '../../client';
-import { Product } from '../products.repository';
+import { Product, ProductType } from '../products.repository';
 
 export default async function getAllProductsForBackoffice(): Promise<
   Product[]
@@ -20,5 +20,8 @@ export default async function getAllProductsForBackoffice(): Promise<
     return [];
   }
 
-  return data.map((product) => sanatizeCreatedAtFromObject(product));
+  return data.map((product) => ({
+    ...sanatizeCreatedAtFromObject(product),
+    product_type: (product.product_type || 'single') as ProductType,
+  }));
 }

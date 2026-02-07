@@ -6,6 +6,7 @@ import { ProductHeader } from './ProductHeader';
 import { ProductForm } from './ProductForm';
 import { ProductImageManager } from './ProductImageManager';
 import { PdfManager } from './ProductPdfManager';
+import { BundleItemsManager } from './BundleItemsManager';
 import {
   Tabs,
   TabsContent,
@@ -13,9 +14,12 @@ import {
   TabsTrigger,
 } from '@soybelumont/ui/components/tabs';
 import { useTranslations } from 'next-intl';
+import { useProductSelected } from '../contexts/product-selected-context';
 
 function ProductDetails() {
   const t = useTranslations();
+  const { product } = useProductSelected();
+  const isBundle = product.product_type === 'bundle';
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,7 +35,14 @@ function ProductDetails() {
               <TabsTrigger value="images">
                 {t('PRODUCTS.IMAGES_TAB')}
               </TabsTrigger>
-              <TabsTrigger value="pdfs">{t('PRODUCTS.PDF_TAB')}</TabsTrigger>
+              {!isBundle && (
+                <TabsTrigger value="pdfs">{t('PRODUCTS.PDF_TAB')}</TabsTrigger>
+              )}
+              {isBundle && (
+                <TabsTrigger value="bundle_items">
+                  {t('PRODUCTS.BUNDLE_ITEMS_TAB')}
+                </TabsTrigger>
+              )}
             </TabsList>
 
             {/* Product Information Section */}
@@ -57,15 +68,29 @@ function ProductDetails() {
             </TabsContent>
             <Separator />
 
-            {/* PDF Management Section */}
-            <TabsContent value="pdfs">
-              <section>
-                <h2 className="mb-6 text-2xl font-bold">
-                  {t('PRODUCTS.PDF_TITLE')}
-                </h2>
-                <PdfManager />
-              </section>
-            </TabsContent>
+            {/* PDF Management Section - only for single products */}
+            {!isBundle && (
+              <TabsContent value="pdfs">
+                <section>
+                  <h2 className="mb-6 text-2xl font-bold">
+                    {t('PRODUCTS.PDF_TITLE')}
+                  </h2>
+                  <PdfManager />
+                </section>
+              </TabsContent>
+            )}
+
+            {/* Bundle Items Management Section - only for bundle products */}
+            {isBundle && (
+              <TabsContent value="bundle_items">
+                <section>
+                  <h2 className="mb-6 text-2xl font-bold">
+                    {t('PRODUCTS.BUNDLE_ITEMS_TITLE')}
+                  </h2>
+                  <BundleItemsManager />
+                </section>
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </main>

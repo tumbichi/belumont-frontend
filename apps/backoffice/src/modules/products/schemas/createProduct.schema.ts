@@ -5,6 +5,7 @@ export const productDetails = z.object({
   price: z.number().min(0, 'El precio debe ser un número positivo'),
   pathname: z.string().min(1, 'La ruta es requerida'),
   description: z.string().nullable().optional(),
+  product_type: z.enum(['single', 'bundle']).optional().default('single'),
 });
 
 export const createProductFormSchema = productDetails.extend({

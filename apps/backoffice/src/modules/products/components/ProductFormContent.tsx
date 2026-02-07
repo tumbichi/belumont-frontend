@@ -7,6 +7,7 @@ import { Textarea } from '@soybelumont/ui/components/textarea';
 import { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { ProductDetailsInput } from '../schemas/createProduct.schema';
 import { useTranslations } from 'next-intl';
+import { Badge } from '@soybelumont/ui/components/badge';
 
 interface ProductFormContentProps {
   register: UseFormRegister<ProductDetailsInput>;
@@ -19,6 +20,8 @@ interface ProductFormContentProps {
   watch?: UseFormWatch<ProductDetailsInput>;
   setValue?: UseFormSetValue<ProductDetailsInput>;
   onPathnameManualEdit?: () => void;
+  showProductType?: boolean;
+  disableProductType?: boolean;
 }
 
 export function ProductFormContent({
@@ -32,8 +35,12 @@ export function ProductFormContent({
   watch,
   setValue,
   onPathnameManualEdit,
+  showProductType = false,
+  disableProductType = false,
 }: ProductFormContentProps) {
   const t = useTranslations();
+
+  const currentProductType = watch ? watch('product_type') : 'single';
 
   const handlePathnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onPathnameManualEdit) {
@@ -52,6 +59,44 @@ export function ProductFormContent({
 
   return (
     <div className="space-y-6">
+      {/* Product Type Selector */}
+      {showProductType && (
+        <div className="space-y-2">
+          <Label>{t('PRODUCTS.PRODUCT_TYPE')}</Label>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              disabled={disableProductType}
+              onClick={() => setValue?.('product_type', 'single', { shouldDirty: true })}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors ${
+                currentProductType === 'single'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border hover:border-primary/50'
+              } ${disableProductType ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              <Badge variant={currentProductType === 'single' ? 'default' : 'secondary'}>
+                {t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
+              </Badge>
+            </button>
+            <button
+              type="button"
+              disabled={disableProductType}
+              onClick={() => setValue?.('product_type', 'bundle', { shouldDirty: true })}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors ${
+                currentProductType === 'bundle'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border hover:border-primary/50'
+              } ${disableProductType ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              <Badge variant={currentProductType === 'bundle' ? 'default' : 'secondary'}>
+                {t('PRODUCTS.PRODUCT_TYPE_BUNDLE')}
+              </Badge>
+            </button>
+          </div>
+          <input type="hidden" {...register('product_type')} />
+        </div>
+      )}
+
       {/* Product Name */}
       <div className="space-y-2">
         <Label htmlFor="name">{t('PRODUCTS.PRODUCT_NAME')}</Label>
