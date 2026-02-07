@@ -13,7 +13,7 @@
     "format": "prettier --write '**/*.{ts,tsx,md}'",
     "prettier:ci": "FILES=$(git diff --name-only --diff-filter=ACMRTUXB origin/main | grep -E '\\.(js|jsx|ts|tsx|css|scss|less|html|json|md)$' || true) && [ -n \"$FILES\" ] && prettier --check $FILES || echo 'No files to format'",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,less,html,json,md}\"",
-    "prettier:write": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,less,html,json|md}\"",
+    "prettier:write": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,less,html,json,md}\"",
     "gen:types": "supabase gen types typescript --linked > database.types.ts",
     "gen:types:local": "test -n \"$SUPABASE_SERVICE_ROLE_KEY\" || { echo 'Error: SUPABASE_SERVICE_ROLE_KEY no está definida'; exit 1; } && curl -s \"http://127.0.0.1:54321/pg/generators/typescript?included_schemas=public,graphql_public\" -H \"apikey: $SUPABASE_SERVICE_ROLE_KEY\" > database.types.ts"
   },
