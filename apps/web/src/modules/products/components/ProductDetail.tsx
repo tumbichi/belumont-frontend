@@ -49,7 +49,7 @@ function ProductDetail({ product, bundleItems = [] }: ProductDetailsProps) {
               {isBundle && (
                 <Badge className="mb-2 bg-orange-500 hover:bg-orange-600">
                   <Package className="w-3 h-3 mr-1" />
-                  Pack
+                  {t('PACK_BADGE')}
                 </Badge>
               )}
               <h1 className="text-3xl font-bold md:text-4xl">{product.name}</h1>
@@ -62,7 +62,7 @@ function ProductDetail({ product, bundleItems = [] }: ProductDetailsProps) {
             {isBundle && bundleItems.length > 0 && (
               <div className="p-4 bg-white rounded-lg dark:bg-gray-900">
                 <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">
-                  Este pack incluye:
+                  {t('PACK_INCLUDES')}
                 </h3>
                 <ul className="space-y-3">
                   {bundleItems.map((item) => (
@@ -72,6 +72,7 @@ function ProductDetail({ product, bundleItems = [] }: ProductDetailsProps) {
                           src={item.product.thumbnail_url}
                           alt={item.product.name}
                           fill
+                          sizes="48px"
                           className="object-cover"
                         />
                       </div>
