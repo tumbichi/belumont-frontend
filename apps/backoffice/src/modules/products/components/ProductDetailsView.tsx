@@ -142,15 +142,19 @@ function ProductDetailsView({ product }: ProductDetailsViewProps) {
                   <div>
                     <Label className="text-sm font-medium">{t('PRODUCTS.DOWNLOAD_URL')}</Label>
                     <p>
-                      <Link
-                        href={product.download_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-blue-600 hover:underline"
-                      >
-                        <FileText className="w-4 h-4" />
-                        {product.download_url.split('/').pop()}
-                      </Link>
+                      {product.download_url ? (
+                        <Link
+                          href={product.download_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-blue-600 hover:underline"
+                        >
+                          <FileText className="w-4 h-4" />
+                          {product.download_url.split('/').pop()}
+                        </Link>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
                     </p>
                   </div>
                 </div>

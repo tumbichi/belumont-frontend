@@ -16,12 +16,14 @@ export interface Product {
   description: string | null;
   product_type: ProductType;
   created_at: Date;
+  updated_at: Date;
 }
 
 export interface ProductWithDownload extends Product {
   download_url: string | null;
 }
 
+/** BundleItem with download_url - for server-side use only (e.g., sending emails) */
 export interface BundleItem {
   id: string;
   bundle_id: string;
@@ -30,11 +32,23 @@ export interface BundleItem {
   product: ProductWithDownload;
 }
 
+/** BundleItem without download_url - safe for client-side use */
+export interface BundleItemPublic {
+  id: string;
+  bundle_id: string;
+  product_id: string;
+  sort_order: number | null;
+  product: Product;
+}
+
 export interface ProductsRepositoryReturn {
   getAll: (filters?: { active: boolean }) => Promise<Product[]>;
   getById: (id: string) => Promise<ProductWithDownload | null>;
   getByPathname: (pathname: string) => Promise<Product | null>;
-  getBundleItems: (bundleId: string) => Promise<BundleItem[]>;
+  getBundleItems: {
+    (bundleId: string, options: { includeDownloadUrl: true }): Promise<BundleItem[]>;
+    (bundleId: string, options?: { includeDownloadUrl?: false }): Promise<BundleItemPublic[]>;
+  };
 }
 
 export const ProductsRepository = (): ProductsRepositoryReturn => ({

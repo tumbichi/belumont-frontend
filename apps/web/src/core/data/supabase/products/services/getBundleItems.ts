@@ -1,5 +1,9 @@
 import { supabase } from '@core/data/supabase/client';
-import { BundleItem, ProductType } from '../products.repository';
+import {
+  BundleItem,
+  BundleItemPublic,
+  ProductType,
+} from '../products.repository';
 
 type ProductRow = {
   id: string;
@@ -11,15 +15,32 @@ type ProductRow = {
   description: string | null;
   product_type: string;
   download_url: string | null;
+  created_at: string;
+  updated_at: string;
 };
+
+interface GetBundleItemsOptions {
+  includeDownloadUrl?: boolean;
+}
 
 /**
  * Get all items (child products) that belong to a bundle
  * Returns products ordered by sort_order
+ * @param bundleId - The ID of the bundle
+ * @param options.includeDownloadUrl - If true, includes download_url (server-side only). Defaults to false.
  */
 export default async function getBundleItems(
-  bundleId: string
-): Promise<BundleItem[]> {
+  bundleId: string,
+  options: { includeDownloadUrl: true }
+): Promise<BundleItem[]>;
+export default async function getBundleItems(
+  bundleId: string,
+  options?: { includeDownloadUrl?: false }
+): Promise<BundleItemPublic[]>;
+export default async function getBundleItems(
+  bundleId: string,
+  options?: GetBundleItemsOptions
+): Promise<BundleItem[] | BundleItemPublic[]> {
   const { data, error } = await supabase
     .from('product_bundle_items')
     .select(
@@ -37,7 +58,9 @@ export default async function getBundleItems(
         thumbnail_url,
         description,
         product_type,
-        download_url
+        download_url,
+        created_at,
+        updated_at
       )
     `
     )
@@ -61,23 +84,27 @@ export default async function getBundleItems(
       throw new Error(`Product not found for bundle item ${item.id}`);
     }
 
+    const baseProduct = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      pathname: product.pathname,
+      image_url: product.image_url,
+      thumbnail_url: product.thumbnail_url,
+      description: product.description,
+      product_type: (product.product_type || 'single') as ProductType,
+      created_at: new Date(product.created_at),
+      updated_at: new Date(product.updated_at),
+    };
+
     return {
       id: item.id,
       bundle_id: item.bundle_id,
       product_id: item.product_id,
       sort_order: item.sort_order,
-      product: {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        pathname: product.pathname,
-        image_url: product.image_url,
-        thumbnail_url: product.thumbnail_url,
-        description: product.description,
-        product_type: (product.product_type || 'single') as ProductType,
-        download_url: product.download_url,
-        created_at: new Date(),
-      },
+      product: options?.includeDownloadUrl
+        ? { ...baseProduct, download_url: product.download_url }
+        : baseProduct,
     };
   });
 }

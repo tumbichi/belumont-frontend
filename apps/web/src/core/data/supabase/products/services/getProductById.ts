@@ -1,5 +1,4 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
 import { ProductWithDownload, ProductType } from '../products.repository';
 
 export default async function getProductById(
@@ -7,7 +6,7 @@ export default async function getProductById(
 ): Promise<ProductWithDownload | null> {
   const { data } = await supabase
     .from('products')
-    .select('id, name, price, pathname, image_url, thumbnail_url, description, product_type, download_url, created_at')
+    .select('id, name, price, pathname, image_url, thumbnail_url, description, product_type, download_url, created_at, updated_at')
     .eq('id', id);
 
   if (!data || data.length === 0 || !data[0]) {
@@ -17,8 +16,16 @@ export default async function getProductById(
   const product = data[0];
 
   return {
-    ...sanatizeCreatedAtFromObject(product),
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    pathname: product.pathname,
+    image_url: product.image_url,
+    thumbnail_url: product.thumbnail_url,
+    description: product.description,
     product_type: (product.product_type || 'single') as ProductType,
     download_url: product.download_url,
+    created_at: new Date(product.created_at),
+    updated_at: new Date(product.updated_at),
   };
 }

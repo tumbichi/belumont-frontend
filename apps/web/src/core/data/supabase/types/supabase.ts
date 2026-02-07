@@ -207,6 +207,7 @@ export type Database = {
           price: number;
           product_type: string;
           thumbnail_url: string;
+          updated_at: string;
         };
         Insert: {
           active?: boolean;
@@ -220,6 +221,7 @@ export type Database = {
           price: number;
           product_type?: string;
           thumbnail_url?: string;
+          updated_at?: string;
         };
         Update: {
           active?: boolean;
@@ -233,6 +235,7 @@ export type Database = {
           price?: number;
           product_type?: string;
           thumbnail_url?: string;
+          updated_at?: string;
         };
         Relationships: [
           {

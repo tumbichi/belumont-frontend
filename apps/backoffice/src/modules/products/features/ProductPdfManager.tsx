@@ -186,11 +186,11 @@ export function PdfManager() {
       // });
       const productUpdated = await updateProductPdf(product.id, {
         download_url: publicUrl,
-        old_download_url: oldDownloadUrl,
+        old_download_url: oldDownloadUrl ?? '',
       });
       updateProductSelected(productUpdated);
 
-      const oldPdfFilename = oldDownloadUrl.split('/').pop() ?? '';
+      const oldPdfFilename = oldDownloadUrl?.split('/').pop() ?? '';
       await deleteFromR2(oldPdfFilename)
         .then(() => console.log('Old PDF deleted from R2'))
         .catch(() => console.warn('Failed to delete old PDF from R2'));
@@ -226,7 +226,7 @@ export function PdfManager() {
                 {t('PRODUCTS.CURRENT_DOCUMENT')}
               </Label>
               <a
-                href={product.download_url}
+                href={product.download_url ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-primary hover:underline"
@@ -239,7 +239,7 @@ export function PdfManager() {
               <FileText size={20} className="text-primary" />
               <div>
                 <p className="text-sm font-medium">
-                  {getPdfFileName(product.download_url)}
+                  {getPdfFileName(product.download_url ?? undefined)}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {product.download_url}

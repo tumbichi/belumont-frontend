@@ -1,5 +1,5 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { Product } from '../products.repository';
 
 export type CreateProductInput = Pick<
@@ -55,7 +55,7 @@ export default async function createProduct(
   }
 
   return {
-    ...sanatizeCreatedAtFromObject(data),
+    ...sanitizeDatesFromObject(data),
     product_images: product_images || [],
   } as Product;
 }

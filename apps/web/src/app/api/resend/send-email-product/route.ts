@@ -55,9 +55,10 @@ export async function POST(request: Request) {
     let emailReactComponent: React.ReactElement;
 
     if (product.product_type === 'bundle') {
-      // Get all items in the bundle
+      // Get all items in the bundle with download URLs (server-side only)
       const bundleItems = await supabaseRepository.products.getBundleItems(
-        product.id
+        product.id,
+        { includeDownloadUrl: true }
       );
 
       const downloadItems = bundleItems
