@@ -100,7 +100,7 @@ function ProductGallery({ images }: ProductGalleryProps) {
                   alt="Product Image"
                   sizes="100vw"
                   className="!w-auto md:max-w-xl lg:max-w-2xl object-contain"
-                  skeletonClassName="h-screen w-screen"
+                  skeletonClassName="md:max-w-xl lg:max-w-2xl"
                   fill
                 />
               </CarouselItem>
