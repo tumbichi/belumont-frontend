@@ -1,4 +1,4 @@
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { supabase } from '../../client';
 import { Product } from '../products.repository';
 export default async function getActiveProducts(filters?: {
@@ -11,5 +11,5 @@ export default async function getActiveProducts(filters?: {
   if (!data) {
     return [];
   }
-  return data.map((product) => sanatizeCreatedAtFromObject(product));
+  return data.map((product) => sanitizeDatesFromObject(product));
 }

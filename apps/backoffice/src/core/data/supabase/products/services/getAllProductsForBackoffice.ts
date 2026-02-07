@@ -1,11 +1,14 @@
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { supabase } from '../../client';
 import { Product } from '../products.repository';
 
 export default async function getAllProductsForBackoffice(): Promise<
   Product[]
 > {
-  const { data, error } = await supabase.from('products').select();
+  const { data, error } = await supabase
+    .from('products')
+    .select()
+    .order('updated_at', { ascending: false });
 
   console.log('[supabase.products] getAllProductsForBackoffice', data);
 
@@ -20,5 +23,5 @@ export default async function getAllProductsForBackoffice(): Promise<
     return [];
   }
 
-  return data.map((product) => sanatizeCreatedAtFromObject(product));
+  return data.map((product) => sanitizeDatesFromObject(product));
 }
