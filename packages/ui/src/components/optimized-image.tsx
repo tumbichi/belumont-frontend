@@ -26,7 +26,7 @@ function OptimizedImage({
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       {/* Skeleton placeholder */}
       {!isLoaded && (
         <div
