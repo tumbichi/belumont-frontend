@@ -1,10 +1,10 @@
 [Read in English](./README.md)
 
-# soybelumont
+# @soybelumont/web
 
-Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu Mont](https://www.instagram.com/soybelumont/), creadora de contenido enfocada en cocina saludable y estilo de vida. Construida con **Next.js** y **TypeScript**, esta plataforma está diseñada para evolucionar como el portafolio personal y blog de Belu, ofreciendo un espacio único para inspirar y conectar con una comunidad apasionada por la cocina, los viajes y el bienestar.
+Bienvenido al repositorio **@soybelumont/web**, la aplicación web pública de [Belu Mont](https://www.instagram.com/soybelumont/), creadora de contenido enfocada en cocina saludable y estilo de vida. Construida con **Next.js** y **TypeScript**, esta plataforma está diseñada para evolucionar como el portafolio personal y blog de Belu, ofreciendo un espacio único para inspirar y conectar con una comunidad apasionada por la cocina, los viajes y el bienestar.
 
-> **Nota:** Actualmente, la aplicación se encuentra en una fase inicial y la principal funcionalidad disponible es una tienda de recetarios saludables.
+> **Nota:** Esta app forma parte del [monorepo belumont-frontend](../../README.md). Actualmente, la principal funcionalidad disponible es una tienda de recetarios saludables.
 
 ---
 
@@ -25,13 +25,18 @@ Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu M
 - [Next.js](https://nextjs.org/) – Framework de React para aplicaciones web rápidas y escalables.
 - [TypeScript](https://www.typescriptlang.org/) – Tipado estático para mayor robustez.
 - [Tailwind CSS](https://tailwindcss.com/) - Framework de CSS "utility-first".
+- [Radix UI](https://www.radix-ui.com/) - Componentes de UI headless (via `@soybelumont/ui`).
+- [Supabase](https://supabase.com/) - Backend as a service (PostgreSQL + Auth).
+- [Mercado Pago](https://www.mercadopago.com.ar/) - Integración de pagos.
+- [Resend](https://resend.com/) - Emails transaccionales.
+- [next-intl](https://next-intl.dev/) - Internacionalización.
 - [pnpm](https://pnpm.io/) - Gestor de paquetes rápido y eficiente.
 
 ---
 
 ## 🚀 Instalación y uso local
 
-1. **Clona el repositorio:**
+1. **Clona el repositorio** (desde la raíz del monorepo):
 
    ```bash
    git clone https://github.com/tumbichi/belumont-frontend.git
@@ -45,12 +50,16 @@ Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu M
    ```
 
 3. **Configura las variables de entorno:**
-   Crea un archivo `.env.local` en la raíz del proyecto y añade las variables de entorno necesarias.
+   Crea un archivo `.env.local` en `apps/web/` y añade las variables de entorno necesarias.
 
 4. **Inicia la aplicación en modo desarrollo:**
 
    ```bash
-   pnpm run dev
+   # Desde la raíz del monorepo
+   pnpm dev
+
+   # O solo la app web
+   cd apps/web && pnpm dev
    ```
 
 5. **Visita:** [http://localhost:3000](http://localhost:3000)
@@ -62,15 +71,14 @@ Bienvenido al repositorio **soybelumont**, la aplicación web oficial de [Belu M
 El proyecto sigue una organización modular y centrada en las funcionalidades para facilitar el mantenimiento y la escalabilidad.
 
 ```
-/
-├── .github/              # Workflows de GitHub Actions para CI/CD
+apps/web/
 ├── public/               # Archivos estáticos (imágenes, logos)
 ├── src/
 │   ├── app/              # Rutas principales de la aplicación (App Router de Next.js)
 │   │   ├── api/          # Rutas de la API interna
-│   │   ├── (paginas)/    # Diferentes páginas de la aplicación
+│   │   ├── recetarios/   # Páginas de recetarios
+│   │   ├── pago/         # Páginas de pago
 │   │   └── layout.tsx    # Layout principal de la aplicación
-│   │   └── page.tsx      # Página de inicio
 │   ├── core/             # Lógica de negocio y componentes reutilizables
 │   │   ├── components/   # Componentes UI genéricos (botones, cards, etc.)
 │   │   ├── data/         # Lógica de acceso a datos (clientes de API, repositorios)
@@ -79,12 +87,9 @@ El proyecto sigue una organización modular y centrada en las funcionalidades pa
 │   │   └── utils/        # Utilidades generales
 │   └── modules/          # Módulos de funcionalidades específicas
 │       ├── payments/     # Lógica y componentes relacionados con pagos
-│       ├── products/     # Lógica y componentes para la gestión de productos
-│       └── users/        # Lógica y componentes para la gestión de usuarios
-├── .eslintrc.json        # Configuración de ESLint
+│       └── products/     # Lógica y componentes para la gestión de productos
 ├── next.config.ts        # Configuración de Next.js
 ├── package.json          # Dependencias y scripts del proyecto
-├── pnpm-lock.yaml        # Lockfile de pnpm
 ├── tailwind.config.ts    # Configuración de Tailwind CSS
 └── tsconfig.json         # Configuración de TypeScript
 ```
@@ -120,6 +125,18 @@ Belu Mont es una creadora de contenido argentina especializada en gastronomía s
 - [Instagram](https://www.instagram.com/soybelumont/)
 - [TikTok](https://www.tiktok.com/@soybelumont)
 - [YouTube](https://www.youtube.com/@soybelumont)
+
+---
+
+## 📜 Scripts
+
+| Script | Descripción |
+|---|---|
+| `pnpm dev` | Inicia el servidor de desarrollo en el puerto 3000 |
+| `pnpm build` | Compila la aplicación para producción |
+| `pnpm start` | Inicia el servidor de producción |
+| `pnpm lint` | Ejecuta ESLint |
+| `pnpm check-types` | Verifica los tipos de TypeScript |
 
 ---
 
