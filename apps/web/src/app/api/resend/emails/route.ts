@@ -1,6 +1,15 @@
 export async function GET() {
   try {
-    const response = await fetch('https://api.resend.com/emails', {
+    const resendApiUrl = process.env.RESEND_API_URL;
+
+    if (!resendApiUrl) {
+      return Response.json(
+        { success: false, error: 'RESEND_API_URL is not configured' },
+        { status: 500 }
+      );
+    }
+
+    const response = await fetch(`${resendApiUrl}/emails`, {
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },

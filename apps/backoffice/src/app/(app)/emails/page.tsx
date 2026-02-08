@@ -20,15 +20,14 @@ interface ResendEmail {
 }
 
 async function getEmails(): Promise<ResendEmail[]> {
-  const webAppUrl =
-    process.env.NEXT_PUBLIC_WEB_APP_URL || process.env.WEB_APP_URL;
+  const resendApiUrl = process.env.RESEND_API_URL;
 
-  if (!webAppUrl) {
+  if (!resendApiUrl) {
     return [];
   }
 
   try {
-    const response = await fetch(`${webAppUrl}/api/resend/emails`, {
+    const response = await fetch(`${resendApiUrl}/api/resend/emails`, {
       cache: 'no-store',
     });
 
