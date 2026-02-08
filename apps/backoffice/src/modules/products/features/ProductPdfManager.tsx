@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@soybelumont/ui/components/button';
 import { Card } from '@soybelumont/ui/components/card';
 import { Label } from '@soybelumont/ui/components/label';
@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
 } from '@soybelumont/ui/components/alert-dialog';
 import { FileText, Upload } from 'lucide-react';
-import { EmailNotificationDialog } from '../components/ProductEmailNotificationDialog';
+import { EmailNotificationDialog, Buyer } from '../components/ProductEmailNotificationDialog';
 import { useProductSelected } from '../contexts/product-selected-context';
 import { FileWithPreview } from '../actions/updateProductImage';
 import { sonner } from '@soybelumont/ui/components/sonner';
@@ -29,12 +29,8 @@ import { Progress } from '@soybelumont/ui/components/progress';
 import attempt from '@core/lib/promises/attempt';
 import updateProductPdf from '../actions/updateProductPdf';
 import deleteFromR2 from '../actions/deletefromR2';
-
-interface Buyer {
-  id: string;
-  name: string;
-  email: string;
-}
+import getProductBuyers from '../actions/getProductBuyers';
+import sendProductUpdateEmails from '../actions/sendProductUpdateEmails';
 
 export function PdfManager() {
   const t = useTranslations();
@@ -48,20 +44,20 @@ export function PdfManager() {
   );
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isSendingEmails, setIsSendingEmails] = useState(false);
 
-  const [mockBuyers] = useState<Buyer[]>([
-    { id: '1', name: 'John Smith', email: 'john.smith@example.com' },
-    { id: '2', name: 'Maria Garcia', email: 'maria.garcia@example.com' },
-    { id: '3', name: 'Ahmed Hassan', email: 'ahmed.hassan@example.com' },
-    { id: '4', name: 'Emma Wilson', email: 'emma.wilson@example.com' },
-    { id: '5', name: 'Lisa Chen', email: 'lisa.chen@example.com' },
-    {
-      id: '6',
-      name: 'Carlos Rodriguez',
-      email: 'carlos.rodriguez@example.com',
-    },
-    { id: '7', name: 'Anna Mueller', email: 'anna.mueller@example.com' },
-  ]);
+  const [buyers, setBuyers] = useState<Buyer[]>([]);
+
+  const loadBuyers = useCallback(async () => {
+    const { data, error } = await attempt(getProductBuyers(product.id));
+    if (!error && data) {
+      setBuyers(data);
+    }
+  }, [product.id]);
+
+  useEffect(() => {
+    loadBuyers();
+  }, [loadBuyers]);
 
   const getPdfFileName = (url?: string) => {
     try {
@@ -210,8 +206,41 @@ export function PdfManager() {
     }
   };
 
-  const handleSendEmails = () => {
-    console.log('[v0] Sending emails to previous buyers about new PDF version');
+  const handleSendEmails = async () => {
+    if (!product.download_url || buyers.length === 0) return;
+
+    setIsSendingEmails(true);
+
+    const { data: result, error } = await attempt(
+      sendProductUpdateEmails({
+        productName: product.name,
+        downloadUrl: product.download_url,
+        buyers,
+      })
+    );
+
+    setIsSendingEmails(false);
+
+    if (error) {
+      sonner.toast.error(t('PRODUCTS.EMAIL_SEND_ERROR'));
+      return;
+    }
+
+    if (result) {
+      if (result.totalFailed > 0) {
+        sonner.toast.warning(
+          t('PRODUCTS.EMAILS_PARTIAL_SUCCESS', {
+            sent: result.totalSent,
+            failed: result.totalFailed,
+          })
+        );
+      } else {
+        sonner.toast.success(
+          t('PRODUCTS.EMAILS_SENT_SUCCESS', { count: result.totalSent })
+        );
+      }
+    }
+
     setShowEmailFlow(false);
   };
 
@@ -354,8 +383,9 @@ export function PdfManager() {
       <EmailNotificationDialog
         open={showEmailFlow}
         onOpenChange={setShowEmailFlow}
-        buyers={mockBuyers}
+        buyers={buyers}
         onConfirm={handleSendEmails}
+        isSending={isSendingEmails}
       />
     </>
   );
