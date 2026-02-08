@@ -1,8 +1,10 @@
 import { z } from 'zod';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
+// TODO: deduplicate validatePromoCode — same logic exists inline in /api/promos/validate/route.ts
 import { validatePromoCode } from '@core/data/supabase/promos/services/validatePromoCode';
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import { Order } from '@core/data/supabase/orders/orders.repository';
+import { captureCriticalError } from '@core/lib/sentry';
 
 interface PostOrdersMercadoPagoReturn {
   paymentUrl: string;
@@ -124,9 +126,14 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    console.error(error);
+    captureCriticalError(error, 'order-creation', {
+      productId: reqBody?.product_id,
+      email: reqBody?.email,
+      hasPromoCode: !!reqBody?.promo_code_id,
+    });
+
     return Response.json(
-      { message: 'Internal server error', error: (error as Error).message },
+      { message: 'Internal server error' },
       { status: 500 }
     );
   }

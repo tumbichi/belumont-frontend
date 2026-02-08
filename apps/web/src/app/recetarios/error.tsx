@@ -1,11 +1,22 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { Button } from '@soybelumont/ui/components/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-export default function Error() {
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <section className="flex flex-col items-center w-full py-12 text-center  md:py-24">
       <Image
@@ -25,9 +36,14 @@ export default function Error() {
             Parece que te has equivocado de camino.
           </p>
         </div>
-        <Link href="/" prefetch={false}>
-          <Button>Ir a inicio</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => reset()}>
+            Intentar de nuevo
+          </Button>
+          <Link href="/" prefetch={false}>
+            <Button>Ir a inicio</Button>
+          </Link>
+        </div>
       </div>
     </section>
   );
