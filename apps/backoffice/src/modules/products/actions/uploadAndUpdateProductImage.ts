@@ -25,6 +25,9 @@ export async function uploadAndUpdateProductImage(payload: {
   // Step 1: Upload image in the browser
   const imagesManagerClient = ImagesManagerRepository();
 
+  // Compress image before upload
+  const compressedFile = await imagesManagerClient.compressImage(payload.file);
+
   console.log(
     '[uploadAndUpdateProductImage] galleryIndex',
     payload.galleryIndex
@@ -38,7 +41,7 @@ export async function uploadAndUpdateProductImage(payload: {
   console.log('[uploadAndUpdateProductImage] uploading to path:', uploadPath);
 
   const newImageUrl = await imagesManagerClient.uploadImage(
-    payload.file,
+    compressedFile,
     uploadPath
   );
 

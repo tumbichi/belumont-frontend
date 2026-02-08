@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import React, { useState } from 'react';
 import {
   Carousel,
@@ -8,6 +7,7 @@ import {
   CarouselPrevious,
   Fade,
 } from '@soybelumont/ui/components/carousel';
+import { OptimizedImage } from '@soybelumont/ui/components/optimized-image';
 import { LucideMaximize, LucideX } from 'lucide-react';
 
 interface ProductGalleryProps {
@@ -35,18 +35,15 @@ function ProductGallery({ images }: ProductGalleryProps) {
     <>
       <div className="grid gap-4">
         <div className="relative rounded-lg group">
-          <Image
+          <OptimizedImage
             priority
             src={images[0] ? images[0] : ''}
             alt="Product Image"
             width={480}
             height={750}
-            className="object-cover w-full rounded-lg group-hover:outline-1 group-hover:outline-primary group-hover:outline data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover w-full rounded-lg group-hover:outline-1 group-hover:outline-primary group-hover:outline"
             style={{ objectFit: 'cover' }}
-            data-loaded="false"
-            onLoad={(event) => {
-              event.currentTarget.setAttribute('data-loaded', 'true');
-            }}
           />
           <div
             className="absolute top-0 bottom-0 hidden w-full transition-all duration-1000 rounded-lg group-hover:block group-hover:bg-primary/45"
@@ -61,41 +58,32 @@ function ProductGallery({ images }: ProductGalleryProps) {
           </div>
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <Image
+          <OptimizedImage
             src={images[1] ? images[1] : ''}
             alt="Product Thumbnail"
             width={200}
             height={260}
-            className="data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300 object-cover w-full rounded-lg"
+            sizes="(max-width: 768px) 33vw, 16vw"
+            className="object-cover w-full rounded-lg"
             style={{ aspectRatio: '10/13', objectFit: 'cover' }}
-            data-loaded="false"
-            onLoad={(event) => {
-              event.currentTarget.setAttribute('data-loaded', 'true');
-            }}
           />
-          <Image
+          <OptimizedImage
             src={images[2] ? images[2] : ''}
             alt="Product Thumbnail"
             width={200}
             height={260}
-            className="data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300 object-cover w-full rounded-lg"
+            sizes="(max-width: 768px) 33vw, 16vw"
+            className="object-cover w-full rounded-lg"
             style={{ aspectRatio: '10/13', objectFit: 'cover' }}
-            data-loaded="false"
-            onLoad={(event) => {
-              event.currentTarget.setAttribute('data-loaded', 'true');
-            }}
           />
-          <Image
+          <OptimizedImage
             src={images[3] ? images[3] : ''}
             alt="Product Thumbnail"
             width={200}
             height={260}
-            className="data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300 object-cover w-full rounded-lg"
+            sizes="(max-width: 768px) 33vw, 16vw"
+            className="object-cover w-full rounded-lg"
             style={{ aspectRatio: '10/13', objectFit: 'cover' }}
-            data-loaded="false"
-            onLoad={(event) => {
-              event.currentTarget.setAttribute('data-loaded', 'true');
-            }}
           />
         </div>
       </div>
@@ -107,53 +95,40 @@ function ProductGallery({ images }: ProductGalleryProps) {
           >
             <CarouselContent className="w-screen h-screen mx-0">
               <CarouselItem className="relative h-screen">
-                <Image
+                <OptimizedImage
                   src={images[0] ? images[0] : ''}
                   alt="Product Image"
-                  data-loaded="false"
-                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300 data-[loaded=false]:h-screen data-[loaded=false]:w-screen data-[loaded=false]:z-50"
-                  onLoad={(event) => {
-                    event.currentTarget.setAttribute('data-loaded', 'true');
-                  }}
+                  sizes="100vw"
+                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain"
+                  skeletonClassName="md:max-w-xl lg:max-w-2xl"
                   fill
                 />
               </CarouselItem>
               <CarouselItem className="relative h-screen">
-                <Image
+                <OptimizedImage
                   src={images[1] ? images[1] : ''}
                   alt="Product Image"
+                  sizes="100vw"
                   objectPosition="center"
-                  data-loaded="false"
-                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300"
-                  onLoad={(event) => {
-                    event.currentTarget.setAttribute('data-loaded', 'true');
-                  }}
+                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain"
                   fill
                 />
               </CarouselItem>
               <CarouselItem className="relative h-screen">
-                <Image
+                <OptimizedImage
                   src={images[2] ? images[2] : ''}
                   alt="Product Image"
-                  // height={window.innerHeight}
-                  // width={576}
-                  data-loaded="false"
-                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300"
-                  onLoad={(event) => {
-                    event.currentTarget.setAttribute('data-loaded', 'true');
-                  }}
+                  sizes="100vw"
+                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain"
                   fill
                 />
               </CarouselItem>
               <CarouselItem className="relative h-screen">
-                <Image
+                <OptimizedImage
                   src={images[3] ? images[3] : ''}
                   alt="Product Image"
-                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-300"
-                  data-loaded="false"
-                  onLoad={(event) => {
-                    event.currentTarget.setAttribute('data-loaded', 'true');
-                  }}
+                  sizes="100vw"
+                  className="!w-auto md:max-w-xl lg:max-w-2xl object-contain"
                   fill
                 />
               </CarouselItem>

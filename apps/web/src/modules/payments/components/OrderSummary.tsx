@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import {
   Card,
@@ -10,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@soybelumont/ui/components/card';
+import { OptimizedImage } from '@soybelumont/ui/components/optimized-image';
 import { Product } from '../../../core/data/supabase/products/products.repository';
 import { formatPrice } from '@core/utils';
 import { Separator } from '@soybelumont/ui/components/separator';
@@ -23,11 +23,12 @@ interface ProductItemListProps {
 
 const ProductItemList = ({ product }: ProductItemListProps) => (
   <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
-    <Image
+    <OptimizedImage
       src={product.image_url}
       width={64}
       height={64}
-      alt="Product Image"
+      alt={product.name}
+      sizes="64px"
       className="rounded-md"
       style={{ aspectRatio: '64/64', objectFit: 'cover' }}
     />
