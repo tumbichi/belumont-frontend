@@ -5,7 +5,8 @@
     "PRODUCTS": "Productos",
     "USERS": "Usuarios",
     "PROMOS": "Promociones",
-    "ANALYTICS": "Analíticas"
+    "ANALYTICS": "Analíticas",
+    "EMAILS": "Emails"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
@@ -147,7 +148,13 @@
     "CREATE_PRODUCT_BUTTON": "Crear Producto",
     "FINISH_CREATION": "Finalizar Creación",
     "COVER_IMAGE_REQUIRED": "La imagen de portada es requerida",
-    "PDF_REQUIRED": "El archivo PDF es requerido"
+    "PDF_REQUIRED": "El archivo PDF es requerido",
+    "RESEND_FREE_TIER_WARNING_TITLE": "Límite de envío de emails (Plan gratuito de Resend)",
+    "RESEND_FREE_TIER_WARNING_DESCRIPTION": "Estás usando el plan gratuito de Resend, que tiene un límite de {limit} emails por día y 2 emails por segundo. Si necesitás enviar más, considerá hacerlo en otro momento o contactar al desarrollador para pasar a un plan pago.",
+    "SENDING_EMAILS": "Enviando emails...",
+    "EMAIL_SEND_ERROR": "Error al enviar los emails de notificación.",
+    "EMAILS_PARTIAL_SUCCESS": "{sent} emails enviados correctamente, {failed} fallaron.",
+    "EMAILS_SENT_SUCCESS": "{count} emails enviados correctamente."
   },
   "ORDERS": {
     "TITLE": "Órdenes",
@@ -193,5 +200,19 @@
     "EDIT": "Editar",
     "VIEW": "Ver",
     "SEARCH": "Buscar"
+  },
+  "EMAILS": {
+    "TITLE": "Emails",
+    "DESCRIPTION": "Historial de emails enviados a través de Resend.",
+    "NO_EMAILS": "No se encontraron emails.",
+    "TO": "Destinatario",
+    "SUBJECT": "Asunto",
+    "STATUS": "Estado",
+    "CREATED_AT": "Fecha de Envío",
+    "ID": "ID",
+    "FREE_TIER_INFO_TITLE": "Plan gratuito de Resend",
+    "FREE_TIER_INFO_DESCRIPTION": "Estás usando el plan gratuito de Resend. Este plan tiene un límite de 100 emails por día y un máximo de 2 emails por segundo. Si necesitás enviar más, contactá al desarrollador para pasar a un plan pago.",
+    "LOADING_EMAILS": "Cargando emails...",
+    "ERROR_LOADING_EMAILS": "Error al cargar los emails."
   }
 }

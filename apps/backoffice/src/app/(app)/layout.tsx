@@ -18,6 +18,7 @@ import Sidebar, { SidebarItem } from '@soybelumont/ui/components/sidebar';
 import {
   Home,
   LineChart,
+  Mail,
   Menu,
   Package,
   Package2,
@@ -97,6 +98,15 @@ export default async function RootLayout({
           : 'PROMOTIONS',
       href: '/promociones',
       icon: <LineChart className="w-4 h-4" />,
+    },
+    {
+      title:
+        typeof messages['SIDEBAR'] === 'object' &&
+        'EMAILS' in messages['SIDEBAR']
+          ? (messages['SIDEBAR']?.EMAILS as string)
+          : 'EMAILS',
+      href: '/emails',
+      icon: <Mail className="w-4 h-4" />,
     },
     // {
     //   title:
