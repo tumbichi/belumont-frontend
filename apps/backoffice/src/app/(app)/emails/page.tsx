@@ -8,6 +8,7 @@ import {
 } from '@soybelumont/ui/components/table';
 import { getTranslations } from 'next-intl/server';
 import { AlertTriangle } from 'lucide-react';
+import formatDatetime from '@core/utils/formatters/formatDate';
 
 interface ResendEmail {
   id: string;
@@ -121,13 +122,7 @@ export default async function EmailsPage() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    {new Date(email.created_at).toLocaleString('es-AR', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+                    {formatDatetime(new Date(email.created_at))}
                   </TableCell>
                 </TableRow>
               ))
