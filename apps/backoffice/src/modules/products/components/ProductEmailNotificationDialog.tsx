@@ -10,10 +10,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@soybelumont/ui/components/dialog';
-import { Mail, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Mail, ChevronLeft, ChevronRight, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
-interface Buyer {
+export interface Buyer {
   id: string;
   name: string;
   email: string;
@@ -23,16 +23,19 @@ interface EmailNotificationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   buyers: Buyer[];
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
+  isSending?: boolean;
 }
 
 const ITEMS_PER_PAGE = 5;
+const RESEND_FREE_TIER_DAILY_LIMIT = 100;
 
 export function EmailNotificationDialog({
   open,
   onOpenChange,
   buyers,
   onConfirm,
+  isSending = false,
 }: EmailNotificationDialogProps) {
   const t = useTranslations();
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,13 +53,13 @@ export function EmailNotificationDialog({
     setCurrentPage((prev) => Math.min(totalPages, prev + 1));
   };
 
-  const handleConfirm = () => {
-    onConfirm();
-    onOpenChange(false);
+  const handleConfirm = async () => {
+    await onConfirm();
     setCurrentPage(1);
   };
 
   const handleClose = () => {
+    if (isSending) return;
     onOpenChange(false);
     setCurrentPage(1);
   };
@@ -74,8 +77,23 @@ export function EmailNotificationDialog({
           </DialogDescription>
         </DialogHeader>
 
+        {/* Resend Free Tier Warning */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-amber-800">
+                {t('PRODUCTS.RESEND_FREE_TIER_WARNING_TITLE')}
+              </p>
+              <p className="text-xs text-amber-700 mt-1">
+                {t('PRODUCTS.RESEND_FREE_TIER_WARNING_DESCRIPTION', { limit: RESEND_FREE_TIER_DAILY_LIMIT })}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Buyer Count Summary */}
-        <div className="bg-muted rounded-lg p-4 mb-6">
+        <div className="bg-muted rounded-lg p-4">
           <p className="text-sm font-medium">
             {t('PRODUCTS.TOTAL_USERS_TO_NOTIFY')}{' '}
             <span className="text-lg font-bold text-primary">
@@ -117,7 +135,7 @@ export function EmailNotificationDialog({
                     variant="outline"
                     size="sm"
                     onClick={handlePrevious}
-                    disabled={currentPage === 1}
+                    disabled={currentPage === 1 || isSending}
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
@@ -130,7 +148,7 @@ export function EmailNotificationDialog({
                     variant="outline"
                     size="sm"
                     onClick={handleNext}
-                    disabled={currentPage === totalPages}
+                    disabled={currentPage === totalPages || isSending}
                   >
                     <ChevronRight className="w-4 h-4" />
                   </Button>
@@ -145,16 +163,22 @@ export function EmailNotificationDialog({
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={handleClose} disabled={isSending}>
             {t('PRODUCTS.CANCEL')}
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={buyers.length === 0}
+            disabled={buyers.length === 0 || isSending}
             className="gap-2"
           >
-            <Mail className="w-4 h-4" />
-            {t('PRODUCTS.SEND_TO')} {buyers.length} {buyers.length === 1 ? t('PRODUCTS.USER') : t('PRODUCTS.USERS')}
+            {isSending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Mail className="w-4 h-4" />
+            )}
+            {isSending
+              ? t('PRODUCTS.SENDING_EMAILS')
+              : `${t('PRODUCTS.SEND_TO')} ${buyers.length} ${buyers.length === 1 ? t('PRODUCTS.USER') : t('PRODUCTS.USERS')}`}
           </Button>
         </DialogFooter>
       </DialogContent>
