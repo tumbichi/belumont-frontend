@@ -7,6 +7,15 @@ export interface ProductBuyer {
   email: string;
 }
 
+interface OrderWithUser {
+  user_id: string;
+  users: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
+}
+
 export default async function getProductBuyers(
   productId: string
 ): Promise<ProductBuyer[]> {
@@ -31,17 +40,12 @@ export default async function getProductBuyers(
 
   // Deduplicate buyers (a user may have multiple orders for the same product)
   const buyersMap = new Map<string, ProductBuyer>();
-  for (const order of data) {
-    const user = order.users as unknown as {
-      id: string;
-      name: string;
-      email: string;
-    } | null;
-    if (user && !buyersMap.has(user.id)) {
-      buyersMap.set(user.id, {
-        id: user.id,
-        name: user.name,
-        email: user.email,
+  for (const order of data as unknown as OrderWithUser[]) {
+    if (order.users && !buyersMap.has(order.users.id)) {
+      buyersMap.set(order.users.id, {
+        id: order.users.id,
+        name: order.users.name,
+        email: order.users.email,
       });
     }
   }

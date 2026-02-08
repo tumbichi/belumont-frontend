@@ -47,6 +47,11 @@ export async function POST(request: Request) {
         } else {
           results.push({ email: buyer.email, success: true });
         }
+
+        // Delay between emails to respect Resend's rate limit (2 requests/sec)
+        if (body.buyers.indexOf(buyer) < body.buyers.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 600));
+        }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
