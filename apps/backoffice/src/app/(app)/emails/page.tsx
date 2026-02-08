@@ -21,13 +21,17 @@ interface ResendEmail {
 
 async function getEmails(): Promise<ResendEmail[]> {
   const resendApiUrl = process.env.RESEND_API_URL;
+  const resendApiKey = process.env.RESEND_API_KEY;
 
-  if (!resendApiUrl) {
+  if (!resendApiUrl || !resendApiKey) {
     return [];
   }
 
   try {
-    const response = await fetch(`${resendApiUrl}/api/resend/emails`, {
+    const response = await fetch(resendApiUrl, {
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+      },
       cache: 'no-store',
     });
 
@@ -35,8 +39,8 @@ async function getEmails(): Promise<ResendEmail[]> {
       return [];
     }
 
-    const data = await response.json();
-    return data.data ?? [];
+    const result = await response.json();
+    return result?.data ?? [];
   } catch {
     return [];
   }
