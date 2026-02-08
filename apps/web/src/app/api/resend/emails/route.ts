@@ -9,7 +9,7 @@ export async function GET() {
       );
     }
 
-    const response = await fetch(`${resendApiUrl}/emails`, {
+    const response = await fetch(resendApiUrl, {
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
