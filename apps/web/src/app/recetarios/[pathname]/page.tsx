@@ -1,7 +1,7 @@
 import Container from '@soybelumont/ui/layouts/container';
 import { ProductsRepository } from '@core/data/supabase/products';
 import ProductDetail from '../../../modules/products/components/ProductDetail';
-import Error from '../error';
+import { notFound } from 'next/navigation';
 
 interface ProductDetailsPageProps {
   params: Promise<{ pathname: string }>;
@@ -15,7 +15,7 @@ export default async function ProductDetailsPage({
   const product = await productsRepo.getByPathname(productPathname);
 
   if (!product) {
-    return <Error />;
+    notFound();
   }
 
   // If it's a bundle, fetch the bundle items

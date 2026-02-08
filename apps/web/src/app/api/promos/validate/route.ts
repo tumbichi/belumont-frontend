@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { PromoCode } from '@core/data/supabase/promos/promos.repository';
+import { captureCriticalError } from '@core/lib/sentry';
 
 const supabaseRepository = SupabaseRepository();
 
@@ -9,6 +10,7 @@ const bodySchema = z.object({
   product_id: z.string(),
 });
 
+// TODO: deduplicate validatePromoCode — same logic exists as imported service in /api/orders/route.ts
 const validatePromoCode = (
   promoCode: PromoCode,
   productId: string
@@ -99,7 +101,11 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    console.error(error);
+    captureCriticalError(error, 'promo-validation', {
+      code: reqBody?.code,
+      productId: reqBody?.product_id,
+    });
+
     return Response.json(
       { valid: false, message: 'Internal server error' },
       { status: 500 }
