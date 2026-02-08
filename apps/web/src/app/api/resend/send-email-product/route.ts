@@ -2,7 +2,7 @@ import ResendRepository from '@core/data/resend/resend.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import ProductDelivery from '@core/emails/ProductDelivery';
 import PackDelivery from '@core/emails/PackDelivery';
-import { isAxiosError } from 'axios';
+import { captureCriticalError } from '@core/lib/sentry';
 import { z } from 'zod';
 
 const recordSchema = z.object({
@@ -31,24 +31,56 @@ const bodySchema = z
   .passthrough();
 
 export async function POST(request: Request) {
-  const body = bodySchema.parse(await request.json());
+  try {
+    const body = bodySchema.parse(await request.json());
 
-  if (body.record.status === 'approved') {
+    if (body.record.status !== 'approved') {
+      return Response.json({ body });
+    }
+
     const supabaseRepository = SupabaseRepository();
 
     const order = await supabaseRepository.orders.updateStatusByPaymentId(
       body.record.id,
-      'paid'
+      'paid',
     );
     const product = await supabaseRepository.products.getById(order.product_id);
     const user = await supabaseRepository.users.getById(order.user_id);
 
     if (!user) {
-      throw new Error('User does not exist');
+      captureCriticalError(
+        new Error('User not found for approved payment'),
+        'product-delivery-email',
+        {
+          orderId: order.id,
+          userId: order.user_id,
+          paymentId: body.record.id,
+          note: 'El usuario pagó pero no existe en la base de datos',
+        },
+      );
+
+      return Response.json(
+        { message: 'User does not exist' },
+        { status: 404 },
+      );
     }
 
     if (!product) {
-      throw new Error('Product does not exist');
+      captureCriticalError(
+        new Error('Product not found for approved payment'),
+        'product-delivery-email',
+        {
+          orderId: order.id,
+          productId: order.product_id,
+          paymentId: body.record.id,
+          note: 'El usuario pagó pero el producto no existe en la base de datos',
+        },
+      );
+
+      return Response.json(
+        { message: 'Product does not exist' },
+        { status: 404 },
+      );
     }
 
     // Determine email template based on product type
@@ -58,7 +90,7 @@ export async function POST(request: Request) {
       // Get all items in the bundle with download URLs (server-side only)
       const bundleItems = await supabaseRepository.products.getBundleItems(
         product.id,
-        { includeDownloadUrl: true }
+        { includeDownloadUrl: true },
       );
 
       const downloadItems = bundleItems
@@ -80,7 +112,22 @@ export async function POST(request: Request) {
     } else {
       // Single product - use original template
       if (!product.download_url) {
-        throw new Error('Product does not have a download URL');
+        captureCriticalError(
+          new Error('Product does not have a download URL'),
+          'product-delivery-email',
+          {
+            orderId: order.id,
+            productId: product.id,
+            productName: product.name,
+            paymentId: body.record.id,
+            note: 'El usuario pagó pero el producto no tiene URL de descarga configurada',
+          },
+        );
+
+        return Response.json(
+          { message: 'Product does not have a download URL' },
+          { status: 422 },
+        );
       }
 
       emailReactComponent = ProductDelivery({
@@ -91,25 +138,48 @@ export async function POST(request: Request) {
     }
 
     // Send email
-    await ResendRepository()
-      .sendEmail({
+    try {
+      const data = await ResendRepository().sendEmail({
         to: user.email,
         from: String(process.env.RESEND_FROM_EMAIL),
         subject: `${product.name} | @soybelumont`,
         react: emailReactComponent,
-      })
-      .then((data) => {
-        console.log('email response:', data);
-        supabaseRepository.orders.updateStatus(order.id, 'completed');
-      })
-      .catch((error) => {
-        if (isAxiosError(error)) {
-          console.log('error', error.response);
-        } else {
-          console.log('error', error);
-        }
       });
-  }
 
-  return Response.json({ body });
+      console.log('email response:', data);
+      await supabaseRepository.orders.updateStatus(order.id, 'completed');
+    } catch (emailError) {
+      captureCriticalError(emailError, 'product-delivery-email', {
+        orderId: order.id,
+        productId: product.id,
+        productName: product.name,
+        userEmail: user.email,
+        paymentId: body.record.id,
+        note: 'URGENTE: El usuario pagó pero el email de entrega falló',
+      });
+
+      return Response.json(
+        { message: 'Failed to send product delivery email' },
+        { status: 500 },
+      );
+    }
+
+    return Response.json({ body });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return Response.json(
+        { message: 'Invalid webhook payload', errors: error.errors },
+        { status: 400 },
+      );
+    }
+
+    captureCriticalError(error, 'product-delivery-email', {
+      note: 'Error no manejado en la entrega de producto por email',
+    });
+
+    return Response.json(
+      { message: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 }
