@@ -24,14 +24,14 @@ export default async function sendProductUpdateEmails({
   downloadUrl,
   buyers,
 }: SendNotificationEmailsParams): Promise<SendNotificationEmailsResult> {
-  const webAppUrl = process.env.NEXT_PUBLIC_WEB_APP_URL || process.env.WEB_APP_URL;
+  const resendApiUrl = process.env.RESEND_API_URL;
 
-  if (!webAppUrl) {
-    throw new Error('WEB_APP_URL environment variable is not set');
+  if (!resendApiUrl) {
+    throw new Error('RESEND_API_URL environment variable is not set');
   }
 
   const response = await fetch(
-    `${webAppUrl}/api/resend/send-email-product-update`,
+    `${resendApiUrl}/api/resend/send-email-product-update`,
     {
       method: 'POST',
       headers: {
