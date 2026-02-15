@@ -1,9 +1,21 @@
+import type { Metadata } from 'next';
 import Container from '@soybelumont/ui/layouts/container';
 import { ProductsRepository } from '@core/data/supabase/products';
 
 import ProductCard from '../../modules/products/components/ProductCard';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Recetarios de Cocina Saludable',
+  description:
+    'Explorá todos los recetarios de cocina saludable de Belu Mont. Recetas fáciles, nutritivas y deliciosas para cada día.',
+  openGraph: {
+    title: 'Recetarios de Cocina Saludable | Belu Mont',
+    description:
+      'Explorá todos los recetarios de cocina saludable de Belu Mont. Recetas fáciles, nutritivas y deliciosas para cada día.',
+  },
+};
 
 export default async function ProductsPage() {
   const products = await ProductsRepository().getAll();
