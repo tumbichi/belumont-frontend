@@ -27,7 +27,7 @@ function ProductCard({ product }: ProductCardProps) {
         )}
         <Image
           src={product.thumbnail_url}
-          alt="Product Image"
+          alt={`Recetario ${product.name} - Belu Mont`}
           width={400}
           height={300}
           className="object-cover w-full h-48 transition-opacity group-hover:opacity-100"
