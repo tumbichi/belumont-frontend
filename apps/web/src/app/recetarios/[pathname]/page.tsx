@@ -24,9 +24,18 @@ export default async function ProductDetailsPage({
       ? await productsRepo.getBundleItems(product.id)
       : [];
 
+  // Strip download_url from bundle items before passing to client component
+  const bundleItemsForDisplay = bundleItems.map((item) => {
+    const { download_url, ...productWithoutDownload } = item.product;
+    return {
+      ...item,
+      product: productWithoutDownload,
+    };
+  });
+
   return (
     <Container>
-      <ProductDetail product={product} bundleItems={bundleItems} />
+      <ProductDetail product={product} bundleItems={bundleItemsForDisplay} />
     </Container>
   );
 }
