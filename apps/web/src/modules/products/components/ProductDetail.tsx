@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import React from 'react';
 import {
   Product,
-  BundleItem,
+  BundleItemPublic,
 } from '@core/data/supabase/products/products.repository';
 import { Label } from '@soybelumont/ui/components/label';
 import {
@@ -28,7 +28,7 @@ import { Package, Check } from 'lucide-react';
 
 interface ProductDetailsProps {
   product: Product & { colors?: string[]; sizes?: string[]; quantity?: number };
-  bundleItems?: BundleItem[];
+  bundleItems?: BundleItemPublic[];
 }
 
 function ProductDetail({ product, bundleItems = [] }: ProductDetailsProps) {

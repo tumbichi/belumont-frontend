@@ -42,6 +42,33 @@ export default async function RootLayout({
           gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
         `}
         </Script>
+        {process.env.NEXT_PUBLIC_FACEBOOK_PIXEL && (
+          <Script id="facebook-pixel" strategy="afterInteractive">
+            {`
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL}');
+            fbq('track', 'PageView');
+          `}
+          </Script>
+        )}
+        {process.env.NEXT_PUBLIC_FACEBOOK_PIXEL && (
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: 'none' }}
+              src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL}&ev=PageView&noscript=1`}
+              alt=""
+            />
+          </noscript>
+        )}
       </head>
       <body
         className={`${spaceGrotesk.variable} antialiased bg-[linear-gradient(rgba(0,0,0,0.1),rgba(255,255,255,0.3)),url("/background.png")] bg-cover bg-no-repeat`}
