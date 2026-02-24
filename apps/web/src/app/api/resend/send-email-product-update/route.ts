@@ -17,60 +17,36 @@ export async function POST(request: Request) {
   try {
     const body = bodySchema.parse(await request.json());
 
-    const results: {
-      email: string;
-      success: boolean;
-      error?: string;
-    }[] = [];
+    const emails = body.buyers.map((buyer) => ({
+      to: buyer.email,
+      from: String(process.env.RESEND_FROM_EMAIL),
+      subject: `${body.productName} - Nueva versión disponible | @soybelumont`,
+      react: ProductUpdateDelivery({
+        productName: body.productName,
+        username: buyer.name,
+        downloadLink: body.downloadUrl,
+      }),
+    }));
 
-    for (const buyer of body.buyers) {
-      try {
-        const emailReactComponent = ProductUpdateDelivery({
-          productName: body.productName,
-          username: buyer.name,
-          downloadLink: body.downloadUrl,
-        });
+    const response = await ResendRepository().sendBatchEmails(emails);
 
-        const response = await ResendRepository().sendEmail({
-          to: buyer.email,
-          from: String(process.env.RESEND_FROM_EMAIL),
-          subject: `${body.productName} - Nueva versión disponible | @soybelumont`,
-          react: emailReactComponent,
-        });
-
-        if (response.error) {
-          results.push({
-            email: buyer.email,
-            success: false,
-            error: response.error.message,
-          });
-        } else {
-          results.push({ email: buyer.email, success: true });
-        }
-
-        // Delay between emails to respect Resend's rate limit (2 requests/sec)
-        if (body.buyers.indexOf(buyer) < body.buyers.length - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 600));
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error';
-        results.push({
-          email: buyer.email,
+    if (response.error) {
+      return Response.json(
+        {
           success: false,
-          error: errorMessage,
-        });
-      }
+          totalSent: 0,
+          totalFailed: body.buyers.length,
+          error: response.error.message,
+        },
+        { status: 500 }
+      );
     }
 
-    const successCount = results.filter((r) => r.success).length;
-    const failedCount = results.filter((r) => !r.success).length;
-
     return Response.json({
-      success: failedCount === 0,
-      totalSent: successCount,
-      totalFailed: failedCount,
-      results,
+      success: true,
+      totalSent: body.buyers.length,
+      totalFailed: 0,
+      data: response.data,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
