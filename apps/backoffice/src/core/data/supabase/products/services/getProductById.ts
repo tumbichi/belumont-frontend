@@ -1,5 +1,5 @@
 import { supabase } from '@core/data/supabase/client';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { Product, ProductType } from '../products.repository';
 
 export default async function getProductById(
@@ -36,12 +36,10 @@ export default async function getProductById(
   }
 
   return {
-    ...sanatizeCreatedAtFromObject({
-      ...product,
-      product_type: (product.product_type || 'single') as ProductType,
-      product_images: productImages
-        ? productImages.map((image) => image.resource_url)
-        : [],
-    }),
+    ...sanitizeDatesFromObject(product),
+    product_type: (product.product_type || 'single') as ProductType,
+    product_images: productImages
+      ? productImages.map((image) => image.resource_url)
+      : [],
   };
 }

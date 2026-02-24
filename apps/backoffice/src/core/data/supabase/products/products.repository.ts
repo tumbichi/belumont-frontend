@@ -24,8 +24,9 @@ export interface Product {
   description: string | null;
   product_type: ProductType;
   created_at: Date;
+  updated_at: Date;
   active: boolean;
-  download_url: string;
+  download_url: string | null;
 }
 
 export interface BundleItem {
@@ -39,7 +40,7 @@ export interface BundleItem {
 type PublicProduct = Omit<Product, 'download_url'>;
 
 export type UpdateProduct = Partial<
-  Omit<Product, 'id' | 'created_at' | 'product_images'>
+  Omit<Product, 'id' | 'created_at' | 'updated_at' | 'product_images'>
 > & {
   product_images?: string[] | null;
 };

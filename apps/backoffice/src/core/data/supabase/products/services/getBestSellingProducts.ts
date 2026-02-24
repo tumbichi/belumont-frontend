@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import { Product, ProductType } from '../products.repository';
-import sanatizeCreatedAtFromObject from '@core/utils/helpers/sanitizeCreatedAtFromObject';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 
 export interface BestSellingProduct extends Product {
   sales: number;
@@ -32,7 +32,7 @@ export default async function getBestSellingProducts(
     // NOTE: We need to ensure that the relationship is correctly named 'products'
     // and that RLS policies allow fetching them.
     if (order.products) {
-      const rawProduct = sanatizeCreatedAtFromObject(order.products);
+      const rawProduct = sanitizeDatesFromObject(order.products);
       const product = {
         ...rawProduct,
         product_type: (rawProduct.product_type || 'single') as ProductType,

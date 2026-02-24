@@ -10,9 +10,10 @@ type ProductRow = {
   thumbnail_url: string;
   description: string | null;
   product_type: string;
-  download_url: string;
+  download_url: string | null;
   active: boolean;
   created_at: string;
+  updated_at: string;
 };
 
 /**
@@ -41,7 +42,8 @@ export default async function getBundleItems(
         product_type,
         download_url,
         active,
-        created_at
+        created_at,
+        updated_at
       )
     `
     )
@@ -81,6 +83,7 @@ export default async function getBundleItems(
         download_url: product.download_url,
         active: product.active,
         created_at: new Date(product.created_at),
+        updated_at: new Date(product.updated_at),
       },
     };
   });
