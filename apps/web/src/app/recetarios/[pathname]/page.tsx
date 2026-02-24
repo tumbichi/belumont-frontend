@@ -26,10 +26,10 @@ export default async function ProductDetailsPage({
 
   // Strip download_url from bundle items before passing to client component
   const bundleItemsForDisplay = bundleItems.map((item) => {
-    const { download_url, ...productWithoutDownload } = item.product;
+    const { download_url, ...productForDisplay } = item.product;
     return {
       ...item,
-      product: productWithoutDownload,
+      product: productForDisplay,
     };
   });
 
