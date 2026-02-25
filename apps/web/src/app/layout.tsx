@@ -14,8 +14,40 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Belu Mont',
-  description: 'Belu Mont - Chef',
+  title: {
+    default: 'Belu Mont - Recetarios de Cocina Saludable',
+    template: '%s | Belu Mont',
+  },
+  description:
+    'Descubrí los recetarios de cocina saludable de Belu Mont. Recetas simples, ricas y nutritivas para tu día a día.',
+  keywords: [
+    'recetarios',
+    'cocina saludable',
+    'recetas saludables',
+    'Belu Mont',
+    'recetarios digitales',
+    'cocina fácil',
+    'recetas fáciles',
+    'alimentación saludable',
+  ],
+  openGraph: {
+    type: 'website',
+    locale: 'es_AR',
+    siteName: 'Belu Mont',
+    title: 'Belu Mont - Recetarios de Cocina Saludable',
+    description:
+      'Descubrí los recetarios de cocina saludable de Belu Mont. Recetas simples, ricas y nutritivas para tu día a día.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Belu Mont - Recetarios de Cocina Saludable',
+    description:
+      'Descubrí los recetarios de cocina saludable de Belu Mont. Recetas simples, ricas y nutritivas para tu día a día.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({
