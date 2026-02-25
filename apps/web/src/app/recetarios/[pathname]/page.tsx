@@ -18,24 +18,15 @@ export default async function ProductDetailsPage({
     return <Error />;
   }
 
-  // If it's a bundle, fetch the bundle items
+  // If it's a bundle, fetch the bundle items (without download_url for client safety)
   const bundleItems =
     product.product_type === 'bundle'
       ? await productsRepo.getBundleItems(product.id)
       : [];
 
-  // Strip download_url from bundle items before passing to client component
-  const bundleItemsForDisplay = bundleItems.map((item) => {
-    const { download_url, ...productForDisplay } = item.product;
-    return {
-      ...item,
-      product: productForDisplay,
-    };
-  });
-
   return (
     <Container>
-      <ProductDetail product={product} bundleItems={bundleItemsForDisplay} />
+      <ProductDetail product={product} bundleItems={bundleItems} />
     </Container>
   );
 }
