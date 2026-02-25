@@ -8,7 +8,9 @@
     "PRODUCTS": "Recetarios"
   },
   "PRODUCT": {
-    "BUY": "Comprar"
+    "BUY": "Comprar",
+    "PACK_BADGE": "Pack",
+    "PACK_INCLUDES": "Este pack incluye:"
   },
   "PAYMENT": {
     "TITLE": "Método de pago",

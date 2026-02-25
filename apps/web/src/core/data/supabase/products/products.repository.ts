@@ -42,7 +42,7 @@ export interface BundleItemPublic {
 }
 
 export interface ProductsRepositoryReturn {
-  getAll: (filters?: { active: boolean }) => Promise<Product[]>;
+  getAll: (filters?: { active?: boolean }) => Promise<Product[]>;
   getById: (id: string) => Promise<ProductWithDownload | null>;
   getByPathname: (pathname: string) => Promise<Product | null>;
   getBundleItems: {

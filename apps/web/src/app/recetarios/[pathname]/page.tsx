@@ -18,7 +18,7 @@ export default async function ProductDetailsPage({
     return <Error />;
   }
 
-  // If it's a bundle, fetch the bundle items
+  // If it's a bundle, fetch the bundle items (without download_url for client safety)
   const bundleItems =
     product.product_type === 'bundle'
       ? await productsRepo.getBundleItems(product.id)

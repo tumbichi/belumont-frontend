@@ -68,6 +68,10 @@ export async function POST(request: Request) {
           downloadUrl: item.product.download_url!,
         }));
 
+      if (downloadItems.length === 0) {
+        throw new Error('Bundle has no downloadable items');
+      }
+
       emailReactComponent = PackDelivery({
         packName: product.name,
         username: user.name,
