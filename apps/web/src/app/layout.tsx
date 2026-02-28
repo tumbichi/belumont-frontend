@@ -103,7 +103,7 @@ export default async function RootLayout({
         )}
       </head>
       <body
-        className={`${spaceGrotesk.variable} antialiased bg-[linear-gradient(rgba(0,0,0,0.1),rgba(255,255,255,0.3)),url("/background.png")] bg-cover bg-no-repeat`}
+        className={`${spaceGrotesk.variable} antialiased bg-[linear-gradient(rgba(0,0,0,0.1),rgba(255,255,255,0.3)),url("/background.webp")] bg-cover bg-no-repeat`}
       >
         <NextIntlClientProvider messages={messages}>
           <Header />
