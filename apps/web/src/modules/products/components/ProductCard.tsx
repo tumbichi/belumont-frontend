@@ -1,9 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Button } from '@soybelumont/ui/components/button';
 import { Badge } from '@soybelumont/ui/components/badge';
+import { OptimizedImage } from '@soybelumont/ui/components/optimized-image';
 import { formatPrice } from '@core/utils';
 import { Product } from '@core/data/supabase/products/products.repository';
 import { ArrowRight, ShoppingBag, Package } from 'lucide-react';
@@ -25,11 +25,12 @@ function ProductCard({ product }: ProductCardProps) {
             {t('PACK_BADGE')}
           </Badge>
         )}
-        <Image
+        <OptimizedImage
           src={product.thumbnail_url}
           alt={`Recetario ${product.name} - Belu Mont`}
           width={400}
           height={300}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover w-full h-48 transition-opacity group-hover:opacity-100"
           style={{ objectFit: 'cover' }}
         />
