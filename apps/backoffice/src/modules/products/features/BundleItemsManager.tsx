@@ -20,6 +20,7 @@ import { useProductSelected } from '../contexts/product-selected-context';
 import { BundleItem, Product } from '@core/data/supabase/products';
 import {
   getBundleItemsAction,
+  getAvailableProductsAction,
   addBundleItemsAction,
   removeBundleItemAction,
 } from '../actions/bundleItems';
@@ -49,12 +50,8 @@ export function BundleItemsManager() {
   };
 
   const fetchAvailableProducts = async () => {
-    const { default: SupabaseRepository } = await import(
-      '@core/data/supabase/supabase.repository'
-    );
-    const repo = SupabaseRepository();
     const { data: allProducts, error } = await attempt(
-      repo.products.getAll({ active: true })
+      getAvailableProductsAction({ active: true })
     );
     if (error || !allProducts) return;
 

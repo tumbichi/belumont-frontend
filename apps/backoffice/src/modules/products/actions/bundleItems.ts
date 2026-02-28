@@ -1,6 +1,10 @@
 'use server';
 
-import { BundleItem, ProductsRepository } from '@core/data/supabase/products';
+import {
+  BundleItem,
+  Product,
+  ProductsRepository,
+} from '@core/data/supabase/products';
 import { revalidatePath } from 'next/cache';
 
 export async function getBundleItemsAction(
@@ -8,6 +12,13 @@ export async function getBundleItemsAction(
 ): Promise<BundleItem[]> {
   const repo = ProductsRepository();
   return repo.getBundleItems(bundleId);
+}
+
+export async function getAvailableProductsAction(filters?: {
+  active?: boolean;
+}): Promise<Product[]> {
+  const repo = ProductsRepository();
+  return repo.getAll(filters as { active: boolean });
 }
 
 export async function addBundleItemsAction(

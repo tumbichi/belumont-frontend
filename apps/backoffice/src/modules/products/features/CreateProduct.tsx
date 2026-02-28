@@ -255,7 +255,7 @@ export function CreateProduct() {
         description: data.description ?? null,
         image_url: coverUrl,
         thumbnail_url: coverUrl,
-        download_url: pdfUrl,
+        download_url: pdfUrl || null,
         product_images: galleryUrls,
         product_type: data.product_type ?? 'single',
       });

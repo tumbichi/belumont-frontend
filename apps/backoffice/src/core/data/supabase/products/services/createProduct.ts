@@ -24,7 +24,7 @@ export default async function createProduct(
       ...productData,
       // Provide defaults if not provided, but allow them to be passed
       image_url: productData.image_url ?? '',
-      download_url: productData.download_url ?? '',
+      download_url: productData.download_url ?? null,
       product_type: productData.product_type ?? 'single',
     })
     .select('*')
