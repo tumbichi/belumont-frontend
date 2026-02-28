@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
-import { Product } from '../products.repository';
+import { Product, ProductType } from '../products.repository';
 export default async function getProductByPathname(
   pathname: string
 ): Promise<Omit<Product, 'download_url'> | null> {
@@ -21,6 +21,7 @@ export default async function getProductByPathname(
     .order('resource_url', { ascending: true });
   return {
     ...sanitizeDatesFromObject(product),
+    product_type: (product.product_type || 'single') as ProductType,
     product_images: productImages
       ? productImages.map((productImage) => productImage.resource_url)
       : [],

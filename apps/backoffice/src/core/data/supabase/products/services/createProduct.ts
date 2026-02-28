@@ -1,6 +1,6 @@
 import { supabase } from '@core/data/supabase/client';
 import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
-import { Product } from '../products.repository';
+import { Product, ProductType } from '../products.repository';
 
 export type CreateProductInput = Pick<
   Product,
@@ -9,7 +9,7 @@ export type CreateProductInput = Pick<
   Partial<
     Pick<
       Product,
-      'id' | 'image_url' | 'download_url' | 'thumbnail_url' | 'product_images'
+      'id' | 'image_url' | 'download_url' | 'thumbnail_url' | 'product_images' | 'product_type'
     >
   >;
 
@@ -24,7 +24,8 @@ export default async function createProduct(
       ...productData,
       // Provide defaults if not provided, but allow them to be passed
       image_url: productData.image_url ?? '',
-      download_url: productData.download_url ?? '',
+      download_url: productData.download_url ?? null,
+      product_type: productData.product_type ?? 'single',
     })
     .select('*')
     .single();
@@ -56,6 +57,7 @@ export default async function createProduct(
 
   return {
     ...sanitizeDatesFromObject(data),
+    product_type: (data.product_type || 'single') as ProductType,
     product_images: product_images || [],
   } as Product;
 }

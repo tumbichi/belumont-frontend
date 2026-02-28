@@ -7,6 +7,11 @@ import getBestSellingProducts, {
 } from './services/getBestSellingProducts';
 import updateProduct from './services/updateProduct';
 import createProduct, { CreateProductInput } from './services/createProduct';
+import getBundleItems from './services/getBundleItems';
+import addBundleItems from './services/addBundleItems';
+import removeBundleItem from './services/removeBundleItem';
+
+export type ProductType = 'single' | 'bundle';
 
 export interface Product {
   id: string;
@@ -17,10 +22,19 @@ export interface Product {
   thumbnail_url: string;
   product_images?: string[];
   description: string | null;
+  product_type: ProductType;
   created_at: Date;
   updated_at: Date;
   active: boolean;
   download_url: string | null;
+}
+
+export interface BundleItem {
+  id: string;
+  bundle_id: string;
+  product_id: string;
+  sort_order: number | null;
+  product: Product;
 }
 
 type PublicProduct = Omit<Product, 'download_url'>;
@@ -41,6 +55,9 @@ export interface ProductsRepositoryReturn {
   getBestSelling: (limit?: number) => Promise<BestSellingProduct[]>;
   update: (id: string, product: UpdateProduct) => Promise<Product>;
   create: (product: CreateProductInput) => Promise<Product>;
+  getBundleItems: (bundleId: string) => Promise<BundleItem[]>;
+  addBundleItems: (bundleId: string, productIds: string[]) => Promise<void>;
+  removeBundleItem: (bundleItemId: string) => Promise<void>;
 }
 
 export const ProductsRepository = (): ProductsRepositoryReturn => ({
@@ -51,4 +68,7 @@ export const ProductsRepository = (): ProductsRepositoryReturn => ({
   getBestSelling: getBestSellingProducts,
   update: updateProduct,
   create: createProduct,
+  getBundleItems: getBundleItems,
+  addBundleItems: addBundleItems,
+  removeBundleItem: removeBundleItem,
 });

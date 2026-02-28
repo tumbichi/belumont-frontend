@@ -25,6 +25,7 @@ import {
   completeMultipartUpload,
 } from '../actions/multipart';
 import attempt from '@core/lib/promises/attempt';
+import { Info } from 'lucide-react';
 
 export function CreateProduct() {
   const t = useTranslations();
@@ -64,10 +65,12 @@ export function CreateProduct() {
       price: 0,
       pathname: '',
       description: '',
+      product_type: 'single',
     },
   });
 
   const nameValue = watch('name');
+  const productType = watch('product_type');
   const [pathnameManuallyEdited, setPathnameManuallyEdited] = useState(false);
 
   // Auto-generate pathname from name (only if not manually edited)
@@ -181,13 +184,16 @@ export function CreateProduct() {
     return publicUrl;
   };
 
+  const isBundle = productType === 'bundle';
+
   const handleCreateSubmit = async (data: ProductDetailsInput) => {
     // Validate required files
     if (!coverImage) {
       sonner.toast.error(t('PRODUCTS.COVER_IMAGE_REQUIRED'));
       return;
     }
-    if (!pdfFile) {
+    // PDF is only required for single products
+    if (!isBundle && !pdfFile) {
       sonner.toast.error(t('PRODUCTS.PDF_REQUIRED'));
       return;
     }
@@ -209,16 +215,18 @@ export function CreateProduct() {
         bucket: 'public-assets',
       });
 
-      // 2. Upload PDF (R2)
-      //   const pdfFileName = `products/${data.pathname}/pdf_${Date.now()}.pdf`;
-      const pdfUrl = await uploadPdfToR2(pdfFile, pdfFile.name);
+      // 2. Upload PDF (R2) - only for single products
+      let pdfUrl = '';
+      if (pdfFile) {
+        pdfUrl = await uploadPdfToR2(pdfFile, pdfFile.name);
 
-      await createResource({
-        folder: '/',
-        url: pdfUrl,
-        provider: 'CLOUDFLARE_R2',
-        bucket: process.env.R2_BUCKET_NAME ?? 'R2',
-      });
+        await createResource({
+          folder: '/',
+          url: pdfUrl,
+          provider: 'CLOUDFLARE_R2',
+          bucket: process.env.R2_BUCKET_NAME ?? 'R2',
+        });
+      }
 
       // 3. Upload Gallery Images (Supabase)
       const galleryUrls: string[] = [];
@@ -247,8 +255,9 @@ export function CreateProduct() {
         description: data.description ?? null,
         image_url: coverUrl,
         thumbnail_url: coverUrl,
-        download_url: pdfUrl,
+        download_url: pdfUrl || null,
         product_images: galleryUrls,
+        product_type: data.product_type ?? 'single',
       });
 
       sonner.toast.success(t('PRODUCTS.PRODUCT_CREATED_SUCCESS'), {
@@ -290,7 +299,18 @@ export function CreateProduct() {
                 watch={watch}
                 setValue={setValue}
                 onPathnameManualEdit={() => setPathnameManuallyEdited(true)}
+                showProductType={true}
               />
+
+              {/* Bundle info message */}
+              {isBundle && (
+                <div className="flex items-start gap-3 p-4 rounded-md border bg-muted/50">
+                  <Info className="h-4 w-4 mt-0.5 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    {t('PRODUCTS.BUNDLE_SELECT_PRODUCTS_DESCRIPTION')}
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-8">
                 {/* Cover Image Section */}
@@ -341,20 +361,22 @@ export function CreateProduct() {
 
                 <Separator />
 
-                {/* PDF Section */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">
-                    {t('PRODUCTS.PDF_TITLE')}
-                  </h3>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <PdfPicker
-                      label={t('PRODUCTS.PDF_TITLE')}
-                      fileName={pdfFile ? pdfFile.name : null}
-                      onChange={setPdfFile}
-                      onClear={() => setPdfFile(null)}
-                    />
+                {/* PDF Section - only show for single products */}
+                {!isBundle && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">
+                      {t('PRODUCTS.PDF_TITLE')}
+                    </h3>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <PdfPicker
+                        label={t('PRODUCTS.PDF_TITLE')}
+                        fileName={pdfFile ? pdfFile.name : null}
+                        onChange={setPdfFile}
+                        onClear={() => setPdfFile(null)}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="flex justify-end pt-4">

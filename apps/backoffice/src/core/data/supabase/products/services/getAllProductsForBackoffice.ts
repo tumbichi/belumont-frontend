@@ -1,6 +1,6 @@
 import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
 import { supabase } from '../../client';
-import { Product } from '../products.repository';
+import { Product, ProductType } from '../products.repository';
 
 export default async function getAllProductsForBackoffice(): Promise<
   Product[]
@@ -23,5 +23,8 @@ export default async function getAllProductsForBackoffice(): Promise<
     return [];
   }
 
-  return data.map((product) => sanitizeDatesFromObject(product));
+  return data.map((product) => ({
+    ...sanitizeDatesFromObject(product),
+    product_type: (product.product_type || 'single') as ProductType,
+  }));
 }
