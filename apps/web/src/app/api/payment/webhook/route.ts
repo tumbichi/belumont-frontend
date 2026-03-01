@@ -36,7 +36,14 @@ function verifySignature(
 
   const sha256Signature = hmac.digest('hex');
 
-  return sha256Signature === signaturePaymentHash;
+  const expectedSignature = Buffer.from(sha256Signature, 'hex');
+  const providedSignature = Buffer.from(signaturePaymentHash, 'hex');
+
+  if (expectedSignature.length !== providedSignature.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(expectedSignature, providedSignature);
 }
 
 export async function POST(request: Request) {
