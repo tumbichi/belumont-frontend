@@ -80,7 +80,7 @@ export function setRequestAttributes(
 export function logCriticalError(
   error: unknown,
   flow: CriticalFlow,
-  extra?: Record<string, string | number | boolean>,
+  extra?: Record<string, unknown>,
 ) {
   const errorMessage =
     error instanceof Error ? error.message : 'Unknown error';

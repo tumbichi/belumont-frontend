@@ -34,13 +34,12 @@ const bodySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const reqBody = await request.json();
-
   return trace(
     { name: 'POST /api/orders', op: 'http.server' },
     async () => {
+      let body!: z.infer<typeof bodySchema>;
       try {
-        const body = bodySchema.parse(reqBody);
+        body = bodySchema.parse(await request.json());
 
         setRequestAttributes({
           'order.email': body.email,
@@ -194,6 +193,13 @@ export async function POST(request: Request) {
           return Response.json({ paymentUrl, order });
         }
       } catch (error) {
+        if (error instanceof SyntaxError) {
+          return Response.json(
+            { message: 'Invalid JSON body' },
+            { status: 400 },
+          );
+        }
+
         if (error instanceof z.ZodError) {
           return Response.json(
             { message: 'Invalid request', errors: error.errors },
@@ -202,9 +208,9 @@ export async function POST(request: Request) {
         }
 
         logCriticalError(error, 'order-creation', {
-          productId: reqBody?.product_id ?? 'unknown',
-          email: reqBody?.email ?? 'unknown',
-          hasPromoCode: !!reqBody?.promo_code_id,
+          productId: body.product_id,
+          email: body.email,
+          hasPromoCode: !!body.promo_code_id,
         });
 
         return Response.json(
