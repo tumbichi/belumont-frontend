@@ -29,8 +29,11 @@ Sentry.init({
 
   integrations: [
     Sentry.replayIntegration({
-      maskAllText: false,
-      blockAllMedia: false,
+      // In production, mask all text and block media to prevent capturing PII
+      // (names, emails, addresses, payment info). In dev, keep unmasked for
+      // easier debugging.
+      maskAllText: process.env.NODE_ENV === 'production',
+      blockAllMedia: process.env.NODE_ENV === 'production',
     }),
     // Capture console.warn and console.error as structured Sentry Logs
     Sentry.consoleLoggingIntegration({

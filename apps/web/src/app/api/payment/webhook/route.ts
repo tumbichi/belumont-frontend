@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 
+import { z } from 'zod';
+
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { captureCriticalError } from '@core/lib/sentry';
@@ -16,6 +18,10 @@ function verifySignature(
   xRequestId: string,
   paymentId: string,
 ): boolean {
+  // Fail closed: reject immediately if secret is not configured
+  const secret = (process.env.MERCADOPAGO_PAYMENT_SECRET_KEY || '').trim();
+  if (!secret) return false;
+
   const xSignatureArr = xSignature.split(',');
 
   if (!xSignatureArr[0] || !xSignatureArr[1]) {
@@ -25,34 +31,55 @@ function verifySignature(
   const ts = xSignatureArr[0].replace('ts=', '');
   const signaturePaymentHash = xSignatureArr[1].replace('v1=', '');
 
-  const secret = (process.env.MERCADOPAGO_PAYMENT_SECRET_KEY || '').trim();
-  const template = Buffer.from(
-    `id:${paymentId};request-id:${xRequestId};ts:${ts};`,
-    'utf8',
-  ).toString();
+  const template = `id:${paymentId};request-id:${xRequestId};ts:${ts};`;
 
   const hmac = crypto.createHmac('sha256', secret);
   hmac.update(template);
-
   const sha256Signature = hmac.digest('hex');
 
-  return sha256Signature === signaturePaymentHash;
+  // Use constant-time comparison to prevent timing side-channel attacks
+  try {
+    const sigBuffer = Buffer.from(sha256Signature, 'hex');
+    const expectedBuffer = Buffer.from(signaturePaymentHash, 'hex');
+    if (sigBuffer.length !== expectedBuffer.length) return false;
+    return crypto.timingSafeEqual(sigBuffer, expectedBuffer);
+  } catch {
+    return false;
+  }
 }
 
 export async function POST(request: Request) {
   const xSignature = request.headers.get('x-signature');
   const xRequestId = request.headers.get('x-request-id');
 
-  let body: { data: { id: string }; action?: string; type?: string };
+  const WebhookBodySchema = z.object({
+    data: z.object({ id: z.string() }),
+    action: z.string().optional(),
+    type: z.string().optional(),
+  });
 
+  let rawBody: unknown;
   try {
-    body = await request.json();
+    rawBody = await request.json();
   } catch {
     return Response.json(
       { message: 'Invalid JSON body' },
       { status: 400 },
     );
   }
+
+  const parsed = WebhookBodySchema.safeParse(rawBody);
+  if (!parsed.success) {
+    logger.warn('Payment webhook: invalid payload shape', {
+      issues: JSON.stringify(parsed.error.issues),
+    });
+    return Response.json(
+      { message: 'Invalid webhook payload' },
+      { status: 400 },
+    );
+  }
+
+  const body = parsed.data;
 
   if (!xSignature || !xRequestId) {
     logger.warn('Payment webhook: missing signature headers');
@@ -77,7 +104,7 @@ export async function POST(request: Request) {
       attributes: { 'payment.id': paymentId },
     },
     async () => {
-      const signatureValid = trace(
+      const signatureValid = await trace(
         { name: 'verifyHmacSignature', op: 'function' },
         () => verifySignature(xSignature, xRequestId, paymentId),
       );
