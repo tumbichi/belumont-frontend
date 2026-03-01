@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       attributes: { 'payment.id': paymentId },
     },
     async () => {
-      const signatureValid = trace(
+      const signatureValid = await trace(
         { name: 'verifyHmacSignature', op: 'function' },
         () => verifySignature(xSignature, xRequestId, paymentId),
       );
