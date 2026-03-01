@@ -172,7 +172,21 @@
     "BUNDLE_SELECT_PRODUCTS_DESCRIPTION": "Después de crear el producto, podrás agregar productos individuales al pack desde la pestaña de productos del pack.",
     "SORT_ORDER": "Orden",
     "PRODUCT_SINGULAR": "producto",
-    "PRODUCT_PLURAL": "productos"
+    "PRODUCT_PLURAL": "productos",
+    "VALIDATION": {
+      "NAME_REQUIRED": "El nombre del producto es requerido",
+      "PRICE_POSITIVE": "El precio debe ser un número positivo",
+      "PATHNAME_REQUIRED": "La ruta es requerida"
+    },
+    "PICKER_CLICK_IMAGE": "Hacé clic para subir una imagen",
+    "PICKER_SELECT_IMAGE": "Seleccionar imagen",
+    "PICKER_CLICK_PDF": "Hacé clic para subir un PDF",
+    "PICKER_SELECT_PDF": "Seleccionar PDF",
+    "PICKER_PDF_DOCUMENT": "Documento PDF",
+    "UPLOAD_STEP_COVER": "Subiendo imagen de portada…",
+    "UPLOAD_STEP_PDF": "Subiendo archivo PDF…",
+    "UPLOAD_STEP_GALLERY": "Subiendo imágenes de galería…",
+    "UPLOAD_STEP_SAVING": "Guardando producto…"
   },
   "ORDERS": {
     "TITLE": "Órdenes",

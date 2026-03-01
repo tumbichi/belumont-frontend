@@ -5,6 +5,7 @@ import { Button } from '@soybelumont/ui/components/button';
 import { Card } from '@soybelumont/ui/components/card';
 import { Label } from '@soybelumont/ui/components/label';
 import { FileText, Upload, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface PdfPickerProps {
   label: string;
@@ -21,6 +22,7 @@ export function PdfPicker({
   onClear,
   error,
 }: PdfPickerProps) {
+  const t = useTranslations();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +48,7 @@ export function PdfPicker({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{fileName}</p>
-              <p className="text-xs text-muted-foreground">PDF Document</p>
+              <p className="text-xs text-muted-foreground">{t('PRODUCTS.PICKER_PDF_DOCUMENT')}</p>
             </div>
             <Button
               type="button"
@@ -60,14 +62,14 @@ export function PdfPicker({
         ) : (
           <div className="flex flex-col items-center gap-2 text-muted-foreground py-4">
             <Upload className="w-8 h-8" />
-            <span className="text-sm">Click to upload PDF</span>
+            <span className="text-sm">{t('PRODUCTS.PICKER_CLICK_PDF')}</span>
             <Button
               type="button"
               variant="secondary"
               size="sm"
               onClick={() => inputRef.current?.click()}
             >
-              Select PDF
+              {t('PRODUCTS.PICKER_SELECT_PDF')}
             </Button>
           </div>
         )}

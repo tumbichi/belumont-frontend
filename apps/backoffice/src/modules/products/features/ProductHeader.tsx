@@ -48,44 +48,37 @@ export function ProductHeader() {
 
   return (
     <>
-      <header className="bg-card border-b border-border">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between gap-4">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-foreground">
-                {product.name}
-              </h1>
-              <div className="flex items-center gap-3">
-                <Badge variant={product.active ? 'default' : 'secondary'}>
-                  {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
-                </Badge>
-                <Badge variant="outline">
-                  {product.product_type === 'bundle'
-                    ? t('PRODUCTS.PRODUCT_TYPE_BUNDLE')
-                    : t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
-                </Badge>
-                <span
-                  className="text-sm text-muted-foreground"
-                  suppressHydrationWarning
-                >
-                  Creado: {new Date(product.created_at).toLocaleString()}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-muted-foreground">
-                {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
-              </span>
-              <Switch
-                checked={product.active}
-                onCheckedChange={handleToggle}
-                disabled={isTogglingActive}
-              />
-            </div>
+      <div className="flex items-center justify-between gap-4">
+        <div className="space-y-1.5">
+          <h1 className="text-2xl font-bold text-foreground">
+            {product.name}
+          </h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant={product.active ? 'active' : 'inactive'}>
+              {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
+            </Badge>
+            {product.product_type === 'bundle' && (
+              <Badge variant="bundle">
+                {t('PRODUCTS.PRODUCT_TYPE_BUNDLE')}
+              </Badge>
+            )}
+            <span
+              className="text-sm text-muted-foreground"
+              suppressHydrationWarning
+            >
+              {t('PRODUCTS.CREATED_AT')}{': '}
+              {new Date(product.created_at).toLocaleDateString()}
+            </span>
           </div>
         </div>
-      </header>
+
+        <Switch
+          checked={product.active}
+          onCheckedChange={handleToggle}
+          disabled={isTogglingActive}
+          aria-label={product.active ? t('PRODUCTS.DEACTIVATE') : t('PRODUCTS.ACTIVATE')}
+        />
+      </div>
 
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>

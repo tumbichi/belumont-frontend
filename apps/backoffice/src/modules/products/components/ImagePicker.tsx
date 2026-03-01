@@ -6,6 +6,7 @@ import { Card } from '@soybelumont/ui/components/card';
 import { Label } from '@soybelumont/ui/components/label';
 import { Upload, X } from 'lucide-react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 interface ImagePickerProps {
   label: string;
@@ -22,6 +23,7 @@ export function ImagePicker({
   onClear,
   error,
 }: ImagePickerProps) {
+  const t = useTranslations();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -61,14 +63,14 @@ export function ImagePicker({
         ) : (
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <Upload className="w-8 h-8" />
-            <span className="text-sm">Click to upload image</span>
+            <span className="text-sm">{t('PRODUCTS.PICKER_CLICK_IMAGE')}</span>
             <Button
               type="button"
               variant="secondary"
               size="sm"
               onClick={() => inputRef.current?.click()}
             >
-              Select Image
+              {t('PRODUCTS.PICKER_SELECT_IMAGE')}
             </Button>
           </div>
         )}
