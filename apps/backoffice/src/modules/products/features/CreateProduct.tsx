@@ -22,8 +22,11 @@ import {
 import { createProduct } from '../actions/createProduct';
 import { createResource } from '../actions/createResource';
 import { ProductFormContent } from '../components/ProductFormContent';
-import { ImagePicker } from '../components/ImagePicker';
+import { ImageDropZone } from '../components/ImageDropZone';
+import { GalleryManager, GallerySlot } from '../components/GalleryManager';
+import { ThumbnailSection } from '../components/ThumbnailSection';
 import { PdfPicker } from '../components/PdfPicker';
+import { useImageUpload } from '../hooks/useImageUpload';
 import uploadImage from '@core/data/images-manager/services/uploadImage';
 import {
   createMultipartUpload,
@@ -32,25 +35,6 @@ import {
 } from '../actions/multipart';
 import attempt from '@core/lib/promises/attempt';
 import { Info } from 'lucide-react';
-
-/** Hook to manage File + its object-URL preview */
-function useFilePreview() {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!file) {
-      setPreview(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
-
-  const clear = useCallback(() => setFile(null), []);
-  return { file, setFile, preview, clear };
-}
 
 async function uploadPdfToR2(file: File, fileName: string) {
   const contentType = file.type;
@@ -108,11 +92,66 @@ export function CreateProduct() {
   const t = useTranslations();
   const router = useRouter();
 
-  // File pickers
-  const cover = useFilePreview();
-  const gallery1 = useFilePreview();
-  const gallery2 = useFilePreview();
-  const gallery3 = useFilePreview();
+  // Image uploads (with validation + compression)
+  const cover = useImageUpload();
+  const thumbnail = useImageUpload();
+  const galleryUpload1 = useImageUpload();
+  const galleryUpload2 = useImageUpload();
+  const galleryUpload3 = useImageUpload();
+  const allGalleryUploads = useMemo(
+    () => [galleryUpload1, galleryUpload2, galleryUpload3],
+    [galleryUpload1, galleryUpload2, galleryUpload3]
+  );
+
+  // Gallery management state
+  const [gallerySlotCount, setGallerySlotCount] = useState(0);
+  const gallerySlots: GallerySlot[] = useMemo(
+    () =>
+      allGalleryUploads.slice(0, gallerySlotCount).map((upload) => ({
+        existingUrl: null,
+        upload,
+      })),
+    [allGalleryUploads, gallerySlotCount]
+  );
+
+  const handleGalleryAdd = useCallback(() => {
+    setGallerySlotCount((prev) => Math.min(prev + 1, 3));
+  }, []);
+
+  const handleGalleryRemove = useCallback(
+    (index: number) => {
+      // Shift uploads: move files from later slots into the removed slot
+      for (let i = index; i < gallerySlotCount - 1; i++) {
+        const nextFile = allGalleryUploads[i + 1]?.file;
+        if (nextFile) {
+          allGalleryUploads[i]!.setFile(nextFile);
+        } else {
+          allGalleryUploads[i]!.clear();
+        }
+      }
+      allGalleryUploads[gallerySlotCount - 1]?.clear();
+      setGallerySlotCount((prev) => Math.max(prev - 1, 0));
+    },
+    [allGalleryUploads, gallerySlotCount]
+  );
+
+  const handleGalleryReorder = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      const fromFile = allGalleryUploads[fromIndex]?.file;
+      const toFile = allGalleryUploads[toIndex]?.file;
+      // Swap files between slots
+      if (fromFile) allGalleryUploads[toIndex]!.setFile(fromFile);
+      else allGalleryUploads[toIndex]!.clear();
+      if (toFile) allGalleryUploads[fromIndex]!.setFile(toFile);
+      else allGalleryUploads[fromIndex]!.clear();
+    },
+    [allGalleryUploads]
+  );
+
+  // Thumbnail toggle
+  const [useCoverAsThumbnail, setUseCoverAsThumbnail] = useState(true);
+
+  // PDF
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   // Upload progress
@@ -152,26 +191,41 @@ export function CreateProduct() {
   }, [nameValue, pathnameManuallyEdited, form]);
 
   // Count total upload steps for progress
-  const galleryFiles = useMemo(
-    () => [gallery1.file, gallery2.file, gallery3.file].filter(Boolean),
-    [gallery1.file, gallery2.file, gallery3.file]
+  const galleryFilesWithCompressed = useMemo(
+    () =>
+      allGalleryUploads
+        .slice(0, gallerySlotCount)
+        .map((u) => u.compressedFile)
+        .filter(Boolean),
+    [allGalleryUploads, gallerySlotCount]
   );
 
   const totalSteps = useMemo(() => {
     let steps = 1; // cover image always
+    if (!useCoverAsThumbnail && thumbnail.compressedFile) steps += 1;
     if (pdfFile) steps += 1;
-    steps += galleryFiles.length;
+    steps += galleryFilesWithCompressed.length;
     steps += 1; // create product
     return steps;
-  }, [pdfFile, galleryFiles.length]);
+  }, [pdfFile, galleryFilesWithCompressed.length, useCoverAsThumbnail, thumbnail.compressedFile]);
 
   const handleCreateSubmit = async (data: ProductDetailsInput) => {
-    if (!cover.file) {
+    if (!cover.compressedFile) {
       sonner.toast.error(t('PRODUCTS.COVER_IMAGE_REQUIRED'));
       return;
     }
     if (!isBundle && !pdfFile) {
       sonner.toast.error(t('PRODUCTS.PDF_REQUIRED'));
+      return;
+    }
+
+    // Check if any image is still compressing
+    const anyCompressing =
+      cover.isCompressing ||
+      thumbnail.isCompressing ||
+      allGalleryUploads.some((u) => u.isCompressing);
+    if (anyCompressing) {
+      sonner.toast.error(t('PRODUCTS.IMAGE_STILL_COMPRESSING'));
       return;
     }
 
@@ -185,11 +239,11 @@ export function CreateProduct() {
     try {
       const imageFolderName = `products/${data.pathname.replaceAll('-', '_')}`;
 
-      // 1. Cover image
+      // 1. Cover image (compressed)
       advance(t('PRODUCTS.UPLOAD_STEP_COVER'));
       const coverPath = `${imageFolderName}/cover_${Date.now()}`;
       const coverUrl = await uploadImage(
-        cover.file,
+        cover.compressedFile,
         coverPath,
         'public-assets'
       );
@@ -200,7 +254,25 @@ export function CreateProduct() {
         bucket: 'public-assets',
       });
 
-      // 2. PDF (R2) — only for single products
+      // 2. Thumbnail (if custom)
+      let thumbnailUrl = coverUrl;
+      if (!useCoverAsThumbnail && thumbnail.compressedFile) {
+        advance(t('PRODUCTS.UPLOAD_STEP_THUMBNAIL'));
+        const thumbPath = `${imageFolderName}/thumbnail_${Date.now()}`;
+        thumbnailUrl = await uploadImage(
+          thumbnail.compressedFile,
+          thumbPath,
+          'public-assets'
+        );
+        await createResource({
+          folder: thumbPath,
+          url: thumbnailUrl,
+          provider: 'SUPABASE',
+          bucket: 'public-assets',
+        });
+      }
+
+      // 3. PDF (R2) — only for single products
       let pdfUrl = '';
       if (pdfFile) {
         advance(t('PRODUCTS.UPLOAD_STEP_PDF'));
@@ -213,16 +285,14 @@ export function CreateProduct() {
         });
       }
 
-      // 3. Gallery images
+      // 4. Gallery images (compressed)
       const galleryUrls: string[] = [];
-      const allGalleryFiles = [gallery1.file, gallery2.file, gallery3.file];
-
-      for (let i = 0; i < allGalleryFiles.length; i++) {
-        const file = allGalleryFiles[i];
-        if (file) {
+      for (let i = 0; i < gallerySlotCount; i++) {
+        const compressed = allGalleryUploads[i]?.compressedFile;
+        if (compressed) {
           advance(t('PRODUCTS.UPLOAD_STEP_GALLERY'));
           const path = `${imageFolderName}/gallery_image_${i + 1}_${Date.now()}`;
-          const publicUrl = await uploadImage(file, path, 'public-assets');
+          const publicUrl = await uploadImage(compressed, path, 'public-assets');
           await createResource({
             folder: path,
             url: publicUrl,
@@ -233,13 +303,13 @@ export function CreateProduct() {
         }
       }
 
-      // 4. Create product record
+      // 5. Create product record
       advance(t('PRODUCTS.UPLOAD_STEP_SAVING'));
       await createProduct({
         ...data,
         description: data.description ?? null,
         image_url: coverUrl,
-        thumbnail_url: coverUrl,
+        thumbnail_url: thumbnailUrl,
         download_url: pdfUrl || null,
         product_images: galleryUrls,
         product_type: data.product_type ?? 'single',
@@ -305,14 +375,34 @@ export function CreateProduct() {
               <CardTitle>{t('PRODUCTS.COVER_IMAGE')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <ImagePicker
+              <div className="max-w-sm">
+                <ImageDropZone
                   label={t('PRODUCTS.COVER_IMAGE')}
                   preview={cover.preview}
                   onChange={cover.setFile}
                   onClear={cover.clear}
+                  aspectRatio="16/25"
+                  error={cover.error}
+                  isCompressing={cover.isCompressing}
+                  originalSize={cover.originalSize}
+                  compressedSize={cover.compressedSize}
+                  fileName={cover.file?.name}
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Thumbnail Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('PRODUCTS.THUMBNAIL')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ThumbnailSection
+                useCoverAsThumbnail={useCoverAsThumbnail}
+                onToggle={setUseCoverAsThumbnail}
+                upload={thumbnail}
+              />
             </CardContent>
           </Card>
 
@@ -322,26 +412,13 @@ export function CreateProduct() {
               <CardTitle>{t('PRODUCTS.GALLERY_IMAGES')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <ImagePicker
-                  label={`${t('PRODUCTS.GALLERY_IMAGE')} 1`}
-                  preview={gallery1.preview}
-                  onChange={gallery1.setFile}
-                  onClear={gallery1.clear}
-                />
-                <ImagePicker
-                  label={`${t('PRODUCTS.GALLERY_IMAGE')} 2`}
-                  preview={gallery2.preview}
-                  onChange={gallery2.setFile}
-                  onClear={gallery2.clear}
-                />
-                <ImagePicker
-                  label={`${t('PRODUCTS.GALLERY_IMAGE')} 3`}
-                  preview={gallery3.preview}
-                  onChange={gallery3.setFile}
-                  onClear={gallery3.clear}
-                />
-              </div>
+              <GalleryManager
+                slots={gallerySlots}
+                max={3}
+                onAdd={handleGalleryAdd}
+                onRemove={handleGalleryRemove}
+                onReorder={handleGalleryReorder}
+              />
             </CardContent>
           </Card>
 

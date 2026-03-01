@@ -1,508 +1,344 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@soybelumont/ui/components/card';
 import { Button } from '@soybelumont/ui/components/button';
-import { Card } from '@soybelumont/ui/components/card';
-import { Label } from '@soybelumont/ui/components/label';
 import { sonner } from '@soybelumont/ui/components/sonner';
-import { Upload } from 'lucide-react';
-import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { ConfirmImageUpdateModal } from '../components/ConfirmImageUpdateModal';
-import { FileWithPreview } from '../actions/updateProductImage';
-import attempt from '@core/lib/promises/attempt';
+import { ImageDropZone } from '../components/ImageDropZone';
+import { GalleryManager, GallerySlot } from '../components/GalleryManager';
+import { ThumbnailSection } from '../components/ThumbnailSection';
+import { useImageUpload } from '../hooks/useImageUpload';
 import { uploadAndUpdateProductImage } from '../actions/uploadAndUpdateProductImage';
 import useProductSelected from '../contexts/product-selected-context/useProductSelected';
-
-type ModalState =
-  | {
-      isOpen: boolean;
-      imageType: 'cover' | 'thumbnail';
-      file: FileWithPreview | null;
-      oldImageUrl: string | null;
-    }
-  | {
-      isOpen: boolean;
-      imageType: 'gallery';
-      file: FileWithPreview | null;
-      oldImageUrl: string | null;
-      galleryIndex: number;
-    };
+import attempt from '@core/lib/promises/attempt';
 
 export function ProductImageManager() {
   const t = useTranslations();
   const { product, updateProduct } = useProductSelected();
 
-  const [imagesToUpload, setImagesToUpload] = useState<{
-    cover: FileWithPreview | null;
-    thumbnail: FileWithPreview | null;
-    gallery_image_1: FileWithPreview | null;
-    gallery_image_2: FileWithPreview | null;
-    gallery_image_3: FileWithPreview | null;
-  }>({
-    cover: null,
-    thumbnail: null,
-    gallery_image_1: null,
-    gallery_image_2: null,
-    gallery_image_3: null,
-  });
+  // --- Cover ---
+  const cover = useImageUpload();
+  const [isSavingCover, setIsSavingCover] = useState(false);
 
-  const [modalState, setModalState] = useState<ModalState>({
-    isOpen: false,
-    imageType: 'cover',
-    file: null,
-    oldImageUrl: null,
-  });
-
-  console.log('[ProductImageManager] product', product);
-
-  const galleryImages = product.product_images || [];
-
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = event.target;
-
-    if (files && files[0]) {
-      const file: FileWithPreview = files[0];
-      file.preview = URL.createObjectURL(files[0]);
-      console.log('files[0]', file);
-
-      setImagesToUpload((prev) => ({ ...prev, [name]: files[0] }));
+  const handleSaveCover = async () => {
+    if (!cover.compressedFile) return;
+    setIsSavingCover(true);
+    const { data: updated, error } = await attempt(
+      uploadAndUpdateProductImage({
+        productId: product.id,
+        imageType: 'cover',
+        file: cover.compressedFile,
+        oldImageUrl: product.image_url,
+        productPathname: product.pathname,
+      })
+    );
+    setIsSavingCover(false);
+    if (error || !updated) {
+      sonner.toast.error(
+        error instanceof Error
+          ? error.message
+          : t('PRODUCTS.IMAGE_UPDATE_ERROR')
+      );
+      return;
     }
+    updateProduct({ image_url: updated.image_url });
+    cover.clear();
+    sonner.toast.success(t('PRODUCTS.COVER_IMAGE_UPDATED'));
   };
 
-  const handleUploadImage = (
-    imageType: 'cover' | 'thumbnail' | 'gallery',
-    index?: number
-  ) => {
-    switch (imageType) {
-      case 'cover': {
-        if (!imagesToUpload.cover) {
-          sonner.toast.error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
-          return;
-        }
-        setModalState({
-          isOpen: true,
-          imageType: 'cover',
-          file: imagesToUpload.cover,
-          oldImageUrl: product.image_url,
-        });
-        return;
+  // --- Thumbnail ---
+  const thumbnailUpload = useImageUpload();
+  const [isSavingThumbnail, setIsSavingThumbnail] = useState(false);
+
+  const initialUseCoverAsThumbnail =
+    !product.thumbnail_url || product.thumbnail_url === product.image_url;
+  const [useCoverAsThumbnail, setUseCoverAsThumbnail] = useState(
+    initialUseCoverAsThumbnail
+  );
+
+  const handleToggleThumbnail = useCallback(
+    (value: boolean) => {
+      setUseCoverAsThumbnail(value);
+      if (value) {
+        thumbnailUpload.clear();
       }
-      case 'thumbnail': {
-        if (!imagesToUpload.thumbnail) {
-          sonner.toast.error(t('PRODUCTS.THUMBNAIL_IMAGE_NOT_SELECTED'));
-          return;
-        }
-        setModalState({
-          isOpen: true,
+    },
+    [thumbnailUpload]
+  );
+
+  const handleSaveThumbnail = async () => {
+    if (useCoverAsThumbnail) {
+      // Sync cover as thumbnail — fetch cover and re-upload as thumbnail
+      const { data: updated, error } = await attempt(
+        uploadAndUpdateProductImage({
+          productId: product.id,
           imageType: 'thumbnail',
-          file: imagesToUpload.thumbnail,
+          file: await createFileFromUrl(product.image_url, 'cover-as-thumb'),
           oldImageUrl: product.thumbnail_url,
-        });
+          productPathname: product.pathname,
+        })
+      );
+      if (error || !updated) {
+        sonner.toast.error(t('PRODUCTS.IMAGE_UPDATE_ERROR'));
         return;
       }
-      case 'gallery': {
-        if (index === undefined) {
-          sonner.toast.error(t('PRODUCTS.GALLERY_INDEX_NOT_PROVIDED'));
-          return;
-        }
+      updateProduct({ thumbnail_url: updated.thumbnail_url });
+      sonner.toast.success(t('PRODUCTS.THUMBNAIL_UPDATED_SUCCESS'));
+      return;
+    }
+    if (!thumbnailUpload.compressedFile) return;
+    setIsSavingThumbnail(true);
+    const { data: updated, error } = await attempt(
+      uploadAndUpdateProductImage({
+        productId: product.id,
+        imageType: 'thumbnail',
+        file: thumbnailUpload.compressedFile,
+        oldImageUrl: product.thumbnail_url,
+        productPathname: product.pathname,
+      })
+    );
+    setIsSavingThumbnail(false);
+    if (error || !updated) {
+      sonner.toast.error(
+        error instanceof Error
+          ? error.message
+          : t('PRODUCTS.IMAGE_UPDATE_ERROR')
+      );
+      return;
+    }
+    updateProduct({ thumbnail_url: updated.thumbnail_url });
+    thumbnailUpload.clear();
+    sonner.toast.success(t('PRODUCTS.THUMBNAIL_UPDATED_SUCCESS'));
+  };
 
-        if (
-          !imagesToUpload[
-            `gallery_image_${index + 1}` as keyof typeof imagesToUpload
-          ]
-        ) {
-          sonner.toast.error(t('PRODUCTS.GALLERY_IMAGE_NOT_SELECTED'));
-          return;
-        }
+  const thumbnailHasChanges =
+    useCoverAsThumbnail !== initialUseCoverAsThumbnail ||
+    (!useCoverAsThumbnail && thumbnailUpload.compressedFile !== null);
 
-        console.log(
-          '[ProductImageManager] Open modal gallery images',
-          galleryImages
-        );
+  // --- Gallery ---
+  const galleryUpload1 = useImageUpload();
+  const galleryUpload2 = useImageUpload();
+  const galleryUpload3 = useImageUpload();
+  const allGalleryUploads = useMemo(
+    () => [galleryUpload1, galleryUpload2, galleryUpload3],
+    [galleryUpload1, galleryUpload2, galleryUpload3]
+  );
 
-        console.log(
-          '[ProductImageManager] Open modal gallery image index',
-          index
-        );
+  const existingGalleryImages = product.product_images || [];
+  const [galleryUrls, setGalleryUrls] = useState<(string | null)[]>(() => [
+    ...existingGalleryImages,
+  ]);
 
-        console.log('[ProductImageManager] Old image', galleryImages[index]);
+  const gallerySlots: GallerySlot[] = useMemo(
+    () =>
+      galleryUrls.map((url, i) => ({
+        existingUrl: url,
+        upload: allGalleryUploads[i]!,
+      })),
+    [galleryUrls, allGalleryUploads]
+  );
 
-        setModalState({
-          isOpen: true,
-          imageType: 'gallery',
-          file: imagesToUpload[
-            `gallery_image_${index + 1}` as keyof typeof imagesToUpload
-          ],
-          oldImageUrl: galleryImages[index] ?? null,
-          galleryIndex: index,
-        });
+  const [isSavingGallery, setIsSavingGallery] = useState(false);
 
-        return;
+  const handleGalleryAdd = useCallback(() => {
+    setGalleryUrls((prev) => {
+      if (prev.length >= 3) return prev;
+      return [...prev, null];
+    });
+  }, []);
+
+  const handleGalleryRemove = useCallback(
+    (index: number) => {
+      const newUrls = [...galleryUrls];
+      newUrls.splice(index, 1);
+      setGalleryUrls(newUrls);
+
+      // Shift upload states to fill the gap
+      for (let i = index; i < allGalleryUploads.length - 1; i++) {
+        const nextFile = allGalleryUploads[i + 1]?.file;
+        if (nextFile) allGalleryUploads[i]!.setFile(nextFile);
+        else allGalleryUploads[i]!.clear();
       }
-      default:
-        break;
+      allGalleryUploads[allGalleryUploads.length - 1]?.clear();
+    },
+    [galleryUrls, allGalleryUploads]
+  );
+
+  const handleGalleryReorder = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      setGalleryUrls((prev) => {
+        const next = [...prev];
+        [next[fromIndex], next[toIndex]] = [next[toIndex]!, next[fromIndex]!];
+        return next;
+      });
+      const fromFile = allGalleryUploads[fromIndex]?.file;
+      const toFile = allGalleryUploads[toIndex]?.file;
+      if (fromFile) allGalleryUploads[toIndex]!.setFile(fromFile);
+      else allGalleryUploads[toIndex]!.clear();
+      if (toFile) allGalleryUploads[fromIndex]!.setFile(toFile);
+      else allGalleryUploads[fromIndex]!.clear();
+    },
+    [allGalleryUploads]
+  );
+
+  const handleSaveGallery = async () => {
+    setIsSavingGallery(true);
+    try {
+      for (let i = 0; i < galleryUrls.length; i++) {
+        const upload = allGalleryUploads[i];
+        if (upload?.compressedFile) {
+          const { data: updated, error } = await attempt(
+            uploadAndUpdateProductImage({
+              productId: product.id,
+              imageType: 'gallery',
+              file: upload.compressedFile,
+              oldImageUrl: existingGalleryImages[i] ?? '',
+              productPathname: product.pathname,
+              galleryIndex: i,
+            })
+          );
+          if (error || !updated) {
+            sonner.toast.error(
+              error instanceof Error
+                ? error.message
+                : t('PRODUCTS.IMAGE_UPDATE_ERROR')
+            );
+            return;
+          }
+          updateProduct({ product_images: updated.product_images });
+          upload.clear();
+          setGalleryUrls((prev) => {
+            const next = [...prev];
+            next[i] = updated.product_images?.[i] ?? null;
+            return next;
+          });
+        }
+      }
+      sonner.toast.success(t('PRODUCTS.GALLERY_IMAGE_UPDATED_SUCCESS'));
+    } finally {
+      setIsSavingGallery(false);
     }
   };
 
-  const handleUploadImageConfirm = async () => {
-    switch (modalState.imageType) {
-      case 'cover': {
-        if (!imagesToUpload.cover) {
-          sonner.toast.error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
-          throw new Error(t('PRODUCTS.COVER_IMAGE_NOT_SELECTED'));
-        }
-
-        const { data: productUpdated, error: e } = await attempt(
-          uploadAndUpdateProductImage({
-            productId: product.id,
-            imageType: 'cover',
-            file: imagesToUpload.cover,
-            oldImageUrl: product.image_url,
-            productPathname: product.pathname,
-            galleryIndex: undefined,
-          })
-        );
-
-        if (e || !productUpdated) {
-          console.log('Error updating cover image', e);
-          const error =
-            e instanceof Error ? e.message : 'Failed to update image';
-
-          sonner.toast.error(error);
-          throw error;
-        }
-
-        console.log('Product cover image updated', productUpdated);
-
-        updateProduct({ image_url: productUpdated.image_url });
-
-        setImagesToUpload((prev) => ({ ...prev, cover: null }));
-        handleCloseModal();
-
-        sonner.toast.success(t('PRODUCTS.COVER_IMAGE_UPDATED'));
-        return;
-      }
-      case 'thumbnail': {
-        if (!imagesToUpload.thumbnail) {
-          sonner.toast.error(t('PRODUCTS.THUMBNAIL_IMAGE_NOT_SELECTED'));
-          throw new Error(t('PRODUCTS.THUMBNAIL_IMAGE_NOT_SELECTED'));
-        }
-
-        const { data: productUpdated, error: e } = await attempt(
-          uploadAndUpdateProductImage({
-            productId: product.id,
-            imageType: 'thumbnail',
-            file: imagesToUpload.thumbnail,
-            oldImageUrl: product.thumbnail_url,
-            productPathname: product.pathname,
-            galleryIndex: undefined,
-          })
-        );
-
-        if (e || !productUpdated) {
-          console.log('Error updating thumbnail image', e);
-          const error =
-            e instanceof Error ? e.message : 'Failed to update image';
-
-          sonner.toast.error(error);
-          throw error;
-        }
-
-        console.log('Product thumbnail image updated', productUpdated);
-
-        updateProduct({ thumbnail_url: productUpdated.thumbnail_url });
-        setImagesToUpload((prev) => ({ ...prev, thumbnail: null }));
-
-        handleCloseModal();
-        sonner.toast.success(t('PRODUCTS.THUMBNAIL_UPDATED_SUCCESS'));
-        return;
-      }
-      case 'gallery': {
-        if (modalState.galleryIndex === undefined) {
-          sonner.toast.error(t('PRODUCTS.GALLERY_INDEX_NOT_PROVIDED'));
-          throw new Error(t('PRODUCTS.GALLERY_INDEX_NOT_PROVIDED'));
-        }
-
-        const { data: productUpdated, error: e } = await attempt(
-          uploadAndUpdateProductImage({
-            productId: product.id,
-            imageType: 'gallery',
-            file: imagesToUpload[
-              `gallery_image_${modalState.galleryIndex + 1}` as keyof typeof imagesToUpload
-            ]!,
-            oldImageUrl: galleryImages[modalState.galleryIndex] ?? '',
-            productPathname: product.pathname,
-            galleryIndex: modalState.galleryIndex,
-          })
-        );
-
-        if (e || !productUpdated) {
-          console.log('Error updating gallery image', e);
-          const error =
-            e instanceof Error ? e.message : 'Failed to update image';
-
-          sonner.toast.error(error);
-          throw error;
-        }
-
-        console.log('Product gallery image updated', productUpdated);
-
-        updateProduct({ product_images: productUpdated.product_images });
-        setImagesToUpload((prev) => ({
-          ...prev,
-          [`gallery_image_${modalState.galleryIndex! + 1}`]: null,
-        }));
-
-        handleCloseModal();
-        sonner.toast.success(t('PRODUCTS.GALLERY_IMAGE_UPDATED_SUCCESS'));
-        return;
-      }
-      default: {
-        return;
-      }
-    }
-    // sonner.toast.success('Image updated successfully');
-  };
-
-  const handleCloseModal = () => {
-    setModalState((prev) => ({ ...prev, isOpen: false }));
-  };
+  const galleryHasChanges = allGalleryUploads
+    .slice(0, galleryUrls.length)
+    .some((u) => u.compressedFile !== null);
 
   return (
     <div className="space-y-6">
       {/* Cover Image */}
-      <Card className="p-6">
-        <Label className="block mb-4 text-base font-semibold">
-          {t('PRODUCTS.COVER_IMAGE')}
-        </Label>
-        <div className="space-y-4">
-          <div className="relative flex justify-center rounded-lg">
-            <Image
-              src={
-                imagesToUpload.cover?.preview ||
-                `${product.image_url}` ||
-                '/placeholder.svg'
-              }
-              alt="Cover image"
-              width={360}
-              height={562}
-              className="object-cover aspect-[16/25]"
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>{t('PRODUCTS.COVER_IMAGE')}</CardTitle>
+          {cover.compressedFile && (
+            <Button
+              size="sm"
+              onClick={handleSaveCover}
+              disabled={isSavingCover || cover.isCompressing}
+            >
+              {isSavingCover && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              )}
+              {t('PRODUCTS.SAVE_CHANGES')}
+            </Button>
+          )}
+        </CardHeader>
+        <CardContent>
+          <div className="max-w-sm">
+            <ImageDropZone
+              label=""
+              preview={cover.preview || product.image_url}
+              onChange={cover.setFile}
+              onClear={cover.clear}
+              aspectRatio="16/25"
+              error={cover.error}
+              isCompressing={cover.isCompressing}
+              originalSize={cover.originalSize}
+              compressedSize={cover.compressedSize}
+              fileName={cover.file?.name}
             />
           </div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="hidden"
-            name="cover"
-            id="cover-upload"
-          />
-          <Button
-            asChild
-            variant="outline"
-            className="w-full bg-transparent cursor-pointer"
-          >
-            <label htmlFor="cover-upload">
-              <Upload />
-              {t('PRODUCTS.UPLOAD_COVER_IMAGE')}
-            </label>
-          </Button>
-          <Button
-            className="w-full cursor-pointer"
-            onClick={() => handleUploadImage('cover')}
-          >
-            {t('PRODUCTS.CHANGE_COVER')}
-          </Button>
-        </div>
+        </CardContent>
       </Card>
 
       {/* Thumbnail */}
-      <Card className="p-6">
-        <Label className="block mb-4 text-base font-semibold">
-          {t('PRODUCTS.THUMBNAIL')}
-        </Label>
-        <div className="space-y-4">
-          <div className="relative max-w-xs overflow-hidden rounded-lg">
-            <Image
-              src={
-                imagesToUpload.thumbnail?.preview ||
-                product.thumbnail_url ||
-                '/placeholder.svg'
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>{t('PRODUCTS.THUMBNAIL')}</CardTitle>
+          {thumbnailHasChanges && (
+            <Button
+              size="sm"
+              onClick={handleSaveThumbnail}
+              disabled={
+                isSavingThumbnail ||
+                thumbnailUpload.isCompressing ||
+                (!useCoverAsThumbnail && !thumbnailUpload.compressedFile)
               }
-              alt="Thumbnail"
-              width={400}
-              height={300}
-              className="object-cover w-full h-48 transition-opacity group-hover:opacity-100"
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
-          <input
-            name="thumbnail"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="hidden"
-            id="thumbnail-upload"
-          />
-          <Button
-            asChild
-            variant="outline"
-            className="w-full bg-transparent cursor-pointer"
-          >
-            <label htmlFor="thumbnail-upload">
-              <Upload />
-              {t('PRODUCTS.UPLOAD_THUMBNAIL')}
-            </label>
-          </Button>
-          <Button
-            className="w-full cursor-pointer"
-            onClick={() => handleUploadImage('thumbnail')}
-          >
-            {t('PRODUCTS.CHANGE_THUMBNAIL')}
-          </Button>
-        </div>
-      </Card>
-
-      {/* Gallery Images */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <Label className="text-base font-semibold">
-            {t('PRODUCTS.GALLERY_IMAGES')}
-          </Label>
-          <span className="text-sm text-muted-foreground">
-            {galleryImages.length} / 3
-          </span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          {galleryImages.map((image, index) => (
-            <div key={index} className="relative group">
-              <div className="relative rounded-lg aspect-square">
-                <Image
-                  src={
-                    // Try to use the preview of an uploaded gallery image first (if any),
-                    // otherwise fall back to the existing image URL or the placeholder.
-                    imagesToUpload[
-                      `gallery_image_${index + 1}` as keyof typeof imagesToUpload
-                    ]?.preview ||
-                    image ||
-                    '/placeholder.svg'
-                  }
-                  alt={`Gallery image ${index + 1}`}
-                  width={180}
-                  height={250}
-                  className="object-cover w-full rounded-lg"
-                  style={{ aspectRatio: '18/25', objectFit: 'cover' }}
-                />
-              </div>
-              <div className="absolute top-2 left-2">
-                <p className="px-3 py-1 text-white rounded-lg bg-primary">
-                  {index + 1}
-                </p>
-              </div>
-              {/* <button
-                onClick={() => removeGalleryImage(index)}
-                className="absolute p-1 transition-opacity rounded opacity-0 top-2 right-2 bg-destructive text-destructive-foreground group-hover:opacity-100"
-              >
-                <X size={16} />
-              </button> */}
-
-              <input
-                name={`gallery_image_${index + 1}`}
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-                id={`gallery-image-${index + 1}-upload`}
-              />
-              <Button
-                asChild
-                variant="outline"
-                className="absolute transition-opacity opacity-0 cursor-pointer bottom-6 left-2 right-2 group-hover:opacity-100"
-              >
-                <label htmlFor={`gallery-image-${index + 1}-upload`}>
-                  <Upload />
-                  {t('PRODUCTS.UPLOAD_NEW_IMAGE')} {index + 1}
-                </label>
-              </Button>
-
-              {imagesToUpload[
-                `gallery_image_${index + 1}` as keyof typeof imagesToUpload
-              ] && (
-                <Button
-                  className="absolute cursor-pointer left-2 right-2 -bottom-4"
-                  onClick={() => handleUploadImage('gallery', index)}
-                >
-                  {t('PRODUCTS.REPLACE_IMAGE')} {index + 1}
-                </Button>
+            >
+              {isSavingThumbnail && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               )}
-            </div>
-          ))}
-
-          {/* Add Gallery Slot */}
-          {/* {galleryImages.length < 3 && (
-            <div className="relative">
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={(e) =>
-                  e.target.files && handleGalleryUpload(e.target.files)
-                }
-                className="hidden"
-                id="gallery-upload"
-              />
-              <Button
-                asChild
-                variant="outline"
-                className="w-full h-full bg-transparent cursor-pointer aspect-square"
-              >
-                <label
-                  htmlFor="gallery-upload"
-                  className="flex items-center justify-center"
-                >
-                  + Add
-                </label>
-              </Button>
-            </div>
-          )} */}
-        </div>
+              {t('PRODUCTS.SAVE_CHANGES')}
+            </Button>
+          )}
+        </CardHeader>
+        <CardContent>
+          <ThumbnailSection
+            useCoverAsThumbnail={useCoverAsThumbnail}
+            onToggle={handleToggleThumbnail}
+            upload={thumbnailUpload}
+            existingUrl={product.thumbnail_url}
+          />
+        </CardContent>
       </Card>
 
-      <ConfirmImageUpdateModal
-        isOpen={modalState.isOpen}
-        onClose={handleCloseModal}
-        imageType={modalState.imageType || 'cover'}
-        file={modalState.file}
-        oldImage={
-          modalState.imageType === 'cover'
-            ? {
-                url: product.image_url,
-                name: t('PRODUCTS.COVER_IMAGE'),
-                size: 0,
-                type: 'n/a',
+      {/* Gallery */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>{t('PRODUCTS.GALLERY_IMAGES')}</CardTitle>
+          {galleryHasChanges && (
+            <Button
+              size="sm"
+              onClick={handleSaveGallery}
+              disabled={
+                isSavingGallery ||
+                allGalleryUploads.some((u) => u.isCompressing)
               }
-            : modalState.imageType === 'thumbnail'
-              ? {
-                  url: product.thumbnail_url,
-                  name: t('PRODUCTS.THUMBNAIL'),
-                  size: 0,
-                  type: 'n/a',
-                }
-              : modalState.imageType === 'gallery'
-                ? {
-                    url: modalState.oldImageUrl ?? '',
-                    name: `${t('PRODUCTS.GALLERY_IMAGE')} ${modalState.galleryIndex}`,
-                    size: 0,
-                    type: 'n/a',
-                  }
-                : null
-        }
-        productId={product.id}
-        productPathname={product.pathname}
-        onConfirm={() => handleUploadImageConfirm()}
-      />
+            >
+              {isSavingGallery && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              )}
+              {t('PRODUCTS.SAVE_CHANGES')}
+            </Button>
+          )}
+        </CardHeader>
+        <CardContent>
+          <GalleryManager
+            slots={gallerySlots}
+            max={3}
+            onAdd={handleGalleryAdd}
+            onRemove={handleGalleryRemove}
+            onReorder={handleGalleryReorder}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
+}
+
+/**
+ * Helper: fetch a remote image URL and create a File object from it.
+ * Used when syncing cover to thumbnail without a local file.
+ */
+async function createFileFromUrl(url: string, name: string): Promise<File> {
+  const res = await fetch(url);
+  const blob = await res.blob();
+  return new File([blob], `${name}.webp`, { type: blob.type });
 }

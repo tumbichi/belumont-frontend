@@ -184,9 +184,20 @@
     "PICKER_SELECT_PDF": "Seleccionar PDF",
     "PICKER_PDF_DOCUMENT": "Documento PDF",
     "UPLOAD_STEP_COVER": "Subiendo imagen de portada…",
+    "UPLOAD_STEP_THUMBNAIL": "Subiendo miniatura…",
     "UPLOAD_STEP_PDF": "Subiendo archivo PDF…",
     "UPLOAD_STEP_GALLERY": "Subiendo imágenes de galería…",
-    "UPLOAD_STEP_SAVING": "Guardando producto…"
+    "UPLOAD_STEP_SAVING": "Guardando producto…",
+    "IMAGE_DROP_HERE": "Arrastrá o hacé clic para subir",
+    "IMAGE_FORMATS_HINT": "JPG, PNG o WebP · Máx. 12 MB",
+    "IMAGE_TOO_LARGE": "La imagen supera los 12 MB permitidos",
+    "IMAGE_INVALID_FORMAT": "Formato no soportado. Usá JPG, PNG o WebP",
+    "IMAGE_COMPRESSING": "Comprimiendo…",
+    "IMAGE_STILL_COMPRESSING": "Esperá a que terminen de comprimirse las imágenes",
+    "USE_COVER_AS_THUMBNAIL": "Usar portada como miniatura",
+    "THUMBNAIL_CUSTOM": "Miniatura personalizada",
+    "GALLERY_EMPTY": "No hay imágenes en la galería. Agregá una para empezar.",
+    "GALLERY_ADD_IMAGE": "Agregar imagen"
   },
   "ORDERS": {
     "TITLE": "Órdenes",
