@@ -227,11 +227,11 @@ export function BundleItemsManager() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {bundleItems.map((item) => (
+          {bundleItems.map((item, index) => (
             <Card key={item.id} className="p-4">
               <div className="flex items-center gap-4">
                 <div className="text-sm text-muted-foreground font-mono w-8 text-center">
-                  #{item.sort_order !== null ? item.sort_order + 1 : '-'}
+                  #{index + 1}
                 </div>
                 <Image
                   src={item.product.thumbnail_url}
