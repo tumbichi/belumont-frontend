@@ -102,8 +102,13 @@ export async function GET(request: NextRequest) {
   const hubMode = searchParams.get('hub.mode');
   const hubVerifyToken = searchParams.get('hub.verify_token');
 
-  // TODO: move verify token '$soybelumont' to env var (e.g. INSTAGRAM_VERIFY_TOKEN)
-  if (hubMode === 'subscribe' && hubVerifyToken === '$soybelumont') {
+  const expectedToken = process.env.INSTAGRAM_VERIFY_TOKEN;
+
+  if (
+    hubMode === 'subscribe' &&
+    hubVerifyToken !== null &&
+    hubVerifyToken === expectedToken
+  ) {
     return new Response(hubChallenge, { status: 200 });
   }
 
