@@ -1,10 +1,10 @@
 [Ver en español](./README.es.md)
 
-# soybelumont
+# @soybelumont/web
 
-Welcome to the **soybelumont** repository, the official web application for [Belu Mont](https://www.instagram.com/soybelumont/), a content creator focused on healthy cooking and lifestyle. Built with **Next.js** and **TypeScript**, this platform is designed to evolve as Belu's personal portfolio and blog, offering a unique space to inspire and connect with a community passionate about cooking, travel, and wellness.
+Public web application for [Belu Mont](https://www.instagram.com/soybelumont/), a content creator focused on healthy cooking and lifestyle. Built with **Next.js** and **TypeScript**, this platform is designed to evolve as Belu's personal portfolio and blog, offering a unique space to inspire and connect with a community passionate about cooking, travel, and wellness.
 
-> **Note:** The application is currently in its initial phase, and the main available feature is a store for healthy cookbooks.
+> **Note:** This app is part of the [belumont-frontend monorepo](../../README.md). The main available feature is a store for healthy cookbooks.
 
 ---
 
@@ -25,13 +25,18 @@ Welcome to the **soybelumont** repository, the official web application for [Bel
 - [Next.js](https://nextjs.org/) – A React framework for fast and scalable web applications.
 - [TypeScript](https://www.typescriptlang.org/) – Static typing for enhanced robustness.
 - [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework.
+- [Radix UI](https://www.radix-ui.com/) - Headless UI components (via `@soybelumont/ui`).
+- [Supabase](https://supabase.com/) - Backend as a service (PostgreSQL + Auth).
+- [Mercado Pago](https://www.mercadopago.com.ar/) - Payment integration.
+- [Resend](https://resend.com/) - Transactional emails.
+- [next-intl](https://next-intl.dev/) - Internationalization.
 - [pnpm](https://pnpm.io/) - A fast and disk-space-efficient package manager.
 
 ---
 
 ## 🚀 Local Installation and Usage
 
-1. **Clone the repository:**
+1. **Clone the repository** (from the monorepo root):
 
    ```bash
    git clone https://github.com/tumbichi/belumont-frontend.git
@@ -45,12 +50,16 @@ Welcome to the **soybelumont** repository, the official web application for [Bel
    ```
 
 3. **Set up environment variables:**
-   Create a `.env.local` file in the project root and add the necessary environment variables.
+   Create a `.env.local` file in `apps/web/` and add the necessary environment variables.
 
 4. **Start the application in development mode:**
 
    ```bash
-   pnpm run dev
+   # From the monorepo root
+   pnpm dev
+
+   # Or only the web app
+   cd apps/web && pnpm dev
    ```
 
 5. **Visit:** [http://localhost:3000](http://localhost:3000)
@@ -62,15 +71,14 @@ Welcome to the **soybelumont** repository, the official web application for [Bel
 The project follows a modular, feature-centric organization to facilitate maintenance and scalability.
 
 ```
-/
-├── .github/              # GitHub Actions workflows for CI/CD
+apps/web/
 ├── public/               # Static files (images, logos)
 ├── src/
 │   ├── app/              # Main application routes (Next.js App Router)
 │   │   ├── api/          # Internal API routes
-│   │   ├── (pages)/      # Different application pages
+│   │   ├── recetarios/   # Cookbook pages
+│   │   ├── pago/         # Payment pages
 │   │   └── layout.tsx    # Main application layout
-│   │   └── page.tsx      # Homepage
 │   ├── core/             # Business logic and reusable components
 │   │   ├── components/   # Generic UI components (buttons, cards, etc.)
 │   │   ├── data/         # Data access logic (API clients, repositories)
@@ -79,12 +87,9 @@ The project follows a modular, feature-centric organization to facilitate mainte
 │   │   └── utils/        # General utilities
 │   └── modules/          # Feature-specific modules
 │       ├── payments/     # Logic and components related to payments
-│       ├── products/     # Logic and components for product management
-│       └── users/        # Logic and components for user management
-├── .eslintrc.json        # ESLint configuration
+│       └── products/     # Logic and components for product management
 ├── next.config.ts        # Next.js configuration
 ├── package.json          # Project dependencies and scripts
-├── pnpm-lock.yaml        # pnpm lockfile
 ├── tailwind.config.ts    # Tailwind CSS configuration
 └── tsconfig.json         # TypeScript configuration
 ```
@@ -128,6 +133,18 @@ Belu Mont is an Argentine content creator specializing in healthy gastronomy and
 - [ ] Launch the blog with recipes and tips.
 - [ ] Integrate a section for travel and collaborations.
 - [ ] Add a multimedia gallery and downloadable resources.
+
+---
+
+## 📜 Scripts
+
+| Script | Description |
+|---|---|
+| `pnpm dev` | Start the development server on port 3000 |
+| `pnpm build` | Build the application for production |
+| `pnpm start` | Start the production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm check-types` | Type-check with TypeScript |
 
 ---
 
