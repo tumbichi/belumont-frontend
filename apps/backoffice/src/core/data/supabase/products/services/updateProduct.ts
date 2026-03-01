@@ -47,9 +47,10 @@ export default async function updateProduct(
     }
 
     if (product_images.length > 0) {
-      const rows = product_images.map((resource_url) => ({
+      const rows = product_images.map((resource_url, index) => ({
         product_id: id,
         resource_url,
+        sort_order: index,
       }));
 
       console.log('[updateProduct] inserting new product images', rows);
@@ -68,7 +69,7 @@ export default async function updateProduct(
       .from('product_images')
       .select('resource_url')
       .eq('product_id', id)
-      .order('resource_url', { ascending: true });
+      .order('sort_order', { ascending: true });
 
     productImages = data;
     console.log(

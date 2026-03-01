@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { Button } from '@soybelumont/ui/components/button';
 import { Label } from '@soybelumont/ui/components/label';
-import { Plus, ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
+import { Plus, ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { ImageDropZone } from './ImageDropZone';
 import { UseImageUploadReturn } from '../hooks/useImageUpload';
@@ -86,9 +86,9 @@ export function GalleryManager({
                     className="h-7 w-7"
                     disabled={index === 0}
                     onClick={() => moveUp(index)}
-                    aria-label={`Move image ${index + 1} up`}
+                    aria-label={`Move image ${index + 1} left`}
                   >
-                    <ArrowUp className="h-3.5 w-3.5" />
+                    <ArrowLeft className="h-3.5 w-3.5" />
                   </Button>
                   <Button
                     type="button"
@@ -97,9 +97,9 @@ export function GalleryManager({
                     className="h-7 w-7"
                     disabled={index === slots.length - 1}
                     onClick={() => moveDown(index)}
-                    aria-label={`Move image ${index + 1} down`}
+                    aria-label={`Move image ${index + 1} right`}
                   >
-                    <ArrowDown className="h-3.5 w-3.5" />
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </Button>
                   <Button
                     type="button"

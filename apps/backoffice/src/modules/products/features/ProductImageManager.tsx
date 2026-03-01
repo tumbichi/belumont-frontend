@@ -16,6 +16,7 @@ import { GalleryManager, GallerySlot } from '../components/GalleryManager';
 import { ThumbnailSection } from '../components/ThumbnailSection';
 import { useImageUpload } from '../hooks/useImageUpload';
 import { uploadAndUpdateProductImage } from '../actions/uploadAndUpdateProductImage';
+import { updateProduct as updateProductAction } from '../actions/updateProduct';
 import useProductSelected from '../contexts/product-selected-context/useProductSelected';
 import attempt from '@core/lib/promises/attempt';
 
@@ -191,9 +192,13 @@ export function ProductImageManager() {
   const handleSaveGallery = async () => {
     setIsSavingGallery(true);
     try {
+      // Build the final ordered list of URLs, uploading new files as needed
+      const finalUrls: string[] = [];
+
       for (let i = 0; i < galleryUrls.length; i++) {
         const upload = allGalleryUploads[i];
         if (upload?.compressedFile) {
+          // Upload new file and collect the resulting URL
           const { data: updated, error } = await attempt(
             uploadAndUpdateProductImage({
               productId: product.id,
@@ -212,24 +217,44 @@ export function ProductImageManager() {
             );
             return;
           }
-          updateProduct({ product_images: updated.product_images });
+          // Use the URL returned from the upload
+          finalUrls.push(updated.product_images?.[i] ?? galleryUrls[i] ?? '');
           upload.clear();
-          setGalleryUrls((prev) => {
-            const next = [...prev];
-            next[i] = updated.product_images?.[i] ?? null;
-            return next;
-          });
+        } else if (galleryUrls[i]) {
+          // Existing URL, keep it
+          finalUrls.push(galleryUrls[i]!);
         }
       }
+
+      // Persist the final ordered array (handles reorder + removals)
+      const { data: persistedProduct, error: persistError } = await attempt(
+        updateProductAction(product.id, { product_images: finalUrls })
+      );
+
+      if (persistError || !persistedProduct) {
+        sonner.toast.error(t('PRODUCTS.IMAGE_UPDATE_ERROR'));
+        return;
+      }
+
+      updateProduct({ product_images: persistedProduct.product_images });
+      setGalleryUrls([...(persistedProduct.product_images || [])]);
       sonner.toast.success(t('PRODUCTS.GALLERY_IMAGE_UPDATED_SUCCESS'));
     } finally {
       setIsSavingGallery(false);
     }
   };
 
-  const galleryHasChanges = allGalleryUploads
-    .slice(0, galleryUrls.length)
-    .some((u) => u.compressedFile !== null);
+  // Detect changes: new uploads OR order changed
+  const galleryOrderChanged = (() => {
+    if (galleryUrls.length !== existingGalleryImages.length) return true;
+    return galleryUrls.some((url, i) => url !== existingGalleryImages[i]);
+  })();
+
+  const galleryHasChanges =
+    galleryOrderChanged ||
+    allGalleryUploads
+      .slice(0, galleryUrls.length)
+      .some((u) => u.compressedFile !== null);
 
   return (
     <div className="space-y-6">

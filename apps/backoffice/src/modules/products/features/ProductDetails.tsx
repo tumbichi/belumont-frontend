@@ -6,13 +6,7 @@ import { ProductForm } from './ProductForm';
 import { ProductImageManager } from './ProductImageManager';
 import { PdfManager } from './ProductPdfManager';
 import { BundleItemsManager } from './BundleItemsManager';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@soybelumont/ui/components/card';
+import { Card, CardContent } from '@soybelumont/ui/components/card';
 import { useTranslations } from 'next-intl';
 import { useProductSelected } from '../contexts/product-selected-context';
 

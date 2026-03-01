@@ -52,6 +52,14 @@ export function ImageDropZone({
   const t = useTranslations();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  // Reset loaded state when preview changes
+  const prevPreviewRef = useRef(preview);
+  if (preview !== prevPreviewRef.current) {
+    prevPreviewRef.current = preview;
+    setIsImageLoaded(false);
+  }
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -117,8 +125,15 @@ export function ImageDropZone({
               src={preview}
               alt={label}
               fill
-              className="object-cover rounded-md"
+              className={`object-cover rounded-md transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setIsImageLoaded(true)}
             />
+            {/* Image loading skeleton */}
+            {!isImageLoaded && !isCompressing && (
+              <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-md animate-pulse">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            )}
             {/* Compression overlay */}
             {isCompressing && (
               <div className="absolute inset-0 flex items-center justify-center bg-background/70 rounded-md">

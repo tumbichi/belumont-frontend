@@ -39,9 +39,10 @@ export default async function createProduct(
   }
 
   if (product_images && product_images.length > 0) {
-    const imageRows = product_images.map((url) => ({
+    const imageRows = product_images.map((url, index) => ({
       product_id: data.id,
       resource_url: url,
+      sort_order: index,
     }));
 
     const { error: imgError } = await supabase

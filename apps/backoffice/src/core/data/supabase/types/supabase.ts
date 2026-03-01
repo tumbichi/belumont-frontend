@@ -166,18 +166,21 @@ export type Database = {
           id: string;
           product_id: string;
           resource_url: string;
+          sort_order: number;
         };
         Insert: {
           created_at?: string;
           id?: string;
           product_id: string;
           resource_url: string;
+          sort_order?: number;
         };
         Update: {
           created_at?: string;
           id?: string;
           product_id?: string;
           resource_url?: string;
+          sort_order?: number;
         };
         Relationships: [
           {
