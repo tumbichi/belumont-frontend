@@ -24,7 +24,7 @@ export default async function getProductById(
   const { data: productImages, error: productImagesError } = await supabase
     .from('product_images')
     .select('resource_url')
-    .order('resource_url', { ascending: true })
+    .order('sort_order', { ascending: true })
     .eq('product_id', product.id);
 
   if (productImagesError) {

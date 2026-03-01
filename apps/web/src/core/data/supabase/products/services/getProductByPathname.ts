@@ -21,7 +21,7 @@ export default async function getProductByPathname(
     .from('product_images')
     .select('resource_url')
     .eq('product_id', product.id)
-    .order('resource_url', { ascending: true });
+    .order('sort_order', { ascending: true });
 
   return {
     id: product.id,

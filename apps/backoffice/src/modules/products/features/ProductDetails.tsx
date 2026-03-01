@@ -1,18 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Separator } from '@soybelumont/ui/components/separator';
 import { ProductHeader } from './ProductHeader';
 import { ProductForm } from './ProductForm';
 import { ProductImageManager } from './ProductImageManager';
 import { PdfManager } from './ProductPdfManager';
 import { BundleItemsManager } from './BundleItemsManager';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@soybelumont/ui/components/tabs';
+import { Card, CardContent } from '@soybelumont/ui/components/card';
 import { useTranslations } from 'next-intl';
 import { useProductSelected } from '../contexts/product-selected-context';
 
@@ -22,78 +16,52 @@ function ProductDetails() {
   const isBundle = product.product_type === 'bundle';
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="space-y-6">
       <ProductHeader />
 
-      <main className="max-w-4xl px-4 py-8 mx-auto sm:px-6 lg:px-8">
-        <div className="space-y-8">
-          <Tabs defaultValue="product_info">
-            <TabsList className="mb-4">
-              <TabsTrigger value="product_info">
-                {t('PRODUCTS.PRODUCT_INFO_TAB')}
-              </TabsTrigger>
-              <TabsTrigger value="images">
-                {t('PRODUCTS.IMAGES_TAB')}
-              </TabsTrigger>
-              {!isBundle && (
-                <TabsTrigger value="pdfs">{t('PRODUCTS.PDF_TAB')}</TabsTrigger>
-              )}
-              {isBundle && (
-                <TabsTrigger value="bundle_items">
-                  {t('PRODUCTS.BUNDLE_ITEMS_TAB')}
-                </TabsTrigger>
-              )}
-            </TabsList>
+      {/* Product Info */}
+      <section>
+        <h2 className="text-lg font-semibold mb-3">
+          {t('PRODUCTS.PRODUCT_INFO_TITLE')}
+        </h2>
+        <ProductForm />
+      </section>
 
-            {/* Product Information Section */}
-            <TabsContent value="product_info">
-              <section>
-                <h2 className="mb-6 text-2xl font-bold">
-                  {t('PRODUCTS.PRODUCT_INFO_TITLE')}
-                </h2>
-                <ProductForm />
-              </section>
-            </TabsContent>
+      {/* Images */}
+      <section>
+        <h2 className="text-lg font-semibold mb-3">
+          {t('PRODUCTS.IMAGES_TITLE')}
+        </h2>
+        <Card>
+          <CardContent className="pt-6">
+            <ProductImageManager />
+          </CardContent>
+        </Card>
+      </section>
 
-            <Separator />
+      {/* PDF — single products only */}
+      {!isBundle && (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">
+            {t('PRODUCTS.PDF_TITLE')}
+          </h2>
+          <Card>
+            <CardContent className="pt-6">
+              <PdfManager />
+            </CardContent>
+          </Card>
+        </section>
+      )}
 
-            {/* Images Management Section */}
-            <TabsContent value="images">
-              <section>
-                <h2 className="mb-6 text-2xl font-bold">
-                  {t('PRODUCTS.IMAGES_TITLE')}
-                </h2>
-                <ProductImageManager />
-              </section>
-            </TabsContent>
-            <Separator />
-
-            {/* PDF Management Section - only for single products */}
-            {!isBundle && (
-              <TabsContent value="pdfs">
-                <section>
-                  <h2 className="mb-6 text-2xl font-bold">
-                    {t('PRODUCTS.PDF_TITLE')}
-                  </h2>
-                  <PdfManager />
-                </section>
-              </TabsContent>
-            )}
-
-            {/* Bundle Items Management Section - only for bundle products */}
-            {isBundle && (
-              <TabsContent value="bundle_items">
-                <section>
-                  <h2 className="mb-6 text-2xl font-bold">
-                    {t('PRODUCTS.BUNDLE_ITEMS_TITLE')}
-                  </h2>
-                  <BundleItemsManager />
-                </section>
-              </TabsContent>
-            )}
-          </Tabs>
-        </div>
-      </main>
+      {/* Bundle items — bundle products only */}
+      {isBundle && (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">
+            {t('PRODUCTS.BUNDLE_ITEMS_TITLE')}
+          </h2>
+          <BundleItemsManager />
+        </section>
+      )}
     </div>
   );
 }

@@ -51,25 +51,19 @@ function ProductTable({ products }: ProductsListProps) {
               <TableCell>
                 <Image
                   src={product.thumbnail_url}
-                  width={320}
-                  height={192}
-                  className="object-cover w-full aspect-[5/3] transition-opacity group-hover:opacity-100"
-                  alt="Product Image"
+                  width={64}
+                  height={64}
+                  className="object-cover w-16 h-16 rounded-md"
+                  alt={product.name}
                 />
               </TableCell>
               <TableCell>
-                <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    product.active
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
+                <Badge variant={product.active ? 'active' : 'inactive'}>
                   {product.active ? t('PRODUCTS.ACTIVE') : t('PRODUCTS.INACTIVE')}
-                </span>
+                </Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={product.product_type === 'bundle' ? 'default' : 'secondary'}>
+                <Badge variant={product.product_type === 'bundle' ? 'bundle' : 'secondary'}>
                   {product.product_type === 'bundle'
                     ? t('PRODUCTS.PRODUCT_TYPE_BUNDLE')
                     : t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
@@ -99,7 +93,7 @@ function ProductTable({ products }: ProductsListProps) {
           <TableRow>
             <TableCell
               colSpan={8}
-              className="px-6 py-4 text-sm text-center text-gray-500"
+              className="text-center text-muted-foreground"
             >
               {t('PRODUCTS.NO_PRODUCTS')}
             </TableCell>

@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@soybelumont/ui/components/table';
+import { getTranslations } from 'next-intl/server';
 
 async function getUsers(): Promise<User[]> {
   const repository = SupabaseRepository();
@@ -16,18 +17,19 @@ async function getUsers(): Promise<User[]> {
 }
 
 export default async function UsersPage() {
+  const t = await getTranslations();
   const users = await getUsers();
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Usuarios</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">{t('SIDEBAR.USERS')}</h1>
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nombre</TableHead>
+              <TableHead>{t('PRODUCTS.NAME')}</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Fecha de Creación</TableHead>
+              <TableHead>{t('PRODUCTS.CREATED_AT')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -35,17 +37,19 @@ export default async function UsersPage() {
               users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {new Date(user.created_at).toLocaleDateString()}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={3}
-                  className="px-6 py-4 text-center text-sm text-gray-500"
+                  className="text-center text-muted-foreground"
                 >
-                  No se encontraron usuarios.
+                  {t('COMMON.NO_RESULTS')}
                 </TableCell>
               </TableRow>
             )}

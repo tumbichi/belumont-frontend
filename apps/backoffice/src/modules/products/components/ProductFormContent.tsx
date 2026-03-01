@@ -2,158 +2,175 @@
 
 import { Button } from '@soybelumont/ui/components/button';
 import { Input } from '@soybelumont/ui/components/input';
-import { Label } from '@soybelumont/ui/components/label';
 import { Textarea } from '@soybelumont/ui/components/textarea';
-import { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@soybelumont/ui/components/form';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@soybelumont/ui/components/radio-group';
+import { Label } from '@soybelumont/ui/components/label';
+import { UseFormReturn } from 'react-hook-form';
 import { ProductDetailsInput } from '../schemas/createProduct.schema';
 import { useTranslations } from 'next-intl';
-import { Badge } from '@soybelumont/ui/components/badge';
 
 interface ProductFormContentProps {
-  register: UseFormRegister<ProductDetailsInput>;
-  errors: FieldErrors<ProductDetailsInput>;
-  isSubmitting: boolean;
-  isValidating: boolean;
-  isDirty: boolean;
+  form: UseFormReturn<ProductDetailsInput>;
   submitLabel?: string;
   hideSubmitButton?: boolean;
-  watch?: UseFormWatch<ProductDetailsInput>;
-  setValue?: UseFormSetValue<ProductDetailsInput>;
   onPathnameManualEdit?: () => void;
   showProductType?: boolean;
   disableProductType?: boolean;
 }
 
 export function ProductFormContent({
-  register,
-  errors,
-  isSubmitting,
-  isValidating,
-  isDirty,
+  form,
   submitLabel,
   hideSubmitButton,
-  watch,
-  setValue,
   onPathnameManualEdit,
   showProductType = false,
   disableProductType = false,
 }: ProductFormContentProps) {
   const t = useTranslations();
-
-  const currentProductType = watch ? watch('product_type') : 'single';
-
-  const handlePathnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onPathnameManualEdit) {
-      onPathnameManualEdit();
-    }
-    
-    const value = e.target.value
-      .toLowerCase()
-      .replace(/[^\w-]/g, '')
-      .replace(/^-+/, '');
-    
-    if (setValue) {
-      setValue('pathname', value, { shouldValidate: true, shouldDirty: true });
-    }
-  };
+  const { isSubmitting, isValidating, isDirty } = form.formState;
 
   return (
     <div className="space-y-6">
       {/* Product Type Selector */}
       {showProductType && (
-        <div className="space-y-2">
-          <Label>{t('PRODUCTS.PRODUCT_TYPE')}</Label>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              disabled={disableProductType}
-              onClick={() => setValue?.('product_type', 'single', { shouldDirty: true })}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors ${
-                currentProductType === 'single'
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border hover:border-primary/50'
-              } ${disableProductType ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              <Badge variant={currentProductType === 'single' ? 'default' : 'secondary'}>
-                {t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
-              </Badge>
-            </button>
-            <button
-              type="button"
-              disabled={disableProductType}
-              onClick={() => setValue?.('product_type', 'bundle', { shouldDirty: true })}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors ${
-                currentProductType === 'bundle'
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border hover:border-primary/50'
-              } ${disableProductType ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              <Badge variant={currentProductType === 'bundle' ? 'default' : 'secondary'}>
-                {t('PRODUCTS.PRODUCT_TYPE_BUNDLE')}
-              </Badge>
-            </button>
-          </div>
-          <input type="hidden" {...register('product_type')} />
-        </div>
+        <FormField
+          control={form.control}
+          name="product_type"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel>{t('PRODUCTS.PRODUCT_TYPE')}</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={disableProductType}
+                  className="flex gap-3"
+                >
+                  <Label
+                    htmlFor="type-single"
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-md border transition-colors cursor-pointer ${
+                      field.value === 'single'
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50'
+                    } ${disableProductType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <RadioGroupItem value="single" id="type-single" />
+                    {t('PRODUCTS.PRODUCT_TYPE_SINGLE')}
+                  </Label>
+                  <Label
+                    htmlFor="type-bundle"
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-md border transition-colors cursor-pointer ${
+                      field.value === 'bundle'
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50'
+                    } ${disableProductType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <RadioGroupItem value="bundle" id="type-bundle" />
+                    {t('PRODUCTS.PRODUCT_TYPE_BUNDLE')}
+                  </Label>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       )}
 
       {/* Product Name */}
-      <div className="space-y-2">
-        <Label htmlFor="name">{t('PRODUCTS.PRODUCT_NAME')}</Label>
-        <Input
-          id="name"
-          placeholder={t('PRODUCTS.PRODUCT_NAME_PLACEHOLDER')}
-          {...register('name')}
-        />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
+      <FormField
+        control={form.control}
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('PRODUCTS.PRODUCT_NAME')}</FormLabel>
+            <FormControl>
+              <Input
+                placeholder={t('PRODUCTS.PRODUCT_NAME_PLACEHOLDER')}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
         )}
-      </div>
+      />
 
-      {/* Price */}
+      {/* Price + Pathname */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="price">{t('PRODUCTS.PRODUCT_PRICE')}</Label>
-          <Input
-            id="price"
-            type="number"
-            step="0.01"
-            placeholder={t('PRODUCTS.PRODUCT_PRICE_PLACEHOLDER')}
-            {...register('price', { valueAsNumber: true })}
-          />
-          {errors.price && (
-            <p className="text-sm text-red-500">{errors.price.message}</p>
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('PRODUCTS.PRODUCT_PRICE')}</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder={t('PRODUCTS.PRODUCT_PRICE_PLACEHOLDER')}
+                  {...field}
+                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
 
-        {/* Pathname */}
-        <div className="space-y-2">
-          <Label htmlFor="pathname">{t('PRODUCTS.PRODUCT_PATHNAME')}</Label>
-          <Input
-            id="pathname"
-            placeholder={t('PRODUCTS.PRODUCT_PATHNAME_PLACEHOLDER')}
-            {...register('pathname')}
-            onChange={handlePathnameChange}
-          />
-          {errors.pathname && (
-            <p className="text-sm text-red-500">{errors.pathname.message}</p>
+        <FormField
+          control={form.control}
+          name="pathname"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('PRODUCTS.PRODUCT_PATHNAME')}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={t('PRODUCTS.PRODUCT_PATHNAME_PLACEHOLDER')}
+                  {...field}
+                  onChange={(e) => {
+                    onPathnameManualEdit?.();
+                    const value = e.target.value
+                      .toLowerCase()
+                      .replace(/[^\w-]/g, '')
+                      .replace(/^-+/, '');
+                    field.onChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
       </div>
 
       {/* Description */}
-      <div className="space-y-2">
-        <Label htmlFor="description">{t('PRODUCTS.PRODUCT_DESCRIPTION')}</Label>
-        <Textarea
-          id="description"
-          placeholder={t('PRODUCTS.PRODUCT_DESCRIPTION_PLACEHOLDER')}
-          rows={5}
-          {...register('description')}
-        />
-        {errors.description && (
-          <p className="text-sm text-red-500">{errors.description.message}</p>
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{t('PRODUCTS.PRODUCT_DESCRIPTION')}</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder={t('PRODUCTS.PRODUCT_DESCRIPTION_PLACEHOLDER')}
+                rows={5}
+                {...field}
+                value={field.value ?? ''}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
         )}
-      </div>
+      />
 
       {/* Save Button */}
       {!hideSubmitButton && (

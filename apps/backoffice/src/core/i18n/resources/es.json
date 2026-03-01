@@ -9,12 +9,16 @@
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
+    "SUBTITLE": "Resumen de tu tienda hoy",
     "TOTAL_SALES": "Ventas Totales",
     "ORDERS": "Órdenes",
     "USERS": "Usuarios",
     "BEST_SELLING_PRODUCTS": "Productos Más Vendidos",
     "PRODUCT": "Producto",
-    "SALES": "Ventas"
+    "SALES": "Ventas",
+    "NEW_PRODUCT": "Nuevo producto",
+    "VIEW_PROMOS": "Promociones",
+    "VIEW_ORDERS": "Órdenes"
   },
   "PRODUCTS": {
     "TITLE": "Productos",
@@ -168,7 +172,32 @@
     "BUNDLE_SELECT_PRODUCTS_DESCRIPTION": "Después de crear el producto, podrás agregar productos individuales al pack desde la pestaña de productos del pack.",
     "SORT_ORDER": "Orden",
     "PRODUCT_SINGULAR": "producto",
-    "PRODUCT_PLURAL": "productos"
+    "PRODUCT_PLURAL": "productos",
+    "VALIDATION": {
+      "NAME_REQUIRED": "El nombre del producto es requerido",
+      "PRICE_POSITIVE": "El precio debe ser un número positivo",
+      "PATHNAME_REQUIRED": "La ruta es requerida"
+    },
+    "PICKER_CLICK_IMAGE": "Hacé clic para subir una imagen",
+    "PICKER_SELECT_IMAGE": "Seleccionar imagen",
+    "PICKER_CLICK_PDF": "Hacé clic para subir un PDF",
+    "PICKER_SELECT_PDF": "Seleccionar PDF",
+    "PICKER_PDF_DOCUMENT": "Documento PDF",
+    "UPLOAD_STEP_COVER": "Subiendo imagen de portada…",
+    "UPLOAD_STEP_THUMBNAIL": "Subiendo miniatura…",
+    "UPLOAD_STEP_PDF": "Subiendo archivo PDF…",
+    "UPLOAD_STEP_GALLERY": "Subiendo imágenes de galería…",
+    "UPLOAD_STEP_SAVING": "Guardando producto…",
+    "IMAGE_DROP_HERE": "Arrastrá o hacé clic para subir",
+    "IMAGE_FORMATS_HINT": "JPG, PNG o WebP · Máx. 12 MB",
+    "IMAGE_TOO_LARGE": "La imagen supera los 12 MB permitidos",
+    "IMAGE_INVALID_FORMAT": "Formato no soportado. Usá JPG, PNG o WebP",
+    "IMAGE_COMPRESSING": "Comprimiendo…",
+    "IMAGE_STILL_COMPRESSING": "Esperá a que terminen de comprimirse las imágenes",
+    "USE_COVER_AS_THUMBNAIL": "Usar portada como miniatura",
+    "THUMBNAIL_CUSTOM": "Miniatura personalizada",
+    "GALLERY_EMPTY": "No hay imágenes en la galería. Agregá una para empezar.",
+    "GALLERY_ADD_IMAGE": "Agregar imagen"
   },
   "ORDERS": {
     "TITLE": "Órdenes",
@@ -196,6 +225,9 @@
   },
   "LOGIN": {
     "TITLE": "Iniciar sesión",
+    "DESCRIPTION": "Ingresá tus credenciales para acceder al panel",
+    "PANEL_TAGLINE": "Tu taller de gestión, siempre a mano",
+    "FOOTER": "Belu Mont © 2025 · Panel de administración",
     "EMAIL_LABEL": "Usuario",
     "EMAIL_PLACEHOLDER": "Nombre",
     "PASSWORD_LABEL": "Contraseña",
@@ -213,6 +245,17 @@
     "DELETE": "Eliminar",
     "EDIT": "Editar",
     "VIEW": "Ver",
-    "SEARCH": "Buscar"
+    "SEARCH": "Buscar",
+    "MY_ACCOUNT": "Mi Cuenta",
+    "SETTINGS": "Configuración",
+    "SUPPORT": "Soporte",
+    "LOGOUT": "Cerrar sesión",
+    "TOGGLE_NAV": "Abrir menú de navegación",
+    "TOGGLE_USER_MENU": "Abrir menú de usuario",
+    "GO_BACK": "Volver",
+    "RETRY": "Reintentar",
+    "SOMETHING_WENT_WRONG": "Algo salió mal",
+    "ERROR_DESCRIPTION": "Ocurrió un error inesperado. Por favor, intentá de nuevo.",
+    "NO_RESULTS": "Sin resultados"
   }
 }

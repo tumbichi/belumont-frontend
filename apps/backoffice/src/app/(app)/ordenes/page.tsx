@@ -22,8 +22,8 @@ export default async function OrdersPage() {
   const orders = await getOrders();
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">{t('ORDERS.TITLE')}</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">{t('ORDERS.TITLE')}</h1>
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
@@ -57,8 +57,8 @@ export default async function OrdersPage() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={5}
-                  className="px-6 py-4 text-center text-sm text-gray-500"
+                  colSpan={6}
+                  className="text-center text-muted-foreground"
                 >
                   {t('ORDERS.NO_ORDERS')}
                 </TableCell>

@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Card } from '@soybelumont/ui/components/card';
 import { Button } from '@soybelumont/ui/components/button';
 import { Badge } from '@soybelumont/ui/components/badge';
+import { Skeleton } from '@soybelumont/ui/components/skeleton';
 import { sonner } from '@soybelumont/ui/components/sonner';
 import {
   Dialog,
@@ -114,9 +115,20 @@ export function BundleItemsManager() {
 
   if (loading) {
     return (
-      <Card className="p-6">
-        <p className="text-muted-foreground">{t('COMMON.LOADING')}</p>
-      </Card>
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="p-4">
+            <div className="flex items-center gap-4">
+              <Skeleton className="w-8 h-4" />
+              <Skeleton className="w-16 h-16 rounded" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
     );
   }
 
@@ -160,7 +172,10 @@ export function BundleItemsManager() {
                       onClick={() => toggleProductSelection(p.id)}
                     >
                       <div
-                        className={`flex items-center justify-center w-5 h-5 rounded border ${
+                        role="checkbox"
+                        aria-checked={isSelected}
+                        aria-label={p.name}
+                        className={`flex items-center justify-center w-5 h-5 rounded border shrink-0 ${
                           isSelected
                             ? 'bg-primary border-primary text-primary-foreground'
                             : 'border-input'
@@ -212,11 +227,11 @@ export function BundleItemsManager() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {bundleItems.map((item) => (
+          {bundleItems.map((item, index) => (
             <Card key={item.id} className="p-4">
               <div className="flex items-center gap-4">
                 <div className="text-sm text-muted-foreground font-mono w-8 text-center">
-                  #{item.sort_order !== null ? item.sort_order + 1 : '-'}
+                  #{index + 1}
                 </div>
                 <Image
                   src={item.product.thumbnail_url}
@@ -232,7 +247,7 @@ export function BundleItemsManager() {
                       {formatPrice(item.product.price)}
                     </Badge>
                     <Badge
-                      variant={item.product.active ? 'default' : 'secondary'}
+                      variant={item.product.active ? 'active' : 'inactive'}
                       className="text-xs"
                     >
                       {item.product.active
