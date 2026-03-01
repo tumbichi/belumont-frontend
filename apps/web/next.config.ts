@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization',
+            value: 'Content-Type, Authorization, sentry-trace, baggage',
           },
         ],
       },
@@ -54,13 +54,6 @@ export default withSentryConfig(withNextIntl(nextConfig), {
     deleteSourcemapsAfterUpload: true,
   },
 
-  // Automatically instrument server functions (API routes, server components, etc.)
-  autoInstrumentServerFunctions: true,
-  autoInstrumentMiddleware: true,
-
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers
   tunnelRoute: '/monitoring',
-
-  // Disable Sentry SDK logger for cleaner build output
-  disableLogger: true,
 });

@@ -2,98 +2,99 @@ import { NextRequest } from 'next/server';
 import { instagramBodySchema } from './instagram.schema';
 import { InstagramRepository } from '@core/data/instagram/instagram.repository';
 import { captureCriticalError } from '@core/lib/sentry';
+import { logger, trace } from '@core/lib/sentry-logger';
 
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
+  return trace(
+    { name: 'POST /api/meta/instagram', op: 'http.server' },
+    async () => {
+      try {
+        const body = await request.json();
 
-    const validatedBody = instagramBodySchema.safeParse(body);
+        const validatedBody = instagramBodySchema.safeParse(body);
 
-    if (!validatedBody.success) {
-      console.warn(
-        'Instragram body not handled',
-        JSON.stringify(validatedBody.error, undefined, 2),
-      );
-      console.log('unhandled response', JSON.stringify(body, null, 2));
-    }
+        if (!validatedBody.success) {
+          logger.warn('Instagram webhook: body not handled', {
+            errorCount: validatedBody.error.errors.length,
+          });
+        }
 
-    const recipeMessage: {
-      message: string;
-      instagramCommentId: string | null;
-      instagramUsername: string | null;
-    } = {
-      message:
-        '¡Hola! 😊 Gracias por tu mensaje. Si querés conseguir mi recetario, te dejo el link para que lo compres directamente desde la web: \n \n https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables \n \n ¡Espero que te inspire a cocinar cosas ricas! 🧑‍🍳✨',
-      instagramCommentId: null,
-      instagramUsername: null,
-    };
+        const recipeMessage: {
+          message: string;
+          instagramCommentId: string | null;
+          instagramUsername: string | null;
+        } = {
+          message:
+            '¡Hola! 😊 Gracias por tu mensaje. Si querés conseguir mi recetario, te dejo el link para que lo compres directamente desde la web: \n \n https://www.soybelumont.com/recetarios/recetario-para-fiestas-saludables \n \n ¡Espero que te inspire a cocinar cosas ricas! 🧑‍🍳✨',
+          instagramCommentId: null,
+          instagramUsername: null,
+        };
 
-    validatedBody.data?.entry.forEach((entry) => {
-      if ('messaging' in entry) {
-        entry.messaging.forEach((event) => {
-          if (event.message) {
-            if (event.message.is_echo) {
-              console.log(
-                'is a sent message event',
-                JSON.stringify(event, null, 2),
-              );
-            } else {
-              console.log(
-                'is a received message event',
-                JSON.stringify(event, null, 2),
-              );
-            }
+        validatedBody.data?.entry.forEach((entry) => {
+          if ('messaging' in entry) {
+            entry.messaging.forEach((event) => {
+              if (event.message) {
+                if (event.message.is_echo) {
+                  logger.debug('Instagram: sent message event');
+                } else {
+                  logger.debug('Instagram: received message event');
+                }
+              } else {
+                if (event.reaction) {
+                  logger.debug('Instagram: reaction event');
+                }
+              }
+            });
           } else {
-            if (event.reaction) {
-              console.log(
-                'is a reaction event',
-                JSON.stringify(event, null, 2),
-              );
+            if ('changes' in entry) {
+              entry.changes.forEach((event) => {
+                if (event.field === 'comments' && 'text' in event.value) {
+                  const { text, from } = event.value;
+
+                  if (text.toUpperCase().includes('RECETARIO')) {
+                    recipeMessage.instagramCommentId = event.value.id;
+                    recipeMessage.instagramUsername = from.username;
+                  }
+                }
+              });
             }
           }
         });
-      } else {
-        if ('changes' in entry) {
-          entry.changes.forEach((event) => {
-            if (event.field === 'comments' && 'text' in event.value) {
-              const { text, from } = event.value;
 
-              if (text.toUpperCase().includes('RECETARIO')) {
-                recipeMessage.instagramCommentId = event.value.id;
-                recipeMessage.instagramUsername = from.username;
-              }
-            }
-          });
+        if (recipeMessage.instagramCommentId) {
+          try {
+            await trace(
+              { name: 'replyInstagramComment', op: 'http.client' },
+              () =>
+                InstagramRepository().replyComment(
+                  recipeMessage.instagramCommentId!,
+                  recipeMessage.message,
+                ),
+            );
+
+            logger.info('Instagram recipe reply sent', {
+              username: recipeMessage.instagramUsername ?? 'unknown',
+              commentId: recipeMessage.instagramCommentId,
+            });
+          } catch (error) {
+            captureCriticalError(error, 'instagram-webhook', {
+              instagramCommentId: recipeMessage.instagramCommentId,
+              instagramUsername: recipeMessage.instagramUsername,
+            });
+          }
         }
-      }
-    });
 
-    if (recipeMessage.instagramCommentId) {
-      try {
-        await InstagramRepository().replyComment(
-          recipeMessage.instagramCommentId,
-          recipeMessage.message,
-        );
-        console.log(
-          `sent recipe link to ${recipeMessage.instagramUsername} success`,
-        );
+        return Response.json({ received: true });
       } catch (error) {
-        captureCriticalError(error, 'instagram-webhook', {
-          instagramCommentId: recipeMessage.instagramCommentId,
-          instagramUsername: recipeMessage.instagramUsername,
-        });
+        captureCriticalError(error, 'instagram-webhook');
+
+        return Response.json(
+          { message: 'Internal server error' },
+          { status: 500 },
+        );
       }
-    }
-
-    return Response.json({ received: true });
-  } catch (error) {
-    captureCriticalError(error, 'instagram-webhook');
-
-    return Response.json(
-      { message: 'Internal server error' },
-      { status: 500 },
-    );
-  }
+    },
+  );
 }
 
 export async function GET(request: NextRequest) {
