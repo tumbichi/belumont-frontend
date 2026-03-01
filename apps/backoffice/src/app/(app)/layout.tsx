@@ -47,9 +47,9 @@ export default async function AppLayout({
   const messages = await getMessages();
 
   const t = (namespace: string, key: string, fallback: string) => {
-    const ns = messages[namespace];
-    if (typeof ns === 'object' && ns !== null && key in ns) {
-      return ns[key as keyof typeof ns] as string;
+    const ns = (messages as Record<string, unknown>)[namespace];
+    if (typeof ns === 'object' && ns !== null && key in (ns as Record<string, unknown>)) {
+      return (ns as Record<string, string>)[key] ?? fallback;
     }
     return fallback;
   };
