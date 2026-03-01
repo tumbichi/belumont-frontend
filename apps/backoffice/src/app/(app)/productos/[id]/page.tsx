@@ -42,7 +42,7 @@ async function ProductDetailsPage({
                 </Link>
                 <div>
                   <h1 className="text-2xl font-bold">{t('PRODUCTS.PRODUCT_DETAILS')}: {id}</h1>
-                  <p className="text-gray-500">{t('PRODUCTS.MANAGE_DETAILS')}</p>
+                  <p className="text-muted-foreground">{t('PRODUCTS.MANAGE_DETAILS')}</p>
                 </div>
               </div>
             </div>

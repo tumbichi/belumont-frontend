@@ -1,6 +1,15 @@
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { PromoCode } from '@core/data/supabase/promos/promos.repository';
 import { getTranslations } from 'next-intl/server';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@soybelumont/ui/components/table';
+import { Badge } from '@soybelumont/ui/components/badge';
 
 async function getPromos(): Promise<PromoCode[]> {
   const repository = SupabaseRepository();
@@ -13,92 +22,52 @@ export default async function PromosPage() {
   const promos = await getPromos();
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">{t('PROMOS.TITLE')}</h1>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">{t('PROMOS.TITLE')}</h1>
       <div className="border rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {t('PROMOS.CODE')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {t('PROMOS.DISCOUNT_TYPE')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {t('PROMOS.DISCOUNT_VALUE')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {t('PROMOS.USES')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {t('PROMOS.EXPIRES_AT')}
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                {t('PROMOS.STATUS')}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t('PROMOS.CODE')}</TableHead>
+              <TableHead>{t('PROMOS.DISCOUNT_TYPE')}</TableHead>
+              <TableHead>{t('PROMOS.DISCOUNT_VALUE')}</TableHead>
+              <TableHead>{t('PROMOS.USES')}</TableHead>
+              <TableHead>{t('PROMOS.EXPIRES_AT')}</TableHead>
+              <TableHead>{t('PROMOS.STATUS')}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {promos.length > 0 ? (
               promos.map((promo) => (
-                <tr key={promo.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {promo.code}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {promo.discount_type}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {promo.discount_value}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <TableRow key={promo.id}>
+                  <TableCell className="font-medium">{promo.code}</TableCell>
+                  <TableCell className="text-muted-foreground">{promo.discount_type}</TableCell>
+                  <TableCell className="text-muted-foreground">{promo.discount_value}</TableCell>
+                  <TableCell className="text-muted-foreground">
                     {promo.used_count} / {promo.max_uses || '∞'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {promo.expires_at ? new Date(promo.expires_at).toLocaleDateString() : 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        promo.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}
-                    >
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={promo.is_active ? 'active' : 'inactive'}>
                       {promo.is_active ? t('PROMOS.ACTIVE') : t('PROMOS.INACTIVE')}
-                    </span>
-                  </td>
-                </tr>
+                    </Badge>
+                  </TableCell>
+                </TableRow>
               ))
             ) : (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={6}
-                  className="px-6 py-4 text-center text-sm text-gray-500"
+                  className="text-center text-muted-foreground"
                 >
                   {t('PROMOS.NO_PROMOS')}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

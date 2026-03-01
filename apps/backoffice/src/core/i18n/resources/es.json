@@ -9,12 +9,16 @@
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
+    "SUBTITLE": "Resumen de tu tienda hoy",
     "TOTAL_SALES": "Ventas Totales",
     "ORDERS": "Órdenes",
     "USERS": "Usuarios",
     "BEST_SELLING_PRODUCTS": "Productos Más Vendidos",
     "PRODUCT": "Producto",
-    "SALES": "Ventas"
+    "SALES": "Ventas",
+    "NEW_PRODUCT": "Nuevo producto",
+    "VIEW_PROMOS": "Promociones",
+    "VIEW_ORDERS": "Órdenes"
   },
   "PRODUCTS": {
     "TITLE": "Productos",
@@ -196,6 +200,9 @@
   },
   "LOGIN": {
     "TITLE": "Iniciar sesión",
+    "DESCRIPTION": "Ingresá tus credenciales para acceder al panel",
+    "PANEL_TAGLINE": "Tu taller de gestión, siempre a mano",
+    "FOOTER": "Belu Mont © 2025 · Panel de administración",
     "EMAIL_LABEL": "Usuario",
     "EMAIL_PLACEHOLDER": "Nombre",
     "PASSWORD_LABEL": "Contraseña",
@@ -213,6 +220,17 @@
     "DELETE": "Eliminar",
     "EDIT": "Editar",
     "VIEW": "Ver",
-    "SEARCH": "Buscar"
+    "SEARCH": "Buscar",
+    "MY_ACCOUNT": "Mi Cuenta",
+    "SETTINGS": "Configuración",
+    "SUPPORT": "Soporte",
+    "LOGOUT": "Cerrar sesión",
+    "TOGGLE_NAV": "Abrir menú de navegación",
+    "TOGGLE_USER_MENU": "Abrir menú de usuario",
+    "GO_BACK": "Volver",
+    "RETRY": "Reintentar",
+    "SOMETHING_WENT_WRONG": "Algo salió mal",
+    "ERROR_DESCRIPTION": "Ocurrió un error inesperado. Por favor, intentá de nuevo.",
+    "NO_RESULTS": "Sin resultados"
   }
 }

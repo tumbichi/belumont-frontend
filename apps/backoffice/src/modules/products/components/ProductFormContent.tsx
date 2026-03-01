@@ -106,7 +106,7 @@ export function ProductFormContent({
           {...register('name')}
         />
         {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
+          <p className="text-sm text-destructive">{errors.name.message}</p>
         )}
       </div>
 
@@ -122,7 +122,7 @@ export function ProductFormContent({
             {...register('price', { valueAsNumber: true })}
           />
           {errors.price && (
-            <p className="text-sm text-red-500">{errors.price.message}</p>
+            <p className="text-sm text-destructive">{errors.price.message}</p>
           )}
         </div>
 
@@ -136,7 +136,7 @@ export function ProductFormContent({
             onChange={handlePathnameChange}
           />
           {errors.pathname && (
-            <p className="text-sm text-red-500">{errors.pathname.message}</p>
+            <p className="text-sm text-destructive">{errors.pathname.message}</p>
           )}
         </div>
       </div>
@@ -151,7 +151,7 @@ export function ProductFormContent({
           {...register('description')}
         />
         {errors.description && (
-          <p className="text-sm text-red-500">{errors.description.message}</p>
+          <p className="text-sm text-destructive">{errors.description.message}</p>
         )}
       </div>
 
