@@ -11,6 +11,31 @@ import type { CriticalFlow } from './sentry';
 type LogAttributes = Record<string, string | number | boolean>;
 
 /**
+ * Normalizes a Record<string, unknown> to LogAttributes by converting
+ * non-primitive values to strings. Sentry Logs only accept primitives.
+ */
+function toLogAttributes(
+  obj?: Record<string, unknown>,
+  nullFallback?: string,
+): LogAttributes {
+  if (!obj) return {};
+  return Object.fromEntries(
+    Object.entries(obj).flatMap(([k, v]) => {
+      if (v === null || v === undefined) {
+        return nullFallback !== undefined ? [[k, nullFallback]] : [];
+      }
+      if (
+        typeof v === 'string' ||
+        typeof v === 'number' ||
+        typeof v === 'boolean'
+      )
+        return [[k, v]];
+      return [[k, String(v)]];
+    }),
+  );
+}
+
+/**
  * Log a business event with structured attributes.
  * Prefer "wide events" — one log with all context — over many small logs.
  */
@@ -91,8 +116,8 @@ export function logCriticalError(
   logger.error(`Critical error in ${flow}`, {
     flow,
     errorMessage,
-    ...errorDetails,
-    ...extra,
+    ...toLogAttributes(errorDetails, 'unknown'),
+    ...toLogAttributes(extra, 'unknown'),
   });
 
   captureCriticalError(error, flow, extra);
