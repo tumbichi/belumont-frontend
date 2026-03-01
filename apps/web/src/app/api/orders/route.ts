@@ -4,7 +4,6 @@ import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { validatePromoCode } from '@core/data/supabase/promos/services/validatePromoCode';
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import { Order } from '@core/data/supabase/orders/orders.repository';
-import { captureCriticalError } from '@core/lib/sentry';
 import {
   logger,
   trace,
@@ -205,12 +204,6 @@ export async function POST(request: Request) {
         logCriticalError(error, 'order-creation', {
           productId: reqBody?.product_id ?? 'unknown',
           email: reqBody?.email ?? 'unknown',
-          hasPromoCode: !!reqBody?.promo_code_id,
-        });
-
-        captureCriticalError(error, 'order-creation', {
-          productId: reqBody?.product_id,
-          email: reqBody?.email,
           hasPromoCode: !!reqBody?.promo_code_id,
         });
 

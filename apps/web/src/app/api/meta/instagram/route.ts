@@ -1,8 +1,7 @@
 import { NextRequest } from 'next/server';
 import { instagramBodySchema } from './instagram.schema';
 import { InstagramRepository } from '@core/data/instagram/instagram.repository';
-import { captureCriticalError } from '@core/lib/sentry';
-import { logger, trace } from '@core/lib/sentry-logger';
+import { logger, trace, logCriticalError } from '@core/lib/sentry-logger';
 
 export async function POST(request: NextRequest) {
   return trace(
@@ -77,16 +76,16 @@ export async function POST(request: NextRequest) {
               commentId: recipeMessage.instagramCommentId,
             });
           } catch (error) {
-            captureCriticalError(error, 'instagram-webhook', {
-              instagramCommentId: recipeMessage.instagramCommentId,
-              instagramUsername: recipeMessage.instagramUsername,
+            logCriticalError(error, 'instagram-webhook', {
+              instagramCommentId: recipeMessage.instagramCommentId ?? 'unknown',
+              instagramUsername: recipeMessage.instagramUsername ?? 'unknown',
             });
           }
         }
 
         return Response.json({ received: true });
       } catch (error) {
-        captureCriticalError(error, 'instagram-webhook');
+        logCriticalError(error, 'instagram-webhook');
 
         return Response.json(
           { message: 'Internal server error' },

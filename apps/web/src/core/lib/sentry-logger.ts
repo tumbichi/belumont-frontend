@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
+import { AppError } from './errors/app-error';
+import { captureCriticalError } from './sentry';
 import type { CriticalFlow } from './sentry';
 
 // ─── Logging Helpers ─────────────────────────────────────────────────────────
@@ -72,7 +74,8 @@ export function setRequestAttributes(
 
 /**
  * Log + capture a critical business error with tracing context.
- * Combines the existing captureCriticalError with structured logging.
+ * Logs a structured Sentry log entry AND captures the exception via
+ * captureCriticalError (with fatal/error severity based on flow).
  */
 export function logCriticalError(
   error: unknown,
@@ -82,9 +85,15 @@ export function logCriticalError(
   const errorMessage =
     error instanceof Error ? error.message : 'Unknown error';
 
+  // If the error is an AppError, surface its structured details automatically
+  const errorDetails = error instanceof AppError ? error.details : undefined;
+
   logger.error(`Critical error in ${flow}`, {
     flow,
     errorMessage,
+    ...errorDetails,
     ...extra,
   });
+
+  captureCriticalError(error, flow, extra);
 }

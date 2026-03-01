@@ -4,10 +4,13 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
 
-  sendDefaultPii: true,
+  // Only send PII and local variables outside production to avoid capturing
+  // emails, tokens, request bodies or payment data in Sentry events.
+  sendDefaultPii: process.env.NODE_ENV !== 'production',
 
-  // Attach local variable values to stack frames for richer debugging
-  includeLocalVariables: true,
+  // Attach local variable values to stack frames — dev only to prevent
+  // leaking sensitive locals (session tokens, order data, etc.) in prod.
+  includeLocalVariables: process.env.NODE_ENV !== 'production',
 
   // Logging: enable structured logs via Sentry.logger.*
   enableLogs: true,

@@ -4,7 +4,7 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
 
-  sendDefaultPii: true,
+  sendDefaultPii: process.env.NODE_ENV !== 'production',
 
   // Logging: enable structured logs via Sentry.logger.*
   enableLogs: true,

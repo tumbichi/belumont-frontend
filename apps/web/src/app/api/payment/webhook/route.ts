@@ -4,13 +4,13 @@ import { z } from 'zod';
 
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
-import { captureCriticalError } from '@core/lib/sentry';
 import {
   logger,
   trace,
   logCriticalError,
   setRequestAttributes,
 } from '@core/lib/sentry-logger';
+import { OrderNotFoundForPaymentError } from '@core/lib/errors';
 import { isAxiosError } from 'axios';
 
 function verifySignature(
@@ -136,12 +136,6 @@ export async function POST(request: Request) {
             step: 'getPaymentById',
           });
 
-          captureCriticalError(error, 'payment-webhook', {
-            paymentId,
-            action: body.action,
-            step: 'getPaymentById',
-          });
-
           if (isAxiosError(error)) {
             return Response.json(
               { message: error.message },
@@ -164,22 +158,13 @@ export async function POST(request: Request) {
 
         if (!order || !order.payment_id) {
           logCriticalError(
-            new Error('Order not found for approved payment'),
-            'payment-webhook',
-            {
+            new OrderNotFoundForPaymentError({
               paymentId,
               orderId: orderId ?? 'unknown',
               hasPaymentId: !!order?.payment_id,
-            },
-          );
-
-          captureCriticalError(
-            new Error('Order not found for approved payment'),
+            }),
             'payment-webhook',
             {
-              paymentId,
-              orderId,
-              hasPaymentId: !!order?.payment_id,
               note: 'URGENTE: El usuario posiblemente pagó pero la orden no se encontró',
             },
           );
@@ -213,12 +198,6 @@ export async function POST(request: Request) {
           paymentId,
           action: body.action ?? 'unknown',
           type: body.type ?? 'unknown',
-        });
-
-        captureCriticalError(error, 'payment-webhook', {
-          paymentId,
-          action: body.action,
-          type: body.type,
           note: 'URGENTE: Error no manejado en webhook de pago',
         });
 

@@ -2,13 +2,17 @@ import ResendRepository from '@core/data/resend/resend.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import ProductDelivery from '@core/emails/ProductDelivery';
 import PackDelivery from '@core/emails/PackDelivery';
-import { captureCriticalError } from '@core/lib/sentry';
 import {
   logger,
   trace,
   logCriticalError,
   setRequestAttributes,
 } from '@core/lib/sentry-logger';
+import {
+  UserNotFoundError,
+  ProductNotFoundError,
+  ProductNoDownloadUrlError,
+} from '@core/lib/errors';
 import { z } from 'zod';
 
 const recordSchema = z.object({
@@ -79,24 +83,13 @@ export async function POST(request: Request) {
 
         if (!user) {
           logCriticalError(
-            new Error('User not found for approved payment'),
-            'product-delivery-email',
-            {
+            new UserNotFoundError({
               orderId: order.id,
               userId: order.user_id,
               paymentId: body.record.id,
-            },
-          );
-
-          captureCriticalError(
-            new Error('User not found for approved payment'),
+            }),
             'product-delivery-email',
-            {
-              orderId: order.id,
-              userId: order.user_id,
-              paymentId: body.record.id,
-              note: 'El usuario pagó pero no existe en la base de datos',
-            },
+            { note: 'El usuario pagó pero no existe en la base de datos' },
           );
 
           return Response.json(
@@ -107,22 +100,13 @@ export async function POST(request: Request) {
 
         if (!product) {
           logCriticalError(
-            new Error('Product not found for approved payment'),
-            'product-delivery-email',
-            {
+            new ProductNotFoundError({
               orderId: order.id,
               productId: order.product_id,
               paymentId: body.record.id,
-            },
-          );
-
-          captureCriticalError(
-            new Error('Product not found for approved payment'),
+            }),
             'product-delivery-email',
             {
-              orderId: order.id,
-              productId: order.product_id,
-              paymentId: body.record.id,
               note: 'El usuario pagó pero el producto no existe en la base de datos',
             },
           );
@@ -166,24 +150,14 @@ export async function POST(request: Request) {
           // Single product - use original template
           if (!product.download_url) {
             logCriticalError(
-              new Error('Product does not have a download URL'),
-              'product-delivery-email',
-              {
+              new ProductNoDownloadUrlError({
                 orderId: order.id,
                 productId: product.id,
                 productName: product.name,
                 paymentId: body.record.id,
-              },
-            );
-
-            captureCriticalError(
-              new Error('Product does not have a download URL'),
+              }),
               'product-delivery-email',
               {
-                orderId: order.id,
-                productId: product.id,
-                productName: product.name,
-                paymentId: body.record.id,
                 note: 'El usuario pagó pero el producto no tiene URL de descarga configurada',
               },
             );
@@ -233,13 +207,6 @@ export async function POST(request: Request) {
             orderId: order.id,
             productId: product.id,
             productName: product.name,
-            paymentId: body.record.id,
-          });
-
-          captureCriticalError(emailError, 'product-delivery-email', {
-            orderId: order.id,
-            productId: product.id,
-            productName: product.name,
             userEmail: user.email,
             paymentId: body.record.id,
             note: 'URGENTE: El usuario pagó pero el email de entrega falló',
@@ -260,9 +227,7 @@ export async function POST(request: Request) {
           );
         }
 
-        logCriticalError(error, 'product-delivery-email');
-
-        captureCriticalError(error, 'product-delivery-email', {
+        logCriticalError(error, 'product-delivery-email', {
           note: 'Error no manejado en la entrega de producto por email',
         });
 

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import { PromoCode } from '@core/data/supabase/promos/promos.repository';
-import { captureCriticalError } from '@core/lib/sentry';
 import { logger, trace, logCriticalError } from '@core/lib/sentry-logger';
 
 const supabaseRepository = SupabaseRepository();
@@ -134,11 +133,6 @@ export async function POST(request: Request) {
         logCriticalError(error, 'promo-validation', {
           code: reqBody?.code ?? 'unknown',
           productId: reqBody?.product_id ?? 'unknown',
-        });
-
-        captureCriticalError(error, 'promo-validation', {
-          code: reqBody?.code,
-          productId: reqBody?.product_id,
         });
 
         return Response.json(
