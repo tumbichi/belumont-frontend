@@ -44,13 +44,12 @@ const validatePromoCode = (
 };
 
 export async function POST(request: Request) {
-  const reqBody = await request.json();
-
   return trace(
     { name: 'POST /api/promos/validate', op: 'http.server' },
     async () => {
+      let body!: z.infer<typeof bodySchema>;
       try {
-        const body = bodySchema.parse(reqBody);
+        body = bodySchema.parse(await request.json());
 
         const promoCode = await trace(
           { name: 'getPromoByCode', op: 'db.query' },
@@ -123,6 +122,13 @@ export async function POST(request: Request) {
           message: validation.message,
         });
       } catch (error) {
+        if (error instanceof SyntaxError) {
+          return Response.json(
+            { valid: false, message: 'Invalid JSON body' },
+            { status: 400 },
+          );
+        }
+
         if (error instanceof z.ZodError) {
           return Response.json(
             { valid: false, message: 'Invalid request body', errors: error.errors },
@@ -131,8 +137,8 @@ export async function POST(request: Request) {
         }
 
         logCriticalError(error, 'promo-validation', {
-          code: reqBody?.code ?? 'unknown',
-          productId: reqBody?.product_id ?? 'unknown',
+          code: body.code,
+          productId: body.product_id,
         });
 
         return Response.json(
