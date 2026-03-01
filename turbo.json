@@ -1,11 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["SUPABASE_DOMAIN", "SUPABASE_API_KEY"],
+  "globalDependencies": ["SUPABASE_DOMAIN", "SUPABASE_API_KEY", "SENTRY_DSN", "NEXT_PUBLIC_SENTRY_DSN", "SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["SUPABASE_DOMAIN", "SUPABASE_API_KEY"]
+      "env": ["SUPABASE_DOMAIN", "SUPABASE_API_KEY", "SENTRY_DSN", "NEXT_PUBLIC_SENTRY_DSN", "SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]
     },
     "lint": {
       "dependsOn": ["^lint"],

@@ -1,106 +1,211 @@
 import crypto from 'crypto';
 
+import { z } from 'zod';
+
 import { MercadoPagoRepository } from '@core/data/mercadopago/mercadopago.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
+import {
+  logger,
+  trace,
+  logCriticalError,
+  setRequestAttributes,
+} from '@core/lib/sentry-logger';
+import { OrderNotFoundForPaymentError } from '@core/lib/errors';
 import { isAxiosError } from 'axios';
 
 function verifySignature(
   xSignature: string,
   xRequestId: string,
-  paymentId: string
-): true | never {
-  console.log('x-signature', xSignature);
-  console.log('x-request-id', xRequestId);
+  paymentId: string,
+): boolean {
+  // Fail closed: reject immediately if secret is not configured
+  const secret = (process.env.MERCADOPAGO_PAYMENT_SECRET_KEY || '').trim();
+  if (!secret) return false;
+
   const xSignatureArr = xSignature.split(',');
 
   if (!xSignatureArr[0] || !xSignatureArr[1]) {
-    throw new Error('Invalid payment signature format');
+    return false;
   }
 
   const ts = xSignatureArr[0].replace('ts=', '');
-  console.log('ts', ts);
-
   const signaturePaymentHash = xSignatureArr[1].replace('v1=', '');
 
-  const secret = (process.env.MERCADOPAGO_PAYMENT_SECRET_KEY || '').trim();
-  console.log('secret', secret);
-  const template = Buffer.from(
-    `id:${paymentId};request-id:${xRequestId};ts:${ts};`,
-    'utf8'
-  ).toString();
-  console.log('template', template);
+  const template = `id:${paymentId};request-id:${xRequestId};ts:${ts};`;
 
   const hmac = crypto.createHmac('sha256', secret);
   hmac.update(template);
-
   const sha256Signature = hmac.digest('hex');
 
-  console.log('sha256Signature', sha256Signature);
-  console.log('signaturePaymentHash', signaturePaymentHash);
-
-  if (sha256Signature === signaturePaymentHash) {
-    console.log('HMAC verified');
-  } else {
-    console.log('HMAC NOT verified');
+  // Use constant-time comparison to prevent timing side-channel attacks
+  try {
+    const sigBuffer = Buffer.from(sha256Signature, 'hex');
+    const expectedBuffer = Buffer.from(signaturePaymentHash, 'hex');
+    if (sigBuffer.length !== expectedBuffer.length) return false;
+    return crypto.timingSafeEqual(sigBuffer, expectedBuffer);
+  } catch {
+    return false;
   }
-
-  return true;
 }
 
 export async function POST(request: Request) {
-  console.log('request.headers', request.headers);
-
   const xSignature = request.headers.get('x-signature');
   const xRequestId = request.headers.get('x-request-id');
-  const body = await request.json();
-  console.log('mpBody', body);
+
+  const WebhookBodySchema = z.object({
+    data: z.object({ id: z.string() }),
+    action: z.string().optional(),
+    type: z.string().optional(),
+  });
+
+  let rawBody: unknown;
+  try {
+    rawBody = await request.json();
+  } catch {
+    return Response.json(
+      { message: 'Invalid JSON body' },
+      { status: 400 },
+    );
+  }
+
+  const parsed = WebhookBodySchema.safeParse(rawBody);
+  if (!parsed.success) {
+    logger.warn('Payment webhook: invalid payload shape', {
+      issues: JSON.stringify(parsed.error.issues),
+    });
+    return Response.json(
+      { message: 'Invalid webhook payload' },
+      { status: 400 },
+    );
+  }
+
+  const body = parsed.data;
 
   if (!xSignature || !xRequestId) {
-    throw new Error('Invalid payment signature', {
-      cause: {
-        xSignature,
-        xRequestId,
-      },
-    });
+    logger.warn('Payment webhook: missing signature headers');
+    return Response.json(
+      { message: 'Missing payment signature headers' },
+      { status: 401 },
+    );
   }
 
-  if (verifySignature(xSignature, xRequestId, body.data.id)) {
-    let mpPayment;
-    const supabaseRepository = SupabaseRepository();
+  const paymentId = body.data.id;
 
-    try {
-      mpPayment = await MercadoPagoRepository().getPaymentById(body.data.id);
-      console.log('mpPayment', mpPayment);
-    } catch (error) {
-      console.log('mercadopago.getPaymentById', error);
-      if (isAxiosError(error)) {
-        throw Response.json({
-          message: error.message,
-          cause: error.cause,
-          response: error.response,
-          status: error.response?.status || error.status,
+  setRequestAttributes({
+    'webhook.paymentId': paymentId,
+    'webhook.action': body.action ?? 'unknown',
+    'webhook.type': body.type ?? 'unknown',
+  });
+
+  return trace(
+    {
+      name: 'POST /api/payment/webhook',
+      op: 'http.server',
+      attributes: { 'payment.id': paymentId },
+    },
+    async () => {
+      const signatureValid = await trace(
+        { name: 'verifyHmacSignature', op: 'function' },
+        () => verifySignature(xSignature, xRequestId, paymentId),
+      );
+
+      if (!signatureValid) {
+        logger.warn('Payment webhook: invalid signature', {
+          paymentId,
         });
+        return Response.json(
+          { message: 'Invalid payment signature' },
+          { status: 401 },
+        );
       }
 
-      throw Response.json({ error }, { status: 500 });
-    }
+      try {
+        const supabaseRepository = SupabaseRepository();
 
-    const { order_id: orderId } = mpPayment.metadata;
+        let mpPayment;
 
-    const order = await supabaseRepository.orders.getById(orderId);
+        try {
+          mpPayment = await trace(
+            { name: 'getMercadoPagoPayment', op: 'http.client' },
+            () => MercadoPagoRepository().getPaymentById(paymentId),
+          );
+        } catch (error) {
+          logCriticalError(error, 'payment-webhook', {
+            paymentId,
+            action: body.action ?? 'unknown',
+            step: 'getPaymentById',
+          });
 
-    if (!order || !order.payment_id) {
-      throw new Error('Order not found', {
-        cause: { orderId, paymentId: order?.payment_id },
-      });
-    }
+          if (isAxiosError(error)) {
+            return Response.json(
+              { message: error.message },
+              { status: error.response?.status || 500 },
+            );
+          }
 
-    const payment = await supabaseRepository.payments.update(order.payment_id, {
-      provider_id: body.data.id,
-      status: mpPayment.status,
-      amount: mpPayment.transaction_amount,
-    });
+          return Response.json(
+            { message: 'Failed to fetch payment from MercadoPago' },
+            { status: 500 },
+          );
+        }
 
-    return Response.json({ payment });
-  }
+        const { order_id: orderId } = mpPayment.metadata;
+
+        const order = await trace(
+          { name: 'getOrderById', op: 'db.query' },
+          () => supabaseRepository.orders.getById(orderId),
+        );
+
+        if (!order || !order.payment_id) {
+          logCriticalError(
+            new OrderNotFoundForPaymentError({
+              paymentId,
+              orderId: orderId ?? 'unknown',
+              hasPaymentId: !!order?.payment_id,
+            }),
+            'payment-webhook',
+            {
+              note: 'URGENTE: El usuario posiblemente pagó pero la orden no se encontró',
+            },
+          );
+
+          return Response.json(
+            { message: 'Order not found' },
+            { status: 404 },
+          );
+        }
+
+        const payment = await trace(
+          { name: 'updatePaymentStatus', op: 'db.query' },
+          () =>
+            supabaseRepository.payments.update(order.payment_id!, {
+              provider_id: paymentId,
+              status: mpPayment.status,
+              amount: mpPayment.transaction_amount,
+            }),
+        );
+
+        logger.info('Payment webhook processed', {
+          paymentId,
+          orderId,
+          mpStatus: mpPayment.status,
+          amount: mpPayment.transaction_amount,
+        });
+
+        return Response.json({ payment });
+      } catch (error) {
+        logCriticalError(error, 'payment-webhook', {
+          paymentId,
+          action: body.action ?? 'unknown',
+          type: body.type ?? 'unknown',
+          note: 'URGENTE: Error no manejado en webhook de pago',
+        });
+
+        return Response.json(
+          { message: 'Internal server error' },
+          { status: 500 },
+        );
+      }
+    },
+  );
 }

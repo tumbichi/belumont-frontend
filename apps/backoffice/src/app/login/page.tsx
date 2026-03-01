@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation';
 import Login from '@modules/auth/features/Login';
 
 export default async function LoginPage() {
-  const cookieStore = cookies();
-  const token = (await cookieStore).get('auth_token')?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get('auth_token')?.value;
 
   if (token && verifyJWT(token)) {
     redirect('/');

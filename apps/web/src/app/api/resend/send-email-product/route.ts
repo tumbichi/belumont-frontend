@@ -2,7 +2,17 @@ import ResendRepository from '@core/data/resend/resend.repository';
 import SupabaseRepository from '@core/data/supabase/supabase.repository';
 import ProductDelivery from '@core/emails/ProductDelivery';
 import PackDelivery from '@core/emails/PackDelivery';
-import { isAxiosError } from 'axios';
+import {
+  logger,
+  trace,
+  logCriticalError,
+  setRequestAttributes,
+} from '@core/lib/sentry-logger';
+import {
+  UserNotFoundError,
+  ProductNotFoundError,
+  ProductNoDownloadUrlError,
+} from '@core/lib/errors';
 import { z } from 'zod';
 
 const recordSchema = z.object({
@@ -31,85 +41,201 @@ const bodySchema = z
   .passthrough();
 
 export async function POST(request: Request) {
-  const body = bodySchema.parse(await request.json());
+  return trace(
+    { name: 'POST /api/resend/send-email-product', op: 'http.server' },
+    async () => {
+      try {
+        const body = bodySchema.parse(await request.json());
 
-  if (body.record.status === 'approved') {
-    const supabaseRepository = SupabaseRepository();
+        setRequestAttributes({
+          'delivery.paymentId': body.record.id,
+          'delivery.paymentStatus': body.record.status,
+          'delivery.provider': body.record.provider,
+        });
 
-    const order = await supabaseRepository.orders.updateStatusByPaymentId(
-      body.record.id,
-      'paid'
-    );
-    const product = await supabaseRepository.products.getById(order.product_id);
-    const user = await supabaseRepository.users.getById(order.user_id);
-
-    if (!user) {
-      throw new Error('User does not exist');
-    }
-
-    if (!product) {
-      throw new Error('Product does not exist');
-    }
-
-    // Determine email template based on product type
-    let emailReactComponent: React.ReactElement;
-
-    if (product.product_type === 'bundle') {
-      // Get all items in the bundle with download URLs (server-side only)
-      const bundleItems = await supabaseRepository.products.getBundleItems(
-        product.id,
-        { includeDownloadUrl: true }
-      );
-
-      const downloadItems = bundleItems
-        .filter((item) => item.product.download_url) // Only items with download URL
-        .map((item) => ({
-          name: item.product.name,
-          downloadUrl: item.product.download_url!,
-        }));
-
-      if (downloadItems.length === 0) {
-        throw new Error('Bundle has no downloadable items');
-      }
-
-      emailReactComponent = PackDelivery({
-        packName: product.name,
-        username: user.name,
-        items: downloadItems,
-      });
-    } else {
-      // Single product - use original template
-      if (!product.download_url) {
-        throw new Error('Product does not have a download URL');
-      }
-
-      emailReactComponent = ProductDelivery({
-        productName: product.name,
-        username: user.name,
-        downloadLink: product.download_url,
-      });
-    }
-
-    // Send email
-    await ResendRepository()
-      .sendEmail({
-        to: user.email,
-        from: String(process.env.RESEND_FROM_EMAIL),
-        subject: `${product.name} | @soybelumont`,
-        react: emailReactComponent,
-      })
-      .then((data) => {
-        console.log('email response:', data);
-        supabaseRepository.orders.updateStatus(order.id, 'completed');
-      })
-      .catch((error) => {
-        if (isAxiosError(error)) {
-          console.log('error', error.response);
-        } else {
-          console.log('error', error);
+        if (body.record.status !== 'approved') {
+          logger.debug('Delivery skipped: payment not approved', {
+            paymentId: body.record.id,
+            status: body.record.status,
+          });
+          return Response.json({ body });
         }
-      });
-  }
 
-  return Response.json({ body });
+        const supabaseRepository = SupabaseRepository();
+
+        const order = await trace(
+          { name: 'updateOrderStatusByPaymentId', op: 'db.query' },
+          () =>
+            supabaseRepository.orders.updateStatusByPaymentId(
+              body.record.id,
+              'paid',
+            ),
+        );
+
+        const [product, user] = await Promise.all([
+          trace({ name: 'getProduct', op: 'db.query' }, () =>
+            supabaseRepository.products.getById(order.product_id),
+          ),
+          trace({ name: 'getUser', op: 'db.query' }, () =>
+            supabaseRepository.users.getById(order.user_id),
+          ),
+        ]);
+
+        if (!user) {
+          logCriticalError(
+            new UserNotFoundError({
+              orderId: order.id,
+              userId: order.user_id,
+              paymentId: body.record.id,
+            }),
+            'product-delivery-email',
+            { note: 'El usuario pagó pero no existe en la base de datos' },
+          );
+
+          return Response.json(
+            { message: 'User does not exist' },
+            { status: 404 },
+          );
+        }
+
+        if (!product) {
+          logCriticalError(
+            new ProductNotFoundError({
+              orderId: order.id,
+              productId: order.product_id,
+              paymentId: body.record.id,
+            }),
+            'product-delivery-email',
+            {
+              note: 'El usuario pagó pero el producto no existe en la base de datos',
+            },
+          );
+
+          return Response.json(
+            { message: 'Product does not exist' },
+            { status: 404 },
+          );
+        }
+
+        // Determine email template based on product type
+        let emailReactComponent: React.ReactElement;
+
+        if (product.product_type === 'bundle') {
+          // Get all items in the bundle with download URLs (server-side only)
+          const bundleItems = await trace(
+            { name: 'getBundleItems', op: 'db.query' },
+            () =>
+              supabaseRepository.products.getBundleItems(product.id, {
+                includeDownloadUrl: true,
+              }),
+          );
+
+          const downloadItems = bundleItems
+            .filter((item) => item.product.download_url) // Only items with download URL
+            .map((item) => ({
+              name: item.product.name,
+              downloadUrl: item.product.download_url!,
+            }));
+
+          if (downloadItems.length === 0) {
+            throw new Error('Bundle has no downloadable items');
+          }
+
+          emailReactComponent = PackDelivery({
+            packName: product.name,
+            username: user.name,
+            items: downloadItems,
+          });
+        } else {
+          // Single product - use original template
+          if (!product.download_url) {
+            logCriticalError(
+              new ProductNoDownloadUrlError({
+                orderId: order.id,
+                productId: product.id,
+                productName: product.name,
+                paymentId: body.record.id,
+              }),
+              'product-delivery-email',
+              {
+                note: 'El usuario pagó pero el producto no tiene URL de descarga configurada',
+              },
+            );
+
+            return Response.json(
+              { message: 'Product does not have a download URL' },
+              { status: 422 },
+            );
+          }
+
+          emailReactComponent = ProductDelivery({
+            productName: product.name,
+            username: user.name,
+            downloadLink: product.download_url,
+          });
+        }
+
+        // Send email
+        try {
+          await trace(
+            { name: 'sendDeliveryEmail', op: 'http.client' },
+            () =>
+              ResendRepository().sendEmail({
+                to: user.email,
+                from: String(process.env.RESEND_FROM_EMAIL),
+                subject: `${product.name} | @soybelumont`,
+                react: emailReactComponent,
+              }),
+          );
+
+          await trace(
+            { name: 'markOrderCompleted', op: 'db.query' },
+            () => supabaseRepository.orders.updateStatus(order.id, 'completed'),
+          );
+
+          logger.info('Product delivered successfully', {
+            orderId: order.id,
+            productId: product.id,
+            productName: product.name,
+            productType: product.product_type ?? 'single',
+            userEmail: user.email,
+            paymentId: body.record.id,
+            provider: body.record.provider,
+          });
+        } catch (emailError) {
+          logCriticalError(emailError, 'product-delivery-email', {
+            orderId: order.id,
+            productId: product.id,
+            productName: product.name,
+            userEmail: user.email,
+            paymentId: body.record.id,
+            note: 'URGENTE: El usuario pagó pero el email de entrega falló',
+          });
+
+          return Response.json(
+            { message: 'Failed to send product delivery email' },
+            { status: 500 },
+          );
+        }
+
+        return Response.json({ body });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return Response.json(
+            { message: 'Invalid webhook payload', errors: error.errors },
+            { status: 400 },
+          );
+        }
+
+        logCriticalError(error, 'product-delivery-email', {
+          note: 'Error no manejado en la entrega de producto por email',
+        });
+
+        return Response.json(
+          { message: 'Internal server error' },
+          { status: 500 },
+        );
+      }
+    },
+  );
 }

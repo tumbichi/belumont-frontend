@@ -31,7 +31,6 @@ export default function PackDelivery({
 }: PackDeliveryProps) {
   return (
     <Html lang="es">
-      <Head />
       <Tailwind
         config={{
           theme: {
@@ -44,6 +43,7 @@ export default function PackDelivery({
           },
         }}
       >
+        <Head />
         <Body className="bg-gray-100 font-sans py-8">
           <Container className="mx-auto max-w-xl bg-white rounded-xl shadow-lg overflow-hidden">
             {/* Header */}
