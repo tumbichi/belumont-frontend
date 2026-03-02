@@ -20,6 +20,7 @@ import Sidebar, { SidebarItem } from '@soybelumont/ui/components/sidebar';
 import {
   Home,
   LineChart,
+  Mail,
   Menu,
   Package,
   ShoppingCart,
@@ -86,6 +87,11 @@ export default async function AppLayout({
       title: t('SIDEBAR', 'PROMOS', 'Promociones'),
       href: '/promociones',
       icon: <LineChart className="w-4 h-4" />,
+    },
+    {
+      title: t('SIDEBAR', 'EMAILS', 'Emails'),
+      href: '/emails',
+      icon: <Mail className="w-4 h-4" />,
     },
   ];
 

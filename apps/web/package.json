@@ -15,6 +15,7 @@
     "@hookform/resolvers": "^3.10.0",
     "@react-email/components": "^1.0.8",
     "@sentry/nextjs": "^10.38.0",
+    "@soybelumont/email-templates": "workspace:*",
     "@soybelumont/ui": "workspace:*",
     "@supabase/supabase-js": "2.46.1",
     "@types/canvas-confetti": "1.6.4",
