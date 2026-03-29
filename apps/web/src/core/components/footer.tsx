@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Instagram } from 'lucide-react';
 import Container from '@soybelumont/ui/layouts/container';
 
 const Footer: React.FC = () => {
@@ -66,7 +65,7 @@ const Footer: React.FC = () => {
               href="https://instagram.com/soybelumont"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[hsl(40,15%,80%)] hover:text-[#FF0069] transition-colors duration-200"
+              className="text-[hsl(40,15%,80%)] hover:text-[hsl(var(--secondary))] transition-colors duration-200"
               /* hsl(var(--secondary)) */
               aria-label="Síguenos en Instagram"
             >
@@ -88,7 +87,7 @@ const Footer: React.FC = () => {
               href="https://www.tiktok.com/@soylabelumont"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[hsl(40,15%,80%)] hover:text-[#000000] transition-colors duration-200"
+              className="text-[hsl(40,15%,80%)] hover:text-[hsl(var(--secondary))] transition-colors duration-200"
               aria-label="Síguenos en TikTok"
             >
               <svg
@@ -108,7 +107,7 @@ const Footer: React.FC = () => {
               href="https://www.youtube.com/@belumont"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[hsl(40,15%,80%)] hover:text-[#FF0000] transition-colors duration-200"
+              className="text-[hsl(40,15%,80%)] hover:text-[hsl(var(--secondary))] transition-colors duration-200"
               aria-label="Síguenos en YouTube"
             >
               <svg
