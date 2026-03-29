@@ -55,28 +55,17 @@ export default function AnimatedAbout() {
           }`}
         >
           <div className="relative order-2 lg:order-1">
-            <Image
-              src="/belu.jpg"
-              alt="Belu cocinando"
-              fill
-              className="object-cover object-center rounded-2xl"
-            />
             <div className="aspect-square lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-xl max-w-sm mx-auto lg:max-w-none">
-              <div className="w-full h-full bg-gradient-to-br from-[hsl(37,25%,80%)] to-[hsl(37,20%,90%)] flex items-center justify-center">
-                <div className="text-center p-6 lg:p-8">
-                  <div className="w-24 lg:w-32 h-24 lg:h-32 mx-auto mb-3 lg:mb-4 rounded-full bg-[hsl(var(--primary))] flex items-center justify-center">
-                    <span className="text-3xl lg:text-4xl font-display text-white">
-                      B
-                    </span>
-                  </div>
-                  <p className="text-base lg:text-lg font-display text-muted-foreground">
-                    Foto de Belu
-                  </p>
-                </div>
-              </div>
+              <div className="w-full h-full bg-gradient-to-br from-[hsl(37,25%,80%)] to-[hsl(37,20%,90%)] flex items-center justify-center"></div>
             </div>
 
             <div className="absolute -z-10 -bottom-4 -right-4 w-32 lg:w-48 h-32 lg:h-48 rounded-full bg-[hsl(var(--primary))] opacity-10 blur-3xl" />
+            <Image
+              src="/belu.webp"
+              alt="Belu cocinando"
+              fill
+              className="object-cover object-top rounded-2xl"
+            />
           </div>
 
           <div className="flex flex-col gap-4 lg:gap-6 order-1 lg:order-2">

@@ -69,7 +69,7 @@ export default async function Home() {
               <div className="relative aspect-[4/5] max-h-[60vh] mx-auto my-8 rounded-2xl overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--primary))]/20 to-[hsl(85,35%,35%)]/20 z-10" />
                 <Image
-                  src="/hero.jpeg"
+                  src="/hero.webp"
                   alt="Belu cocinando"
                   fill
                   className="object-cover  w-full h-full"
