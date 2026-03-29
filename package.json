@@ -7,6 +7,7 @@
     "build:backoffice": "turbo build --filter=@soybelumont/backoffice",
     "dev": "turbo dev",
     "dev:backoffice": "turbo dev --filter=@soybelumont/backoffice",
+    "dev:web": "turbo dev --filter=@soybelumont/web",
     "lint": "turbo lint",
     "check-types": "turbo check-types",
     "lint:ci": "turbo lint:ci",
