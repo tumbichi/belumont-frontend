@@ -26,8 +26,8 @@ export default async function Home() {
         </div>
 
         <Container>
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center py-16 lg:py-8">
-            <div className="flex flex-col items-start gap-6 animate-fade-in px-4">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center py-8 lg:py-8">
+            <div className="flex flex-col items-start gap-6 animate-fade-in px-4 order-2 lg:order-1">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[hsl(85,35%,35%,0.1)] text-[hsl(85,35%,35%)]">
                 <Leaf className="w-4 h-4" />
                 <span className="text-sm font-medium">Cocina saludable</span>
@@ -63,16 +63,16 @@ export default async function Home() {
             </div>
 
             <div
-              className="relative hidden lg:block animate-fade-in-up px-4 lg:px-0"
+              className="relative block animate-fade-in-up px-4 lg:px-0 order-1 lg:order-2"
               style={{ animationDelay: '0.2s' }}
             >
-              <div className="relative aspect-[4/5] max-h-[60vh] mx-auto my-8 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative aspect-[4/3] max-h-64 lg:aspect-[4/5] lg:max-h-[60vh] mx-auto my-4 lg:my-8 rounded-2xl overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--primary))]/20 to-[hsl(85,35%,35%)]/20 z-10" />
                 <Image
-                  src="/hero.webp"
+                  src="/hero.jpeg"
                   alt="Belu cocinando"
                   fill
-                  className="object-cover  w-full h-full"
+                  className="object-cover w-full h-full"
                 />
                 {/* <div className="w-full h-full bg-gradient-to-br from-[hsl(37,25%,80%)] to-[hsl(37,20%,90%)] flex items-center justify-center">
                   <div className="text-center p-8">
