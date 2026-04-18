@@ -22,8 +22,8 @@ body {
     --primary: 90 25% 65%;
     --foreground-dark: 90 25% 20%;
     --primary-foreground: 40 33% 95%;
-    --secondary: 15 45% 55%;
-    --secondary-foreground: 20 30% 15%;
+    --secondary: 350 30% 75%;
+    --secondary-foreground: 350 30% 20%;
     --muted: 37 20% 90%;
     --muted-foreground: 20 10% 45%;
     --accent: 85 35% 35%;
@@ -49,8 +49,8 @@ body {
     --popover-foreground: 40 20% 90%;
     --primary: 90 25% 65%;
     --primary-foreground: 20 20% 8%;
-    --secondary: 15 45% 55%;
-    --secondary-foreground: 40 20% 90%;
+    --secondary: 350 30% 75%;
+    --secondary-foreground: 350 30% 20%;
     --muted: 20 15% 18%;
     --muted-foreground: 37 15% 55%;
     --accent: 85 30% 45%;
