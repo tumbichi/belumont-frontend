@@ -12,7 +12,8 @@ interface MercadoPagoRepositoryReturn {
   generatePaymentUrl: (
     product: Product,
     user: User,
-    metadata: PaymentMetadata
+    metadata: PaymentMetadata,
+    finalPrice?: number
   ) => Promise<string>;
   getPaymentById: (id: string) => Promise<MercadoPagoPayment>;
 }
