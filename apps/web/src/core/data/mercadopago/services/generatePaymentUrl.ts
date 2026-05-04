@@ -6,7 +6,8 @@ import { PaymentMetadata } from '../mercadopago.repository';
 export async function generatePaymentUrl(
   product: Product,
   user: User,
-  metadata: PaymentMetadata
+  metadata: PaymentMetadata,
+  finalPrice?: number
 ): Promise<string> {
   const response = await mercadopagoClient.post(
     String(process.env.MERCADOPAGO_PREFERENCES_PATH),
@@ -16,7 +17,10 @@ export async function generatePaymentUrl(
           id: product.id,
           title: product.name,
           descripcion: product.description,
-          unit_price: product.price,
+          unit_price: finalPrice ?? product.price,
+          ...(finalPrice !== undefined && finalPrice < product.price
+            ? { original_price: product.price }
+            : {}),
           quantity: 1,
           currency_id: 'ARS',
           picture_url: product.image_url,
@@ -40,7 +44,7 @@ export async function generatePaymentUrl(
     }
   );
 
-  console.log('mercadopago generatePaymentUrl', response.data);
+  console.log('mercadopago generatePaymentUrl items:', JSON.stringify(response.data.items, null, 2));
 
   return response.data.init_point;
 }

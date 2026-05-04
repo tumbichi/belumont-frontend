@@ -4,7 +4,7 @@ import incrementPromoCodeUsage from './services/incrementPromoCodeUsage';
 export type PromoCode = {
   id: string;
   code: string;
-  discount_type: 'PERCENTAGE' | 'FIXED';
+  discount_type: 'PERCENTAGE' | 'FIXED' | 'FIXED_PRICE';
   discount_value: number;
   applies_to_all: boolean;
   max_uses: number | null;

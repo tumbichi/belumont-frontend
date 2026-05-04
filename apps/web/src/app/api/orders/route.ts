@@ -112,6 +112,8 @@ export async function POST(request: Request) {
               (product.price * promoCode.discount_value) / 100;
           } else if (promoCode.discount_type === 'FIXED') {
             finalPrice = product.price - promoCode.discount_value;
+          } else if (promoCode.discount_type === 'FIXED_PRICE') {
+            finalPrice = promoCode.discount_value;
           }
 
           if (finalPrice < 0) {
@@ -177,7 +179,7 @@ export async function POST(request: Request) {
             () =>
               MercadoPagoRepository().generatePaymentUrl(product, user, {
                 orderId: order.id,
-              }),
+              }, finalPrice),
           );
 
           logger.info('Order created, redirecting to payment', {

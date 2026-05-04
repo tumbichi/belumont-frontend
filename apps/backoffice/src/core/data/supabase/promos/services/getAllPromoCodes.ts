@@ -16,7 +16,7 @@ export default async function getAllPromoCodes(): Promise<PromoCode[]> {
       // Explicitly cast discount_type to the expected literal type
       const sanitizedPromoCode = {
         ...promoCode,
-        discount_type: promoCode.discount_type as 'PERCENTAGE' | 'FIXED',
+        discount_type: promoCode.discount_type as 'PERCENTAGE' | 'FIXED' | 'FIXED_PRICE',
       };
       return sanatizeCreatedAtFromObject(sanitizedPromoCode) as PromoCode;
     }) || []

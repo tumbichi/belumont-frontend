@@ -99,6 +99,9 @@ export async function POST(request: Request) {
         } else if (promoCode.discount_type === 'FIXED') {
           discountAmount = promoCode.discount_value;
           finalPrice = product.price - discountAmount;
+        } else if (promoCode.discount_type === 'FIXED_PRICE') {
+          finalPrice = promoCode.discount_value;
+          discountAmount = product.price - finalPrice;
         }
 
         if (finalPrice < 0) {
