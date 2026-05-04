@@ -185,6 +185,19 @@ export async function POST(request: Request) {
             }),
         );
 
+        if (mpPayment.status === 'approved' && payment.promo_code_id) {
+          await trace(
+            { name: 'incrementPromoCodeUsage', op: 'db.query' },
+            () => supabaseRepository.promos.incrementUsage(payment.promo_code_id!),
+          );
+
+          logger.info('Promo code usage incremented', {
+            promoCodeId: payment.promo_code_id,
+            orderId,
+            paymentId,
+          });
+        }
+
         logger.info('Payment webhook processed', {
           paymentId,
           orderId,
