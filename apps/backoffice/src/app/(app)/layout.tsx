@@ -26,6 +26,7 @@ import {
   ShoppingCart,
   Users,
   User,
+  Cake,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -49,7 +50,11 @@ export default async function AppLayout({
 
   const t = (namespace: string, key: string, fallback: string) => {
     const ns = (messages as Record<string, unknown>)[namespace];
-    if (typeof ns === 'object' && ns !== null && key in (ns as Record<string, unknown>)) {
+    if (
+      typeof ns === 'object' &&
+      ns !== null &&
+      key in (ns as Record<string, unknown>)
+    ) {
       return (ns as Record<string, string>)[key] ?? fallback;
     }
     return fallback;
@@ -93,6 +98,11 @@ export default async function AppLayout({
       href: '/emails',
       icon: <Mail className="w-4 h-4" />,
     },
+    {
+      title: t('SIDEBAR', 'PATISSERIE', 'Pastelería'),
+      href: '/pasteleria',
+      icon: <Cake className="w-4 h-4" />,
+    },
   ];
 
   return (
@@ -115,7 +125,9 @@ export default async function AppLayout({
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <SheetTitle className="sr-only">Navegación</SheetTitle>
-              <SheetDescription className="sr-only">Menú de navegación principal</SheetDescription>
+              <SheetDescription className="sr-only">
+                Menú de navegación principal
+              </SheetDescription>
               <nav className="grid gap-1 pt-2">
                 <Link
                   href="/"

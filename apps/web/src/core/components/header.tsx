@@ -2,11 +2,14 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Container from '@soybelumont/ui/layouts/container';
 import { useState, useEffect } from 'react';
+import { CakeSlice } from 'lucide-react';
 
 const Header: React.FC = () => {
   const t = useTranslations('HEADER');
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -61,17 +64,24 @@ const Header: React.FC = () => {
           <div className="flex items-center gap-4 ml-auto sm:gap-6">
             <Link
               href="/"
-              className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
+              className={`${pathname === '/' ? 'hidden sm:inline-flex' : ''} text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 font-medium`}
             >
               {t('HOME')}
             </Link>
             <Link
               href="/recetarios"
-              className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
+              className={`${pathname === '/recetarios' || pathname.startsWith('/recetarios') ? 'hidden sm:inline-flex' : ''} text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 font-medium`}
             >
               {t('PRODUCTS')}
             </Link>
-            <div className="flex items-center gap-2 sm:gap-3 border-l border-border pl-3 sm:pl-4 ml-1 sm:ml-2">
+            <Link
+              href="/pasteleria"
+              className={`${pathname === '/pasteleria' || pathname.startsWith('/pasteleria') ? 'hidden sm:inline-flex' : ''} flex items-center gap-1.5 text-sm md:text-base text-muted-foreground hover:text-primary transition-colors duration-200 font-medium`}
+            >
+              <CakeSlice className="w-4 h-4" />
+              {t('PATISSERIE')}
+            </Link>
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3 border-l border-border pl-3 sm:pl-4 ml-1 sm:ml-2">
               <a
                 href="https://instagram.com/soybelumont"
                 target="_blank"

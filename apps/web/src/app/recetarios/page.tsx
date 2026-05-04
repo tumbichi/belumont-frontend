@@ -25,7 +25,7 @@ export default async function ProductsPage() {
     <main>
       {/* Hero Section */}
       <section
-        className="relative py-16 lg:py-24 overflow-hidden"
+        className="relative py-16 lg:py-24 pb-0 overflow-hidden"
         style={{ backgroundColor: 'hsl(40, 33%, 97%)' }}
       >
         <div className="absolute inset-0 -z-10">
@@ -48,20 +48,6 @@ export default async function ProductsPage() {
             </p>
           </div>
         </Container>
-
-        {/* Wave at bottom */}
-        <div className="absolute -bottom-1 left-0 right-0 h-12 lg:h-16 overflow-hidden">
-          <svg
-            className="absolute bottom-0 left-0 right-0 w-full h-12 lg:h-16"
-            viewBox="0 0 1440 64"
-            preserveAspectRatio="none"
-          >
-            <path
-              fill="hsl(40, 33%, 100%)"
-              d="M0,0 L0,32 Q360,64 720,32 T1440,32 L1440,0 Z"
-            />
-          </svg>
-        </div>
       </section>
 
       {/* Products Grid */}

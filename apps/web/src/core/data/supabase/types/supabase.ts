@@ -367,6 +367,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      patisserie_products: {
+        Row: {
+          active: boolean;
+          category: string | null;
+          created_at: string;
+          description: string;
+          id: string;
+          image_url: string | null;
+          metadata: Json | null;
+          name: string;
+          pathname: string;
+          price: number;
+          stock_status: string;
+          thumbnail_url: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          active?: boolean;
+          category?: string | null;
+          created_at?: string;
+          description: string;
+          id?: string;
+          image_url?: string | null;
+          metadata?: Json | null;
+          name: string;
+          pathname: string;
+          price: number;
+          stock_status?: string;
+          thumbnail_url?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          active?: boolean;
+          category?: string | null;
+          created_at?: string;
+          description?: string;
+          id?: string;
+          image_url?: string | null;
+          metadata?: Json | null;
+          name?: string;
+          pathname?: string;
+          price?: number;
+          stock_status?: string;
+          thumbnail_url?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

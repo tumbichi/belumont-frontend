@@ -5,7 +5,8 @@
   },
   "HEADER": {
     "HOME": "Inicio",
-    "PRODUCTS": "Recetarios"
+    "PRODUCTS": "Recetarios",
+    "PATISSERIE": "Patisserie"
   },
   "PRODUCT": {
     "BUY": "Comprar",
@@ -47,5 +48,65 @@
   "PAYMENT_PENDING": {
     "TITLE": "Pago pendiente",
     "DESCRIPTION": "Cuando el pago sea aprobado te enviaremos un correo con tu producto"
+  },
+  "PATISSERIE": {
+    "PAGE_TITLE": "Pastelería Sin TACC — Belu Mont",
+    "PAGE_DESCRIPTION": "Pastelería artesanal 100% sin gluten. Tortas, alfajores y más. Pedidos por WhatsApp, retiro en Baradero.",
+    "HERO_BADGE": "100% Sin TACC · Sin Gluten",
+    "HERO_TITLE": "Pastelería",
+    "HERO_SUBTITLE": "Tortas, alfajores y delicias artesanales. Todas elaboradas sin TACC, con amor y sin concesiones.",
+    "DISCLAIMER": {
+      "GLUTEN_FREE_TITLE": "100% Sin TACC",
+      "GLUTEN_FREE_SUBTITLE": "Todos los productos son sin gluten",
+      "PICKUP_TITLE": "Retiro en Baradero",
+      "PICKUP_SUBTITLE": "Solo retiro presencial, sin envíos",
+      "WHATSAPP_TITLE": "Pedidos por WhatsApp",
+      "WHATSAPP_SUBTITLE": "Coordinamos fecha y detalles juntos"
+    },
+    "STOCK": {
+      "AVAILABLE": "Disponible",
+      "ON_REQUEST": "A pedido",
+      "OUT_OF_STOCK": "Sin stock"
+    },
+    "CARD": {
+      "ADD_TO_CART": "Agregar",
+      "NO_STOCK": "Sin stock",
+      "DAYS_NOTICE": "Requiere {days} días de anticipación",
+      "AVAILABLE_TODAY": "Disponible para retirar hoy"
+    },
+    "CART": {
+      "TITLE": "Tu pedido",
+      "EMPTY_TITLE": "Tu carrito está vacío",
+      "EMPTY_SUBTITLE": "Explorá el catálogo y agregá tus favoritos",
+      "EMPTY_CTA": "Ver catálogo",
+      "SUBTOTAL": "Subtotal estimado",
+      "PRICE_DISCLAIMER": "El precio final se confirma con Belu.",
+      "WHATSAPP_CTA": "Hacer pedido por WhatsApp"
+    },
+    "ORDER_FORM": {
+      "SECTION_TITLE": "Tus datos",
+      "NOMBRE_LABEL": "Nombre",
+      "NOMBRE_PLACEHOLDER": "María",
+      "APELLIDO_LABEL": "Apellido",
+      "APELLIDO_PLACEHOLDER": "González",
+      "TELEFONO_LABEL": "Teléfono",
+      "TELEFONO_PLACEHOLDER": "+54 9 11 1234-5678",
+      "FECHA_LABEL": "Fecha de retiro",
+      "NOTAS_LABEL": "Notas (opcional)",
+      "NOTAS_PLACEHOLDER": "Ej: sin relleno de dulce de leche, para cumpleaños...",
+      "REQUIRED_ERROR": "Campo obligatorio",
+      "DATE_ERROR": "Seleccioná una fecha",
+      "SUBMIT": "Hacer pedido por WhatsApp"
+    },
+    "DETAIL": {
+      "BACK": "Volver al catálogo",
+      "PORTIONS": "Porciones",
+      "ALLERGENS": "Alérgenos",
+      "GLUTEN_FREE_BADGE": "100% Sin TACC · Sin Gluten",
+      "PICKUP_DISCLAIMER": "Retiro únicamente en Baradero, Buenos Aires",
+      "WHATSAPP_DISCLAIMER": "Coordinamos fecha y detalles por WhatsApp",
+      "ADD_TO_CART": "Agregar al carrito",
+      "OUT_OF_STOCK": "Sin stock disponible"
+    }
   }
 }
