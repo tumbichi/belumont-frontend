@@ -30,7 +30,7 @@ export function PromoCodeSection({ promoCode }: PromoCodeSectionProps) {
           Código aplicado
         </span>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <Badge
           variant="outline"
           className="font-mono text-sm bg-white border-amber-300 text-amber-900 px-2 py-0.5"

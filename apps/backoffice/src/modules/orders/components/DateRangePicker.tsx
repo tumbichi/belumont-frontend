@@ -178,7 +178,7 @@ export function DateRangePicker({
           <Button
             variant="outline"
             className={cn(
-              'h-9 justify-start text-left text-sm font-normal min-w-[220px]',
+              'h-9 justify-start text-left text-sm font-normal w-full sm:min-w-[220px] sm:w-auto',
               !triggerLabel && 'text-muted-foreground'
             )}
           >
@@ -194,7 +194,7 @@ export function DateRangePicker({
               handleSelect(range as DateRange | undefined, day as Date)
             }
             disabled={isDisabled}
-            numberOfMonths={2}
+            numberOfMonths={1}
             defaultMonth={from ?? today}
             // Bug 4: range preview while hovering during 'selecting' phase
             modifiers={{

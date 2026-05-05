@@ -118,9 +118,9 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
     clientSearch;
 
   return (
-    <div className="flex flex-wrap gap-3 items-end">
+    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
       {/* Order status */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full sm:w-auto">
         <label className="text-xs text-muted-foreground">Estado</label>
         <Select
           value={currentStatus || ALL_VALUE}
@@ -128,7 +128,7 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
             updateParam('status', val === ALL_VALUE ? null : val)
           }
         >
-          <SelectTrigger className="h-9 min-w-[150px]">
+          <SelectTrigger className="h-9 w-full sm:min-w-[150px]">
             <SelectValue placeholder="Todos los estados" />
           </SelectTrigger>
           <SelectContent>
@@ -143,7 +143,7 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
       </div>
 
       {/* Payment status */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full sm:w-auto">
         <label className="text-xs text-muted-foreground">Estado de pago</label>
         <Select
           value={currentPaymentStatus || ALL_VALUE}
@@ -151,7 +151,7 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
             updateParam('paymentStatus', val === ALL_VALUE ? null : val)
           }
         >
-          <SelectTrigger className="h-9 min-w-[170px]">
+          <SelectTrigger className="h-9 w-full sm:min-w-[170px]">
             <SelectValue placeholder="Todos los pagos" />
           </SelectTrigger>
           <SelectContent>
@@ -166,7 +166,7 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
       </div>
 
       {/* Product filter */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full sm:w-auto">
         <label className="text-xs text-muted-foreground">Producto</label>
         <Select
           value={currentProductId || ALL_VALUE}
@@ -174,7 +174,7 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
             updateParam('productId', val === ALL_VALUE ? null : val)
           }
         >
-          <SelectTrigger className="h-9 min-w-[180px]">
+          <SelectTrigger className="h-9 w-full sm:min-w-[180px]">
             <SelectValue placeholder="Todos los productos" />
           </SelectTrigger>
           <SelectContent>
@@ -193,17 +193,18 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
         from={currentDateFrom}
         to={currentDateTo}
         onChange={handleDateChange}
+        className="w-full sm:w-auto"
       />
 
       {/* Client search */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full sm:w-auto">
         <label className="text-xs text-muted-foreground">Buscar cliente</label>
         <Input
           type="text"
           placeholder="Nombre o email..."
           value={clientSearch}
           onChange={(e) => setClientSearch(e.target.value)}
-          className="h-9 min-w-[200px]"
+          className="h-9 w-full sm:min-w-[200px]"
         />
       </div>
 
@@ -212,7 +213,7 @@ export function OrdersFilters({ products }: OrdersFiltersProps) {
         <Button
           variant="outline"
           onClick={handleClearFilters}
-          className="h-9 self-end"
+          className="h-9 w-full sm:w-auto sm:self-end"
         >
           Limpiar filtros
         </Button>

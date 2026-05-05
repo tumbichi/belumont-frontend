@@ -27,7 +27,7 @@ export function OrdersPagination({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between mt-4">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-4">
       <p className="text-sm text-muted-foreground">
         {total} resultado{total !== 1 ? 's' : ''} · Página {page} de{' '}
         {totalPages}
@@ -36,14 +36,14 @@ export function OrdersPagination({
         <button
           onClick={() => goToPage(page - 1)}
           disabled={page <= 1}
-          className="h-8 px-3 text-sm rounded-md border border-input bg-background hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 sm:flex-none h-10 px-4 text-sm rounded-md border border-input bg-background hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[90px]"
         >
           Anterior
         </button>
         <button
           onClick={() => goToPage(page + 1)}
           disabled={page >= totalPages}
-          className="h-8 px-3 text-sm rounded-md border border-input bg-background hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 sm:flex-none h-10 px-4 text-sm rounded-md border border-input bg-background hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[90px]"
         >
           Siguiente
         </button>

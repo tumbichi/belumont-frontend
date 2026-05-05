@@ -28,47 +28,61 @@ function MpDetailCard({ detail }: { detail: MpPaymentDetail }) {
         <CreditCard className="w-3.5 h-3.5" />
         Detalle MercadoPago
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <span className="text-muted-foreground">Estado MP</span>
-        <span className="font-medium">{detail.status}</span>
+      <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5">
+        <span className="text-muted-foreground whitespace-nowrap">
+          Estado MP
+        </span>
+        <span className="font-medium min-w-0">{detail.status}</span>
 
-        <span className="text-muted-foreground">Detalle</span>
-        <span>{detail.status_detail}</span>
+        <span className="text-muted-foreground whitespace-nowrap">Detalle</span>
+        <span className="min-w-0">{detail.status_detail}</span>
 
-        <span className="text-muted-foreground">Monto</span>
-        <span>${detail.transaction_amount?.toLocaleString('es-AR')}</span>
+        <span className="text-muted-foreground whitespace-nowrap">Monto</span>
+        <span className="min-w-0">
+          ${detail.transaction_amount?.toLocaleString('es-AR')}
+        </span>
 
-        <span className="text-muted-foreground">Método de pago</span>
-        <span>{detail.payment_method_id}</span>
+        <span className="text-muted-foreground whitespace-nowrap">
+          Método de pago
+        </span>
+        <span className="min-w-0">{detail.payment_method_id}</span>
 
-        <span className="text-muted-foreground">Tipo</span>
-        <span>{detail.payment_type_id}</span>
+        <span className="text-muted-foreground whitespace-nowrap">Tipo</span>
+        <span className="min-w-0">{detail.payment_type_id}</span>
 
         {detail.installments > 1 && (
           <>
-            <span className="text-muted-foreground">Cuotas</span>
-            <span>{detail.installments}</span>
+            <span className="text-muted-foreground whitespace-nowrap">
+              Cuotas
+            </span>
+            <span className="min-w-0">{detail.installments}</span>
           </>
         )}
 
         {detail.date_approved && (
           <>
-            <span className="text-muted-foreground">Aprobado</span>
-            <span>{formatDate(detail.date_approved)}</span>
+            <span className="text-muted-foreground whitespace-nowrap">
+              Aprobado
+            </span>
+            <span className="min-w-0">{formatDate(detail.date_approved)}</span>
           </>
         )}
 
         {detail.payer?.email && (
           <>
-            <span className="text-muted-foreground">Email pagador</span>
-            <span className="break-all">{detail.payer.email}</span>
+            <span className="text-muted-foreground whitespace-nowrap">
+              Email pagador
+            </span>
+            <span className="min-w-0 break-all">{detail.payer.email}</span>
           </>
         )}
 
         {detail.card?.last_four_digits && (
           <>
-            <span className="text-muted-foreground">Tarjeta</span>
-            <span>
+            <span className="text-muted-foreground whitespace-nowrap">
+              Tarjeta
+            </span>
+            <span className="min-w-0">
               **** **** **** {detail.card.last_four_digits}
               {detail.card.cardholder?.name
                 ? ` — ${detail.card.cardholder.name}`

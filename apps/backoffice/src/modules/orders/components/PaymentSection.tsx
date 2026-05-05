@@ -47,7 +47,7 @@ export function PaymentSection({ payment, productPrice }: PaymentSectionProps) {
       </div>
 
       {/* Price row */}
-      <div className="px-4 py-3 flex items-end justify-between gap-2">
+      <div className="px-4 py-3 flex flex-wrap items-end justify-between gap-2">
         <div className="text-xs text-muted-foreground">
           {isFree
             ? 'Con código 100%'
