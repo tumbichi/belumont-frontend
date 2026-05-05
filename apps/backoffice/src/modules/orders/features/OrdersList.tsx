@@ -1,0 +1,84 @@
+import SupabaseRepository from '@core/data/supabase/supabase.repository';
+import { orderFiltersSchema } from '@modules/orders/schemas/orderFilters.schema';
+import { OrdersTable } from '@modules/orders/components/OrdersTable';
+import { OrdersFilters } from '@modules/orders/components/OrdersFilters';
+import { OrdersPagination } from '@modules/orders/components/OrdersPagination';
+import { OrdersSheetWrapper } from './OrdersSheetWrapper';
+
+const PAGE_SIZE = 20;
+
+interface OrdersListProps {
+  searchParams: Record<string, string | string[] | undefined>;
+}
+
+function parseSearchParams(
+  searchParams: Record<string, string | string[] | undefined>
+) {
+  const raw: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (value !== undefined) {
+      if (Array.isArray(value)) {
+        raw[key] = value;
+      } else {
+        raw[key] = value;
+      }
+    }
+  }
+
+  // Handle multi-value params for status and paymentStatus
+  if (searchParams.status) {
+    raw.status = Array.isArray(searchParams.status)
+      ? searchParams.status
+      : [searchParams.status];
+  }
+  if (searchParams.paymentStatus) {
+    raw.paymentStatus = Array.isArray(searchParams.paymentStatus)
+      ? searchParams.paymentStatus
+      : [searchParams.paymentStatus];
+  }
+
+  const result = orderFiltersSchema.safeParse(raw);
+  return result.success ? result.data : { page: 1 };
+}
+
+export default async function OrdersList({ searchParams }: OrdersListProps) {
+  const repository = SupabaseRepository();
+  const filters = parseSearchParams(searchParams);
+
+  const [{ data: orders, total }, products] = await Promise.all([
+    repository.orders.getAllWithFilters({
+      status: filters.status as
+        | import('@modules/orders/types').OrderStatus[]
+        | undefined,
+      paymentStatus: filters.paymentStatus as
+        | import('@modules/orders/types').PaymentStatus[]
+        | undefined,
+      dateFrom: filters.dateFrom,
+      dateTo: filters.dateTo,
+      clientSearch: filters.clientSearch,
+      productId: filters.productId,
+      page: filters.page,
+      pageSize: PAGE_SIZE,
+    }),
+    repository.products.getAllForBackoffice(),
+  ]);
+
+  const productOptions = products.map((p) => ({ id: p.id, name: p.name }));
+
+  return (
+    <div className="space-y-4">
+      <OrdersFilters products={productOptions} />
+
+      <OrdersTable orders={orders} />
+
+      <OrdersPagination
+        page={filters.page}
+        total={total}
+        pageSize={PAGE_SIZE}
+      />
+
+      <OrdersSheetWrapper orders={orders} />
+    </div>
+  );
+}
