@@ -1,0 +1,149 @@
+import { supabase } from '@core/data/supabase/client';
+import sanitizeDatesFromObject from '@core/utils/helpers/sanitizeDatesFromObject';
+import {
+  OrderFiltersParams,
+  OrderWithDetails,
+  PaymentStatus,
+  OrderStatus,
+} from '@modules/orders/types';
+
+const PAGE_SIZE = 20;
+
+export default async function getAllOrdersWithFilters(
+  params: OrderFiltersParams = {}
+): Promise<{ data: OrderWithDetails[]; total: number }> {
+  const {
+    status,
+    paymentStatus,
+    dateFrom,
+    dateTo,
+    clientSearch,
+    productIds,
+    hideFree,
+    page = 1,
+    pageSize = PAGE_SIZE,
+  } = params;
+
+  // Pre-query lookups: run in parallel when both are needed
+  const needsUserLookup = !!(clientSearch && clientSearch.trim().length > 0);
+  const needsHideFree = !!hideFree;
+
+  const [userLookupResult, freePaymentLookupResult] = await Promise.all([
+    needsUserLookup
+      ? supabase
+          .from('users')
+          .select('id')
+          .or(
+            `name.ilike.%${clientSearch!.trim()}%,email.ilike.%${clientSearch!.trim()}%`
+          )
+      : Promise.resolve(null),
+    needsHideFree
+      ? supabase.from('payments').select('id').eq('amount', 0)
+      : Promise.resolve(null),
+  ]);
+
+  // Resolve clientSearch user filter
+  let userIdFilter: string[] | null = null;
+  if (needsUserLookup) {
+    userIdFilter = userLookupResult?.data?.map((u) => u.id) ?? [];
+    // If no users match, return empty early
+    if (userIdFilter.length === 0) {
+      return { data: [], total: 0 };
+    }
+  }
+
+  // Resolve hideFree payment filter
+  const freePaymentIds: string[] =
+    freePaymentLookupResult?.data?.map((p) => p.id) ?? [];
+
+  // Build main query
+  let query = supabase
+    .from('orders')
+    .select(
+      `
+      id,
+      created_at,
+      updated_at,
+      status,
+      payment_id,
+      product_id,
+      user_id,
+      users (name, email),
+      products (id, name, price, product_type),
+      payments (
+        id,
+        amount,
+        provider,
+        provider_id,
+        status,
+        promo_code_id,
+        promo_codes:promo_code (code, discount_type, discount_value)
+      )
+    `,
+      { count: 'exact' }
+    )
+    .order('created_at', { ascending: false });
+
+  // Apply filters
+  if (status && status.length > 0) {
+    query = query.in('status', status as OrderStatus[]);
+  }
+
+  if (dateFrom) {
+    query = query.gte('created_at', dateFrom);
+  }
+
+  if (dateTo) {
+    // Include the full day
+    query = query.lte('created_at', `${dateTo}T23:59:59.999Z`);
+  }
+
+  if (productIds && productIds.length > 0) {
+    query = query.in('product_id', productIds);
+  }
+
+  if (userIdFilter !== null) {
+    query = query.in('user_id', userIdFilter);
+  }
+
+  // hideFree: exclude orders with null payment_id OR whose payment has amount = 0
+  if (needsHideFree) {
+    query = query.not('payment_id', 'is', null);
+    if (freePaymentIds.length > 0) {
+      query = query.not('payment_id', 'in', `(${freePaymentIds.join(',')})`);
+    }
+  }
+
+  // Pagination
+  const offset = (page - 1) * pageSize;
+  query = query.range(offset, offset + pageSize - 1);
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    return { data: [], total: 0 };
+  }
+
+  // Apply paymentStatus filter in memory (Supabase doesn't support filtering on related table columns directly)
+  // TECH DEBT: in-memory filtering means `total` (from DB count) may exceed `data.length` when this filter is active.
+  let filtered = data;
+  if (paymentStatus && paymentStatus.length > 0) {
+    filtered = data.filter(
+      (order) =>
+        order.payments &&
+        paymentStatus.includes(
+          (order.payments as { status: PaymentStatus }).status
+        )
+    );
+  }
+
+  const sanitized = filtered.map((order) =>
+    sanitizeDatesFromObject(order)
+  ) as unknown as OrderWithDetails[];
+
+  return { data: sanitized, total: count ?? 0 };
+}
