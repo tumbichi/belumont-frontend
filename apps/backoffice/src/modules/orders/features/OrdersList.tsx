@@ -18,15 +18,11 @@ function parseSearchParams(
 
   for (const [key, value] of Object.entries(searchParams)) {
     if (value !== undefined) {
-      if (Array.isArray(value)) {
-        raw[key] = value;
-      } else {
-        raw[key] = value;
-      }
+      raw[key] = value;
     }
   }
 
-  // Handle multi-value params for status and paymentStatus
+  // Multi-value array params
   if (searchParams.status) {
     raw.status = Array.isArray(searchParams.status)
       ? searchParams.status
@@ -36,6 +32,11 @@ function parseSearchParams(
     raw.paymentStatus = Array.isArray(searchParams.paymentStatus)
       ? searchParams.paymentStatus
       : [searchParams.paymentStatus];
+  }
+  if (searchParams.productIds) {
+    raw.productIds = Array.isArray(searchParams.productIds)
+      ? searchParams.productIds
+      : [searchParams.productIds];
   }
 
   const result = orderFiltersSchema.safeParse(raw);
@@ -57,7 +58,8 @@ export default async function OrdersList({ searchParams }: OrdersListProps) {
       dateFrom: filters.dateFrom,
       dateTo: filters.dateTo,
       clientSearch: filters.clientSearch,
-      productId: filters.productId,
+      productIds: filters.productIds,
+      hideFree: filters.hideFree,
       page: filters.page,
       pageSize: PAGE_SIZE,
     }),
@@ -69,6 +71,11 @@ export default async function OrdersList({ searchParams }: OrdersListProps) {
   return (
     <div className="space-y-4">
       <OrdersFilters products={productOptions} />
+
+      {/* Always-visible result count */}
+      <p className="text-sm text-muted-foreground">
+        {total} {total === 1 ? 'orden encontrada' : 'órdenes encontradas'}
+      </p>
 
       <OrdersTable orders={orders} />
 

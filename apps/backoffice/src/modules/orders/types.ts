@@ -11,7 +11,10 @@ export interface OrderFiltersParams {
   dateFrom?: string; // YYYY-MM-DD
   dateTo?: string; // YYYY-MM-DD
   clientSearch?: string;
-  productId?: string;
+  /** Multi-product filter — replaces single productId */
+  productIds?: string[];
+  /** When true, exclude orders with no payment or amount = 0 */
+  hideFree?: boolean;
   page?: number; // 1-indexed, default: 1
   pageSize?: number; // default: 20
 }

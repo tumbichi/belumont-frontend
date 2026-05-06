@@ -29,8 +29,7 @@ export function OrdersPagination({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-4">
       <p className="text-sm text-muted-foreground">
-        {total} resultado{total !== 1 ? 's' : ''} · Página {page} de{' '}
-        {totalPages}
+        Página {page} de {totalPages}
       </p>
       <div className="flex items-center gap-2">
         <button

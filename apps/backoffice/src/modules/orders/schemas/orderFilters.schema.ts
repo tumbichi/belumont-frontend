@@ -25,7 +25,12 @@ export const orderFiltersSchema = z.object({
   dateFrom: z.string().date().optional(),
   dateTo: z.string().date().optional(),
   clientSearch: z.string().max(100).optional(),
-  productId: z.string().uuid().optional(),
+  /** Multi-select product filter — replaces single productId */
+  productIds: z.array(z.string().uuid()).optional(),
+  /** When true, exclude free orders (amount = 0 or no payment registered) */
+  hideFree: z
+    .union([z.boolean(), z.string().transform((v) => v === 'true')])
+    .optional(),
   page: z.coerce.number().int().min(1).default(1),
   orderId: z.string().uuid().optional(),
 });

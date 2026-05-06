@@ -29,14 +29,16 @@ export function useOrderFilters(): {
   const dateFrom = searchParams.get('dateFrom');
   const dateTo = searchParams.get('dateTo');
   const clientSearch = searchParams.get('clientSearch');
-  const productId = searchParams.get('productId');
+  const productIds = searchParams.getAll('productIds');
+  const hideFree = searchParams.get('hideFree');
   const page = searchParams.get('page');
   const orderId = searchParams.get('orderId');
 
   if (dateFrom) rawParams.dateFrom = dateFrom;
   if (dateTo) rawParams.dateTo = dateTo;
   if (clientSearch) rawParams.clientSearch = clientSearch;
-  if (productId) rawParams.productId = productId;
+  if (productIds.length > 0) rawParams.productIds = productIds;
+  if (hideFree) rawParams.hideFree = hideFree;
   if (page) rawParams.page = page;
   if (orderId) rawParams.orderId = orderId;
 

@@ -18,28 +18,45 @@ export default async function getAllOrdersWithFilters(
     dateFrom,
     dateTo,
     clientSearch,
-    productId,
+    productIds,
+    hideFree,
     page = 1,
     pageSize = PAGE_SIZE,
   } = params;
 
-  // Step 1: if clientSearch, resolve matching user_ids first
-  let userIdFilter: string[] | null = null;
-  if (clientSearch && clientSearch.trim().length > 0) {
-    const term = `%${clientSearch.trim()}%`;
-    const { data: matchingUsers } = await supabase
-      .from('users')
-      .select('id')
-      .or(`name.ilike.${term},email.ilike.${term}`);
+  // Pre-query lookups: run in parallel when both are needed
+  const needsUserLookup = !!(clientSearch && clientSearch.trim().length > 0);
+  const needsHideFree = !!hideFree;
 
-    userIdFilter = matchingUsers?.map((u) => u.id) ?? [];
+  const [userLookupResult, freePaymentLookupResult] = await Promise.all([
+    needsUserLookup
+      ? supabase
+          .from('users')
+          .select('id')
+          .or(
+            `name.ilike.%${clientSearch!.trim()}%,email.ilike.%${clientSearch!.trim()}%`
+          )
+      : Promise.resolve(null),
+    needsHideFree
+      ? supabase.from('payments').select('id').eq('amount', 0)
+      : Promise.resolve(null),
+  ]);
+
+  // Resolve clientSearch user filter
+  let userIdFilter: string[] | null = null;
+  if (needsUserLookup) {
+    userIdFilter = userLookupResult?.data?.map((u) => u.id) ?? [];
     // If no users match, return empty early
     if (userIdFilter.length === 0) {
       return { data: [], total: 0 };
     }
   }
 
-  // Step 2: build main query
+  // Resolve hideFree payment filter
+  const freePaymentIds: string[] =
+    freePaymentLookupResult?.data?.map((p) => p.id) ?? [];
+
+  // Build main query
   let query = supabase
     .from('orders')
     .select(
@@ -81,12 +98,20 @@ export default async function getAllOrdersWithFilters(
     query = query.lte('created_at', `${dateTo}T23:59:59.999Z`);
   }
 
-  if (productId) {
-    query = query.eq('product_id', productId);
+  if (productIds && productIds.length > 0) {
+    query = query.in('product_id', productIds);
   }
 
   if (userIdFilter !== null) {
     query = query.in('user_id', userIdFilter);
+  }
+
+  // hideFree: exclude orders with null payment_id OR whose payment has amount = 0
+  if (needsHideFree) {
+    query = query.not('payment_id', 'is', null);
+    if (freePaymentIds.length > 0) {
+      query = query.not('payment_id', 'in', `(${freePaymentIds.join(',')})`);
+    }
   }
 
   // Pagination
@@ -104,6 +129,7 @@ export default async function getAllOrdersWithFilters(
   }
 
   // Apply paymentStatus filter in memory (Supabase doesn't support filtering on related table columns directly)
+  // TECH DEBT: in-memory filtering means `total` (from DB count) may exceed `data.length` when this filter is active.
   let filtered = data;
   if (paymentStatus && paymentStatus.length > 0) {
     filtered = data.filter(
