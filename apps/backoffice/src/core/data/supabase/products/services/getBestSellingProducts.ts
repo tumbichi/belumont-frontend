@@ -6,6 +6,13 @@ export interface BestSellingProduct extends Product {
   sales: number;
 }
 
+/**
+ * @deprecated Use `getBestSellingProductsForPeriod` from
+ * `core/data/supabase/dashboard/services/getBestSellingProductsForPeriod` instead.
+ * This service performs O(n) client-side grouping of all orders, does not support
+ * date range filtering, and does not exclude test users. Will be removed once the
+ * dashboard is fully migrated.
+ */
 export default async function getBestSellingProducts(
   limit = 5
 ): Promise<BestSellingProduct[]> {
@@ -27,8 +34,6 @@ export default async function getBestSellingProducts(
   const productSales = new Map<string, BestSellingProduct>();
 
   for (const order of orders) {
-
-
     // NOTE: We need to ensure that the relationship is correctly named 'products'
     // and that RLS policies allow fetching them.
     if (order.products) {
