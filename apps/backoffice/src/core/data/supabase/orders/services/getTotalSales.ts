@@ -1,5 +1,10 @@
 import { supabase } from '@core/data/supabase/client';
 
+/**
+ * @deprecated Use `getDashboardKpis` from `core/data/supabase/dashboard/services/getDashboardKpis`
+ * instead. This service incorrectly includes `status = 'paid'` in revenue calculation and
+ * does not support date range filtering. Will be removed once the dashboard is fully migrated.
+ */
 export default async function getTotalSales(): Promise<number> {
   const { data, error } = await supabase
     .from('orders')

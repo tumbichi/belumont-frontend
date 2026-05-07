@@ -16,6 +16,10 @@ import {
   ResourcesRepositoryReturn,
 } from './resources/resources.repository';
 import { UsersRepository, UsersRepositoryReturn } from './users';
+import {
+  DashboardRepository,
+  DashboardRepositoryReturn,
+} from './dashboard/dashboard.repository';
 
 interface SupabaseRepositoryReturn {
   orders: OrdersRepositoryReturn;
@@ -24,6 +28,7 @@ interface SupabaseRepositoryReturn {
   users: UsersRepositoryReturn;
   promos: PromosRepositoryReturn;
   resources: ResourcesRepositoryReturn;
+  dashboard: DashboardRepositoryReturn;
 }
 
 const SupabaseRepository = (): SupabaseRepositoryReturn => ({
@@ -33,6 +38,7 @@ const SupabaseRepository = (): SupabaseRepositoryReturn => ({
   users: UsersRepository(),
   promos: PromosRepository(),
   resources: ResourcesRepository(),
+  dashboard: DashboardRepository(),
 });
 
 export default SupabaseRepository;

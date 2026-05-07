@@ -372,7 +372,20 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_best_selling_products: {
+        Args: {
+          p_excluded_ids: string[];
+          p_from: string;
+          p_limit?: number;
+          p_to: string;
+        };
+        Returns: {
+          product_id: string;
+          product_name: string;
+          product_type: string;
+          sales_count: number;
+        }[];
+      };
     };
     Enums: {
       order_status: 'pending' | 'completed' | 'cancelled' | 'paid';
